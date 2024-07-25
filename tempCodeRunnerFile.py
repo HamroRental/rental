@@ -1,1 +1,2 @@
-app = RentalApp()
+
+            font=("Helvetica", 15),
