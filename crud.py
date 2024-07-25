@@ -228,7 +228,7 @@ btn_add.place(x=0, y=500)
 btn_delete = Button(root, text="Delete", font=("Arial Bold", 20), command=delete)
 btn_delete.place(x=250, y=600)
 btn_update = Button(root, text="Update", font=("Arial Bold", 20), command=edit)
-btn_update.place(x=370, y=500)
+btn_update.place(x=370, y=600)
 
 delete_box = Entry(root, width=40)
 delete_box.place(x=250, y=550, height=20)
