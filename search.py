@@ -253,6 +253,59 @@ class RentalApp(ctk.CTk):
         profile_app.on_click(profile_app.dashboard_button, profile_app.home_hover_image, profile_app.create_dashboard)
         profile_app.mainloop()
 
+    def notification(self):
+        # Example data array for notifications
+        notifications = [
+            {"title": "Item Available for Rent", 
+            "message": "Sony a6400 is now available for rent. Click here to book it before it's gone!"
+            }
+        ]
+        
+        # Create a small window below the bell_button
+        popup = tk.Toplevel(self)
+        
+        # Remove window decorations for a cleaner popup look
+        popup.overrideredirect(True)
+        
+        # Set the size of the popup window
+        popup.geometry("320x400")  # Adjust the size as needed
+
+        # Set the background color of the popup window
+        popup.configure(bg="white")
+
+        # Frame for the Notification header
+        header_frame = ctk.CTkFrame(popup, height=40, corner_radius=0, fg_color="white")
+        header_frame.pack(padx=10, pady=(10, 0), fill="x", expand=False)
+
+        # Label for "Notifications"
+        header_label = ctk.CTkLabel(header_frame, text="Notifications", font=("Helvetica", 14), text_color="#2F4D7D")
+        header_label.pack(side="left", padx=(5, 0), pady=5)
+
+        # Frame for Notification content
+        content_frame = ctk.CTkFrame(popup, corner_radius=0, fg_color="white")
+        content_frame.pack(padx=10, pady=10, fill="both", expand=False)
+
+        # Display notifications from the data array
+        for notification in notifications:
+            # Title Label
+            title_label = ctk.CTkLabel(content_frame, text=notification["title"], font=("Helvetica", 12, "bold"), text_color="black", anchor="w", justify="left")
+            title_label.pack(anchor="w", padx=(10, 0), pady=(10, 0), fill="x")
+            
+            # Message Label
+            message_label = ctk.CTkLabel(content_frame, text=notification["message"], font=("Helvetica", 12), text_color="gray", wraplength=280, anchor="w", justify="left")
+            message_label.pack(anchor="w", padx=(10, 0), pady=(10, 10), fill="x")
+
+        # Calculate the position of the popup relative to the bell_button
+        x = self.bell_button.winfo_rootx() - 50  # Offset to center the popup under the button
+        y = self.bell_button.winfo_rooty() + self.bell_button.winfo_height() + 10  # Offset to place it below the button
+
+        # Adjust the x position to add a gap on the right side
+        x = x - 20  # Adjust this value to increase or decrease the gap
+
+        popup.geometry(f"+{x}+{y}")
+
+        # Optional: Auto-close the popup after a certain time (e.g., 3 seconds)
+        # popup.after(5000, popup.destroy)
 
         
 if __name__ == "__main__":
