@@ -41,8 +41,8 @@ class Description(ctk.CTk):
         self.profile_label.pack(side="left", padx=10)
 
         # Load the icons
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\OneDrive\\Pictures\\Vector.png"))
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\OneDrive\\Pictures\\profile.png"))
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Vector.png"))
+        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png"))
 
         # Create a frame for the right-side icons
         self.icon_frame = ctk.CTkFrame(self.menu_icon_frame, fg_color="#2F4D7D")
@@ -67,7 +67,7 @@ class Description(ctk.CTk):
         self.photo_frame.pack(side='left', pady=0, padx=0)
 
         # Add the service placeholder image to the photo frame
-        self.add_service_placeholder(self.photo_frame, "C:\\Users\\manas\\OneDrive\\Pictures\\camera.jpg")
+        self.add_service_placeholder(self.photo_frame, "C:\\Users\\manas\\Documents\\rental\\camera.jpg")
 
         # Create a frame for the text content on the right side
         self.text_frame = ctk.CTkFrame(self.all_frame, fg_color='transparent')
