@@ -361,7 +361,7 @@ class RentalApp(ctk.CTk):
         y = self.bell_button.winfo_rooty() + self.bell_button.winfo_height() + 10  # Offset to place it below the button
 
         # Adjust the x position to add a gap on the right side
-        x = x - 20 # Adjust this value to increase or decrease the gap
+        x = x - 21 # Adjust this value to increase or decrease the gap
 
         popup.geometry(f"+{x}+{y}")
 
