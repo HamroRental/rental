@@ -28,7 +28,7 @@ class RentalApp(ctk.CTk):
         self.icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D")
         self.icon_frame.pack(side="right", padx=10, pady=20, anchor = 'n')
 
-        icon_size = (30, 31)  
+        icon_size = (30, 30)  
         self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
         self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
         self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
