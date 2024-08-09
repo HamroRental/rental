@@ -81,7 +81,7 @@ class RentalApp(ctk.CTk):
             image=self.home_image,
             compound="left",
             text_color='#97A8C3',
-            font=("Helvetica", 12, 'bold'),
+            font=("Helvetica", 11, 'bold'),
             fg_color='#F2F2F2',
             height=50,
             width=180,
