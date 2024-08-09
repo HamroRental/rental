@@ -1,6 +1,9 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
+import search
+import crud 
+
 
 
 # Set the appearance mode of the app
@@ -113,9 +116,9 @@ class RentalApp(ctk.CTk):
 
         #add placeholders for Trending services 
         self.add_service_placeholder(self.trending_frame, "Kurtha Set", "New Collection", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\kurtha.png")
-        self.add_service_placeholder(self.trending_frame, "2BHK Flat", "New Collection", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat.png")
+        self.add_service_placeholder(self.trending_frame, "2BHK Flat", "New Collection", "Rs.400 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat.png")
         self.add_service_placeholder(self.trending_frame, "Sony a6400 ", "Camera Zone", "Rs.1000 Per Day", "C:\\Users\\manas\\Documents\\rental\\camera.jpg")
-        self.add_service_placeholder(self.trending_frame, "3BHK Apartment", "New Collection", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat1.jpg")
+        self.add_service_placeholder(self.trending_frame, "3BHK Apartment", "New Collection", "Rs.500 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat1.jpg")
 
 
         # Add recommended for you section
@@ -185,10 +188,22 @@ class RentalApp(ctk.CTk):
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
         price_label.pack()
 
+    # Adding search functionality 
     def search(self):
-        # Define the search functionality
-        print(f"Searching for: {self.search_entry.get()}")
+        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+        search_results = crud.search_products_by_category(search_query)  # Query the database
 
+        if search_results:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+            search_app.mainloop()
+        else:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
+            search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
+            search_app.label.pack(anchor="n", pady=(40, 20))
+            search_app.mainloop()
+            
     def open_link(self, title):
         print(f"Opening details for: {title}")
 

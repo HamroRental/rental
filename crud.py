@@ -4,7 +4,7 @@ import sqlite3
 import uuid
 import io
 
-root = Tk()
+# Database setup
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
 c.execute(
@@ -20,6 +20,7 @@ c.execute(
 conn.commit()
 conn.close()
 
+# Function definitions
 def generate_unique_id():
     return str(uuid.uuid4())
 
@@ -83,7 +84,7 @@ def get_description(product_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     c.execute('SELECT description FROM product WHERE product_id=?', (product_id,))
-    result = c.fetchone() # result will come in tuple for eg ('adsflkjalskdf',)
+    result = c.fetchone() 
     conn.close()
     if result:
         return result[0]
@@ -191,7 +192,7 @@ def edit():
         category_editor.insert(0, record[2])
         price_editor.insert(0, record[3])
         description_editor.insert("1.0", record[4])
-        image_path_editor.insert(0, "")  # Assuming you have a way to get the image path, otherwise leave it blank
+        image_path_editor.insert(0, "")
 
     btn_browse_editor = Button(editor, text="Browse", command=lambda: browse_image(image_path_editor))
     btn_browse_editor.grid(row=4, column=2)
@@ -199,38 +200,51 @@ def edit():
     edit_btn = Button(editor, text="Save", command=update)
     edit_btn.grid(row=5, column=0, columnspan=2, pady=10, padx=10, ipadx=125)
 
-label_product_name = Label(root, text="Product Name", font=("Arial Bold", 20))
-label_product_name.place(x=0, y=90)
-label_category = Label(root, text='Category', font=("Arial Bold", 20))
-label_category.place(x=0, y=140)
-label_price = Label(root, text='Price', font=("Arial Bold", 20))
-label_price.place(x=0, y=190)
-label_description = Label(root, text="Description", font=("Arial Bold", 20))
-label_description.place(x=0, y=240)
-label_image = Label(root, text='Image', font=("Arial Bold", 20))
-label_image.place(x=0, y=450)
+# Adding search function to retrieve data 
+def search_products_by_category(category):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT product_name, price, description FROM product WHERE lower(category) LIKE ?", ('%' + category + '%',))
+    results = c.fetchall()
+    conn.close()
+    return results
 
-product_name = Entry(root, width=30)
-product_name.place(x=200, y=100, height=30)
-category = Entry(root, width=30)
-category.place(x=200, y=150, height=30)
-price = Entry(root, width=30)
-price.place(x=200, y=200, height=30)
-description = Text(root, width=30, height=10)
-description.place(x=200, y=250)
-image_path = Entry(root, width=30)
-image_path.place(x=200, y=450, height=30)
+# Main loop
+if __name__ == "__main__":
+    root = Tk()
 
-btn_browse = Button(root, text="Browse", font=("Arial Bold", 15), command=browse_image)
-btn_browse.place(x=400, y=450)
-btn_add = Button(root, text="Add", font=("Arial Bold", 20), command=add)
-btn_add.place(x=0, y=500)
-btn_delete = Button(root, text="Delete", font=("Arial Bold", 20), command=delete)
-btn_delete.place(x=250, y=600)
-btn_update = Button(root, text="Update", font=("Arial Bold", 20), command=edit)
-btn_update.place(x=370, y=600)
+    label_product_name = Label(root, text="Product Name", font=("Arial Bold", 20))
+    label_product_name.place(x=0, y=90)
+    label_category = Label(root, text='Category', font=("Arial Bold", 20))
+    label_category.place(x=0, y=140)
+    label_price = Label(root, text='Price', font=("Arial Bold", 20))
+    label_price.place(x=0, y=190)
+    label_description = Label(root, text="Description", font=("Arial Bold", 20))
+    label_description.place(x=0, y=240)
+    label_image = Label(root, text='Image', font=("Arial Bold", 20))
+    label_image.place(x=0, y=450)
 
-delete_box = Entry(root, width=40)
-delete_box.place(x=250, y=550, height=30)
+    product_name = Entry(root, width=30)
+    product_name.place(x=200, y=100, height=30)
+    category = Entry(root, width=30)
+    category.place(x=200, y=150, height=30)
+    price = Entry(root, width=30)
+    price.place(x=200, y=200, height=30)
+    description = Text(root, width=30, height=10)
+    description.place(x=200, y=250)
+    image_path = Entry(root, width=30)
+    image_path.place(x=200, y=450, height=30)
 
-root.mainloop()
+    btn_browse = Button(root, text="Browse", font=("Arial Bold", 15), command=browse_image)
+    btn_browse.place(x=400, y=450)
+    btn_add = Button(root, text="Add", font=("Arial Bold", 20), command=add)
+    btn_add.place(x=0, y=500)
+    btn_delete = Button(root, text="Delete", font=("Arial Bold", 20), command=delete)
+    btn_delete.place(x=250, y=600)
+    btn_update = Button(root, text="Update", font=("Arial Bold", 20), command=edit)
+    btn_update.place(x=370, y=600)
+
+    delete_box = Entry(root, width=40)
+    delete_box.place(x=250, y=550, height=30)
+
+    root.mainloop()

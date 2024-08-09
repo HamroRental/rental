@@ -7,7 +7,7 @@ ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
 ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 class RentalApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, search_query = None, search_results =None):
         super().__init__()
 
         self.title("Rent it.")
@@ -61,32 +61,6 @@ class RentalApp(ctk.CTk):
         self.side_frame = ctk.CTkFrame(self, width=300, corner_radius=10, bg_color="#e0e0e0")
         self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=20)
 
-        #Adding search bar 
-         # Create the search bar frame
-        self.search_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, fg_color="#E5E5E5")
-        self.search_frame.pack(pady=10, padx=20, fill="x")
-
-        # Create the search entry with the search button and magnifying glass icon
-        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", corner_radius=30)
-        self.search_container.pack(pady=10, padx=30, side = 'left')
-
-        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#FFFFFF")
-        self.search_entry_frame.pack(fill="x", expand=True, padx=10, pady=5)
-
-        # Load the magnifying glass image
-        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\glass.png"))
-
-        # Create and place the magnifying glass label inside the search entry
-        self.glass_label = ctk.CTkLabel(self.search_entry_frame, image=self.glass_image, text="", width=25, height=20, fg_color="#FFFFFF")
-        self.glass_label.pack(side="left", padx=10)
-
-        # Create and place the search entry
-        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Search something here", height=25, corner_radius=15, border_width=0)
-        self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
-
-       
-
-
 
         # Add filter options to the side frame
         self.filter_label = ctk.CTkLabel(self.side_frame, text="Filters Options", font=("Helvetica", 16, 'bold'))
@@ -107,6 +81,29 @@ class RentalApp(ctk.CTk):
 
         self.best_match_radio = ctk.CTkRadioButton(self.side_frame, text="Best Match", variable=self.sort_var, value="Best Match")
         self.best_match_radio.pack(anchor="w", padx=40, pady=5)
+
+        # Adding a title label for the search results
+        if search_query:
+            self.title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
+            self.title_label_main.pack(anchor = 'w', padx = 1, pady=(20, 10))
+
+        # Displaying the search results
+        if search_results:
+            for product_name, price, description in search_results:
+                self.add_service_placeholder(self.main_frame, product_name, description, f"Rs.{price} Per Day")
+
+    def add_service_placeholder(self, parent, title, subtitle, price):
+        service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10)
+        service_frame.pack(padx=10, pady=10, side="left")
+
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9")
+        title_button.pack(side="top", pady=5)
+
+        subtitle_label = ctk.CTkLabel(service_frame, text=subtitle, font=("Helvetica", 12))
+        subtitle_label.pack()
+
+        price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
+        price_label.pack()
 
         
 if __name__ == "__main__":
