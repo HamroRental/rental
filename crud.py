@@ -15,7 +15,7 @@ c.execute(
         category TEXT,
         price INT,
         description TEXT,
-        image BLOB
+        image TEXT
         )"""
 )
 conn.commit()
@@ -33,7 +33,7 @@ def add():
         blob_data = file.read()
     c.execute(
         "INSERT INTO product(product_id, product_name, category, price, description, image) VALUES(?,?,?,?,?,?)",
-        (unique_id, product_name.get(), category.get(), price.get(), description.get("1.0", END), blob_data),
+        (unique_id, product_name.get(), category.get(), price.get(), description.get("1.0", END), image_path.get()),
     )
     conn.commit()
     conn.close()
@@ -98,51 +98,32 @@ def get_product_image(product_id):
     result = c.fetchone()
     conn.close()
     if result:
-        image_data = result[0]
-        image = io.BytesIO(image_data)
-        return image
+        return result[0]  # Return the image path as a string
     return None
+
 
 def update():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
-    if image_path_editor.get():
-        with open(image_path_editor.get(), 'rb') as file:
-            blob_data = file.read()
-        c.execute(
-            """UPDATE product SET
-                product_name = :product_name,
-                category = :category,
-                price = :price,
-                description = :description,
-                image = :image
-                WHERE product_id = :id""",
-            {
-                "product_name": product_name_editor.get(),
-                "category": category_editor.get(),
-                "price": price_editor.get(),
-                "description": description_editor.get("1.0", END),
-                "image": blob_data,
-                "id": global_product_id,
-            },
-        )
-    else:
-        c.execute(
-            """UPDATE product SET
-                product_name = :product_name,
-                category = :category,
-                price = :price,
-                description = :description
-                WHERE product_id = :id""",
-            {
-                "product_name": product_name_editor.get(),
-                "category": category_editor.get(),
-                "price": price_editor.get(),
-                "description": description_editor.get("1.0", END),
-                "id": global_product_id,
-            },
-        )
+    c.execute(
+        """UPDATE product SET
+            product_name = :product_name,
+            category = :category,
+            price = :price,
+            description = :description,
+            image = :image
+            WHERE product_id = :id""",
+        {
+            "product_name": product_name_editor.get(),
+            "category": category_editor.get(),
+            "price": price_editor.get(),
+            "description": description_editor.get("1.0", END),
+            "image": image_path_editor.get(),
+            "id": global_product_id,
+        },
+    )
+    
     conn.commit()
     conn.close()
     editor.destroy()
@@ -205,7 +186,7 @@ def edit():
 def search_products_by_category(category):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute("SELECT product_name, price, description, image FROM product WHERE lower(category) LIKE ?", ('%' + category + '%',))
+    c.execute("SELECT product_name, price, image FROM product WHERE lower(category) LIKE ?", ('%' + category + '%',))
     results = c.fetchall()
     conn.close()
     return results

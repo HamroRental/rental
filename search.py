@@ -92,11 +92,19 @@ class RentalApp(ctk.CTk):
 
         # Displaying the search results
         if search_results:
-            for product_name, price, description, image in search_results:
-                self.add_service_placeholder(self.main_frame, product_name, description, f"Rs.{price} Per Day", image)
+            for product_name, price, image in search_results:
+                self.add_service_placeholder(self.main_frame, product_name, f"Rs.{price} Per Day", image)
+
+    def button_clicked(self):
+        print('button clicked')
+        import description
+        new_page = description.Description()
+        new_page.mainloop()
+
                 
-    def add_service_placeholder(self, parent, title, subtitle, price, image):
+    def add_service_placeholder(self, parent, title, price, image):
         # Load and resize the image using PIL
+        image = Image.open(image)
         image.resize((180, 120),Image.Resampling.LANCZOS)  # Resize to desired dimensions
         self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
 
@@ -111,9 +119,6 @@ class RentalApp(ctk.CTk):
         # Create and place the text button
         title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
         title_button.pack(side="top", pady=5)
-
-        subtitle_label = ctk.CTkLabel(service_frame, text=subtitle, font=("Helvetica", 12))
-        subtitle_label.pack()
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
         price_label.pack()
