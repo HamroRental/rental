@@ -27,28 +27,30 @@ class RentalApp(ctk.CTk):
 
         # Create a container frame for the menu icons
         self.icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D")
-        self.icon_frame.pack(side="right", padx=20, pady=20, anchor = 'n')
+        self.icon_frame.pack(side="right", padx=10, pady=20, anchor = 'n')
 
-        # Load the icons
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png"))
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png"))
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Settings.png"))
+        # Load the icons with increased size
+        icon_size = (40, 40)  # Adjust the size as needed
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
-        # Create and place the icon buttons
-        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.bell_button.pack(side="left", padx=10)
-        self.heart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.heart_button.pack(side="left", padx=10)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.profile_button.pack(side="left", padx=10)
+        # Create and place the icon buttons with adjusted width and height
+        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.bell_button.pack(side="left", padx=1)
+        self.heart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.heart_button.pack(side="left", padx=1)
+        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button.pack(side="left", padx=1)
+
 
         # Create and place the title label in the main content
         self.title_label_main = ctk.CTkLabel(self.title_bar, text="Rent anything, anywhere", font=("Inter", 40, 'bold'), text_color='white')
-        self.title_label_main.pack(pady=(100,2))
+        self.title_label_main.pack(pady=(100,2), padx =(100,50))
 
         # Create the search bar frame
         self.search_frame = ctk.CTkFrame(self.title_bar, width = 500, fg_color="#2F4D7D")
-        self.search_frame.pack(pady=(20,70), padx=20, fill = 'x')
+        self.search_frame.pack(pady=(20,70), padx=(100,50), fill = 'x')
 
         # Create the search entry with the search button and magnifying glass icon
         self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width = 500)
@@ -156,19 +158,20 @@ class RentalApp(ctk.CTk):
         self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
 
         # Create the frame for the image and text
-        service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10)
+        service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10, fg_color="white")
         service_frame.pack(padx=10, pady=10, side="left")
 
         # Create and place the image label
         image_label = ctk.CTkLabel(service_frame, image=self.ctk_image, text="")
-        image_label.pack(pady=10)
+        image_label.pack(pady=0.5)
 
         # Create and place the text button 
         title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
-        title_button.pack(side="top", pady=5)
+        title_button.pack(side="top", pady=(5,1), anchor = 'w')
+
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
-        price_label.pack()
+        price_label.pack(side = 'left', padx = 22.5)
 
     # Adding search functionality 
     def search(self):

@@ -1,6 +1,8 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
+import crud 
+import search
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -15,47 +17,57 @@ class Description(ctk.CTk):
         self.geometry("1280x750")  # Adjusted to fit more content
 
         # Create the title bar frame
-        self.title_bar = ctk.CTkFrame(self, height=100, corner_radius=0, fg_color="#2F4D7D")
+        self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D")
         self.title_bar.pack(fill="x", side="top")
 
         # Create and place the title label
-        self.title_label = ctk.CTkLabel(self.title_bar, text="Rent it.", font=("Helvetica", 24, 'bold'), text_color="white")
-        self.title_label.pack(side="left", padx=10, pady=10)
+        self.title_label = ctk.CTkLabel(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white")
+        self.title_label.pack(side="left", padx=10, pady=5)
 
         # Create a container frame for menu items and icons
-        self.menu_icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D")
-        self.menu_icon_frame.pack(side="right", fill="x", expand=True)
+        self.menu_icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D", width=50)  # Reduce the width of this frame
+        self.menu_icon_frame.pack(side="right", padx=20)
 
-        # Create a container frame for the center menu items
-        self.menu_frame = ctk.CTkFrame(self.menu_icon_frame, fg_color="#2F4D7D")
-        self.menu_frame.pack(side="left", pady=10, padx=420)
+        # Adjust padding in the menu frame to allow more space for the search bar
+        self.menu_frame = ctk.CTkFrame(self.title_bar, width = 100, fg_color="#2F4D7D")
+        self.menu_frame.pack(side="left", fill="x", expand=True, pady=5, padx=(230, 150))  # Reduce padding to allow more space
 
-        # Create and place the menu items
-        self.dashboard_label = ctk.CTkLabel(self.menu_frame, text="Dashboard", font=("Helvetica", 11), text_color="white")
-        self.dashboard_label.pack(side="left", padx=10)
+        # Create the search bar frame
+        self.search_frame = ctk.CTkFrame(self.menu_frame, width=500, fg_color="#2F4D7D")
+        self.search_frame.pack(pady=20, padx=10, fill ='x', expand=True)  # Allow the search frame to take up more space
 
-        self.categories_label = ctk.CTkLabel(self.menu_frame, text="Our Categories", font=("Helvetica", 11), text_color="white")
-        self.categories_label.pack(side="left", padx=10)
+        # Load the magnifying glass image
+        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\white-glass.png"))
 
-        self.profile_label = ctk.CTkLabel(self.menu_frame, text="Profile", font=("Helvetica", 11), text_color="white")
-        self.profile_label.pack(side="left", padx=10)
+        # Create the search entry with the search button and magnifying glass icon
+        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width=250)
+        self.search_container.pack(fill = 'x', expand=True, padx=10, pady=5)
 
-        # Load the icons
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png"))
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png"))
-        self.settings_image = ctk.CTkImage(light_image = Image.open("C:\\Users\\manas\\Documents\\rental\\Settings.png"))
+        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#FFFFFF", width=70)
+        self.search_entry_frame.pack(fill="x", expand=True, padx=10, pady=5)
 
-        # Create a frame for the right-side icons
-        self.icon_frame = ctk.CTkFrame(self.menu_icon_frame, fg_color="#2F4D7D")
-        self.icon_frame.pack(side="right", padx=1)
+        # Create and place the search entry
+        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Rooms, Vehicles, Equipment, Clothes", height=25, border_width=0)
+        self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        # Create and place the icon buttons
-        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.bell_button.pack(side="left", padx=3)
-        self.settings_image = ctk.CTkButton(self.icon_frame, image=self.settings_image, text= '', width = 35, height =35, fg_color = "#2F4D7D", hover_color = "#2F4D7D")
-        self.settings_image.pack(side ='left', padx=3)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.profile_button.pack(side="left", padx=3)
+        # Create and place the search button inside the search entry
+        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=25, fg_color="#6883AE", hover_color="#6883AE", command=self.search)
+        self.search_button.pack(side="right", padx=(10, 0), pady = (0,0))
+
+        
+        # Load the icons with increased size
+        icon_size = (30, 30)  # Adjust the size as needed
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+
+        # Create and place the icon buttons with adjusted width and height
+        self.bell_button = ctk.CTkButton(self.menu_icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.bell_button.pack(side="left", padx=1)
+        self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.heart_button.pack(side="left", padx=1)
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button.pack(side="left", padx=1)
 
         # Create and place the main content
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical')
@@ -112,6 +124,22 @@ class Description(ctk.CTk):
         # Create and place the image label
         image_label = ctk.CTkLabel(parent, image=self.service_image, text="")
         image_label.pack(side='left', pady=(0, 10), padx=10)
+
+    # Adding search functionality 
+    def search(self):
+        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+        search_results = crud.search_products_by_category(search_query)  # Query the database
+
+        if search_results:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+            search_app.mainloop()
+        else:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
+            search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
+            search_app.label.pack(anchor="n", pady=(40, 20))
+            search_app.mainloop()
 
 if __name__ == "__main__":
     app = Description()
