@@ -40,18 +40,21 @@ class RentalApp(ctk.CTk):
         self.profile_label.pack(side="left", padx=10)
 
         # Load the icons
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Vector.png"))
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png"))
         self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png"))
+        self.settings_image = ctk.CTkImage(light_image = Image.open("C:\\Users\\manas\\Documents\\rental\\Settings.png"))
 
         # Create a frame for the right-side icons
         self.icon_frame = ctk.CTkFrame(self.menu_icon_frame, fg_color="#2F4D7D")
-        self.icon_frame.pack(side="right", padx=10)
+        self.icon_frame.pack(side="right", padx=1)
 
         # Create and place the icon buttons
-        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.bell_button.pack(side="left", padx=5)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.profile_button.pack(side="left", padx=5)
+        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.bell_button.pack(side="left", padx=3)
+        self.settings_image = ctk.CTkButton(self.icon_frame, image=self.settings_image, text= '', width = 35, height =35, fg_color = "#2F4D7D", hover_color = "#2F4D7D")
+        self.settings_image.pack(side ='left', padx=3)
+        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button.pack(side="left", padx=3)
 
         # Create and place the main content
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical')
@@ -89,14 +92,24 @@ class RentalApp(ctk.CTk):
 
         # Displaying the search results
         if search_results:
-            for product_name, price, description in search_results:
-                self.add_service_placeholder(self.main_frame, product_name, description, f"Rs.{price} Per Day")
+            for product_name, price, description, image in search_results:
+                self.add_service_placeholder(self.main_frame, product_name, description, f"Rs.{price} Per Day", image)
+                
+    def add_service_placeholder(self, parent, title, subtitle, price, image):
+        # Load and resize the image using PIL
+        image.resize((180, 120),Image.Resampling.LANCZOS)  # Resize to desired dimensions
+        self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
 
-    def add_service_placeholder(self, parent, title, subtitle, price):
+        # Create the frame for the image and text
         service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10)
         service_frame.pack(padx=10, pady=10, side="left")
 
-        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9")
+        # Create and place the image label
+        image_label = ctk.CTkLabel(service_frame, image=self.ctk_image, text="")
+        image_label.pack(pady=10)
+
+        # Create and place the text button
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
         title_button.pack(side="top", pady=5)
 
         subtitle_label = ctk.CTkLabel(service_frame, text=subtitle, font=("Helvetica", 12))

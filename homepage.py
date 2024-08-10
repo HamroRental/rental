@@ -44,18 +44,21 @@ class RentalApp(ctk.CTk):
         self.profile_label.pack(side="left", padx=10)
 
         # Load the icons
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Vector.png"))
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png"))
         self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png"))
+        self.settings_image = ctk.CTkImage(light_image = Image.open("C:\\Users\\manas\\Documents\\rental\\Settings.png"))
 
         # Create a frame for the right-side icons
         self.icon_frame = ctk.CTkFrame(self.menu_icon_frame, fg_color="#2F4D7D")
-        self.icon_frame.pack(side="right", padx=10)
+        self.icon_frame.pack(side="right", padx=1)
 
         # Create and place the icon buttons
-        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.bell_button.pack(side="left", padx=5)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.profile_button.pack(side="left", padx=5)
+        self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.bell_button.pack(side="left", padx=3)
+        self.settings_image = ctk.CTkButton(self.icon_frame, image=self.settings_image, text= '', width = 35, height =35, fg_color = "#2F4D7D", hover_color = "#2F4D7D")
+        self.settings_image.pack(side ='left', padx=3)
+        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=35, height=35, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button.pack(side="left", padx=3)
 
         # Create and place the main content
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical')
