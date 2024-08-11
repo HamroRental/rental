@@ -186,7 +186,7 @@ def edit():
 def search_products_by_category(category):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute("SELECT product_name, price, image FROM product WHERE lower(category) LIKE ?", ('%' + category + '%',))
+    c.execute("SELECT product_name, price, image FROM product WHERE lower(category) LIKE ? OR lower(product_name) LIKE ?", ('%' + category + '%', '%' + category + '%'))
     results = c.fetchall()
     conn.close()
     return results

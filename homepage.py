@@ -53,7 +53,7 @@ class RentalApp(ctk.CTk):
         self.search_frame.pack(pady=(20,70), padx=(100,50), fill = 'x')
 
         # Create the search entry with the search button and magnifying glass icon
-        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width = 500)
+        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width = 500, corner_radius=0)
         self.search_container.pack(pady=10, padx=30, fill="x", expand=True)
 
         self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#FFFFFF", width = 500)
@@ -71,7 +71,7 @@ class RentalApp(ctk.CTk):
         self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
         # Create and place the search button inside the search entry
-        self.search_button = ctk.CTkButton(self.search_entry_frame, text="Search", width=70, height=25,fg_color="#2F4D7D", command=self.search)
+        self.search_button = ctk.CTkButton(self.search_entry_frame, text="Search", width=70, height=25,fg_color="#2F4D7D", corner_radius=0, command=self.search)
         self.search_button.pack(side="right", padx=10)
 
         # Create and place the main content
@@ -168,7 +168,6 @@ class RentalApp(ctk.CTk):
         # Create and place the text button 
         title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
         title_button.pack(side="top", pady=(5,1), anchor = 'w')
-
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
         price_label.pack(side = 'left', padx = 22.5)

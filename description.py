@@ -17,7 +17,7 @@ class Description(ctk.CTk):
         self.geometry("1280x750")  # Adjusted to fit more content
 
         # Create the title bar frame
-        self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D")
+        self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D", corner_radius=0)
         self.title_bar.pack(fill="x", side="top")
 
         # Create and place the title label
@@ -40,19 +40,20 @@ class Description(ctk.CTk):
         self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\white-glass.png"))
 
         # Create the search entry with the search button and magnifying glass icon
-        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width=250)
+        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#6883AE", width=250, corner_radius=5)
         self.search_container.pack(fill = 'x', expand=True, padx=10, pady=5)
 
-        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#FFFFFF", width=70)
-        self.search_entry_frame.pack(fill="x", expand=True, padx=10, pady=5)
+        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#6883AE", width=70, corner_radius=5)
+        self.search_entry_frame.pack(fill="x", padx=(1,0), pady=0)
 
         # Create and place the search entry
-        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Rooms, Vehicles, Equipment, Clothes", height=25, border_width=0)
-        self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
+        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Rooms, Vehicles, Equipment, Clothes", height=27, border_width=0, corner_radius=0)
+        self.search_entry.pack(side="left", fill="x", expand=True, padx=(0,2))
 
         # Create and place the search button inside the search entry
-        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=25, fg_color="#6883AE", hover_color="#6883AE", command=self.search)
-        self.search_button.pack(side="right", padx=(10, 0), pady = (0,0))
+        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=26, fg_color="#6883AE", hover_color="#6883AE",corner_radius=0, command=self.search)
+        self.search_button.pack(side="right", fill = "x", padx=(2.5,0))
+
 
         
         # Load the icons with increased size

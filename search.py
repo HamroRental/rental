@@ -15,7 +15,7 @@ class RentalApp(ctk.CTk):
         self.geometry("1280x750")  # Adjusted to fit more content
 
         # Create the title bar frame
-        self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D")
+        self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D", corner_radius=0)
         self.title_bar.pack(fill="x", side="top")
 
         # Create and place the title label
@@ -38,19 +38,19 @@ class RentalApp(ctk.CTk):
         self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\white-glass.png"))
 
         # Create the search entry with the search button and magnifying glass icon
-        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#FFFFFF", width=250)
+        self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#6883AE", width=250, corner_radius=0)
         self.search_container.pack(fill = 'x', expand=True, padx=10, pady=5)
 
-        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#FFFFFF", width=70)
-        self.search_entry_frame.pack(fill="x", expand=True, padx=10, pady=5)
+        self.search_entry_frame = ctk.CTkFrame(self.search_container, fg_color="#6883AE", width=70)
+        self.search_entry_frame.pack(fill="x", padx=(1,0), pady=0)
 
         # Create and place the search entry
-        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Rooms, Vehicles, Equipment, Clothes", height=25, border_width=0)
-        self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
+        self.search_entry = ctk.CTkEntry(self.search_entry_frame, placeholder_text="Rooms, Vehicles, Equipment, Clothes", height=27, border_width=0, corner_radius=0)
+        self.search_entry.pack(side="left", fill="x", expand=True, padx=(0,2))
 
         # Create and place the search button inside the search entry
-        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=25, fg_color="#6883AE", hover_color="#6883AE", command=self.search)
-        self.search_button.pack(side="right", padx=(10, 0), pady = (0,0))
+        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=26, fg_color="#6883AE", hover_color="#6883AE",corner_radius=0, command=self.search)
+        self.search_button.pack(side="right", fill = "x", padx=(2.5,0))
 
         
         # Load the icons with increased size
@@ -154,16 +154,38 @@ class RentalApp(ctk.CTk):
         search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
         search_results = crud.search_products_by_category(search_query)  # Query the database
 
+        # Clear existing search results
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # Add a title label for the search results
+        if search_query:
+            title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
+            title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
+
+        # Display the search results
         if search_results:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
-            search_app.mainloop()
+            row_frame = None
+            products_in_row = 0
+
+            for i, (product_name, price, image) in enumerate(search_results):
+                if products_in_row == 0:
+                    # Create a new row frame when starting a new row
+                    row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+                    row_frame.pack(fill="x", padx=20, pady=10)
+
+                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+
+                products_in_row += 1
+
+                # Reset after adding 3 products in a row
+                if products_in_row >= 3:
+                    products_in_row = 0
+
         else:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
-            search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
-            search_app.label.pack(anchor="n", pady=(40, 20))
-            search_app.mainloop()
+            no_results_label = ctk.CTkLabel(self.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
+            no_results_label.pack(anchor="n", pady=(40, 20))
+
         
 if __name__ == "__main__":
     app = RentalApp()
