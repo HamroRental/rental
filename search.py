@@ -107,13 +107,13 @@ class RentalApp(ctk.CTk):
             row_frame = None
             products_in_row = 0
 
-            for i,(product_name, price, image) in enumerate(search_results):
+            for i,(product_name, price, image_path) in enumerate(search_results):
                 if products_in_row == 0:
                     # Create a new row frame when starting a new row
                     row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
                     row_frame.pack(fill="x", padx=20, pady=10)
 
-                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image_path)
 
                 products_in_row += 1
 
@@ -121,16 +121,25 @@ class RentalApp(ctk.CTk):
                 if products_in_row >= 3:
                     products_in_row = 0
 
-    def button_clicked(self):
-        print('button clicked')
-        import description
-        new_page = description.Description()
-        new_page.mainloop()
+    def button_clicked(self, product_id):
+        product_name = crud.get_product_name(product_id)
+        price = crud.get_price(product_id)
+        product_description = crud.get_description(product_id)
+        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\no-image.png"
 
+        # Initialize and open the new page with these details
+        import description
+        self.destroy()
+        new_page = description.Description(product_name, price, product_description, image_path)
+        new_page.mainloop()
                 
-    def add_service_placeholder(self, parent, title, price, image):
+    def add_service_placeholder(self, parent, title, price, image_path):
+
+        # formatting the image as in the database # Replace single backslashes with double backslashes
+        formatted_path = image_path.replace("\\", "/")
+
         # Load and resize the image using PIL
-        image = Image.open(image)
+        image = Image.open(image_path)
         image.resize((180, 120),Image.Resampling.LANCZOS)  # Resize to desired dimensions
         self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
 
@@ -143,7 +152,7 @@ class RentalApp(ctk.CTk):
         image_label.pack(pady=0.5)
 
         # Create and place the text button
-        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
         title_button.pack(side="top", pady=5)
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')

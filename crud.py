@@ -60,6 +60,18 @@ def browse_image(entry_widget=None):
     else:
         image_path.delete(0, END)
         image_path.insert(0, filename)
+        
+
+def get_product_id_by_image(image_path):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT product_id FROM product WHERE image=?', (image_path,))
+    result = c.fetchone()
+    conn.close()
+    if result:
+        return result[0]  # Return the product_id
+    return None  # Return None if no product matches the image path
+
 
 def get_product_name(product_id):
     conn = sqlite3.connect('database.db')
@@ -228,5 +240,7 @@ if __name__ == "__main__":
 
     delete_box = Entry(root, width=40)
     delete_box.place(x=250, y=550, height=30)
+
+
 
     root.mainloop()

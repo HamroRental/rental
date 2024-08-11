@@ -6,6 +6,7 @@ import crud
 
 
 
+
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
 ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -152,6 +153,10 @@ class RentalApp(ctk.CTk):
 
 
     def add_service_placeholder(self, parent, title, price, image_path):
+
+        # formatting the image_path as in the database # Replace single backslashes with double backslashes
+        formatted_path = image_path.replace("\\", "/")
+
         # Load and resize the image using PIL
         image = Image.open(image_path)
         image = image.resize((180, 120), Image.Resampling.LANCZOS)  # Resize to desired dimensions
@@ -166,7 +171,7 @@ class RentalApp(ctk.CTk):
         image_label.pack(pady=0.5)
 
         # Create and place the text button 
-        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=self.button_clicked)
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
         title_button.pack(side="top", pady=(5,1), anchor = 'w')
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
@@ -191,10 +196,16 @@ class RentalApp(ctk.CTk):
     def open_link(self, title):
         print(f"Opening details for: {title}")
 
-    def button_clicked(self):
-        print('button clicked')
+    def button_clicked(self, product_id):
+        product_name = crud.get_product_name(product_id)
+        price = crud.get_price(product_id)
+        product_description = crud.get_description(product_id)
+        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\no-image.png"
+
+        # Initialize and open the new page with these details
         import description
-        new_page = description.Description()
+        self.destroy()
+        new_page = description.Description(product_name, price, product_description, image_path)
         new_page.mainloop()
 
 if __name__ == "__main__":

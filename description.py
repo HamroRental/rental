@@ -10,7 +10,7 @@ ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", 
 
 
 class Description(ctk.CTk):
-    def __init__(self):
+    def __init__(self,product_name, price, product_description, image_path):
         super().__init__()
 
         self.title("Description")
@@ -51,7 +51,7 @@ class Description(ctk.CTk):
         self.search_entry.pack(side="left", fill="x", expand=True, padx=(0,2))
 
         # Create and place the search button inside the search entry
-        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=26, fg_color="#6883AE", hover_color="#6883AE",corner_radius=0, command=self.search)
+        self.search_button = ctk.CTkButton(self.search_entry_frame, image=self.glass_image, text="", width=70, height=26, fg_color="#6883AE", hover_color="#6883AE",corner_radius=0, command= self.search)
         self.search_button.pack(side="right", fill = "x", padx=(2.5,0))
 
 
@@ -83,24 +83,25 @@ class Description(ctk.CTk):
         self.photo_frame.pack(side='left', pady=0, padx=0)
 
         # Add the service placeholder image to the photo frame
-        self.add_service_placeholder(self.photo_frame, "C:\\Users\\manas\\Documents\\rental\\camera.jpg")
+        self.add_service_placeholder(self.photo_frame, image_path)
 
         # Create a frame for the text content on the right side
         self.text_frame = ctk.CTkFrame(self.all_frame, fg_color='transparent')
         self.text_frame.pack(side='left', fill='both', expand=True, padx=20, pady=20)
 
         # Create and place the title label in the text frame
-        self.title_label_main = ctk.CTkLabel(self.text_frame, text="Sony a6400 On Rent", font=("Helvetica", 30), text_color='black')
+        self.title_label_main = ctk.CTkLabel(self.text_frame, text=product_name, font=("Helvetica", 30), text_color='black')
         self.title_label_main.pack(anchor='w', pady=(50, 10))  # Adjust pady to add space between title and subtitle
 
         # Create and place the subtitle label in the text frame
-        self.subtitle_label = ctk.CTkLabel(self.text_frame, text='Rs. 1000 Per Day', font=("Helvetica", 20, 'bold'), text_color='#2F4D7D')
+        price = price
+        self.subtitle_label = ctk.CTkLabel(self.text_frame, text=f'Rs. {price} Per Day', font=("Helvetica", 20, 'bold'), text_color='#2F4D7D')
         self.subtitle_label.pack(anchor='w', pady=(0, 10))  # Adjust pady to add space between subtitle and the next content
 
         # Create and place the description text widget in the text frame
         self.description_text = tk.Text(self.text_frame, wrap="word", font=("Helvetica", 16), fg='black', bg='#E5E5E5', height=10, width=60, bd=0, padx=10, pady=10)
         self.description_text.pack(anchor='w', pady=(0, 1))
-        self.description_text.insert(tk.END, "Camera Cage for Sony Alpha a6500 a6400 a6300 a6000 ILCE-6500 ILCE-6400 ILCE-6300 ILCE-6000 4K Digital Mirrorless Camera Built-in Cold Shoe, The cage features a variety of 1/4\"-20 and 3/8\"-16 threaded accessory mounting holes. At the top left of the cage is a cold shoe mount for attaching a mic or various other accessories. With the camera housed inside the cage, you can easily access the SD card, battery compartment, and all camera buttons and ports.")
+        self.description_text.insert('1.0', product_description)
         self.description_text.configure(state='disabled')  # Make the text widget read-only
 
         # Add buttons below the description text
@@ -113,7 +114,7 @@ class Description(ctk.CTk):
         self.wishlist_button = ctk.CTkButton(self.buttons_frame, text="Add to Wishlist", corner_radius=25, font=("Helvetica", 14, 'bold'), fg_color="#2F4D7D", hover_color="#2F4D7D")
         self.wishlist_button.pack(side="left")
 
-    def add_service_placeholder(self, parent, image_path):
+    def add_service_placeholder(self,parent,image_path):
         # Load and resize the image using PIL
         image = Image.open(image_path)
         image = image.resize((360, 240), Image.LANCZOS)  # Resize to desired dimensions
@@ -143,5 +144,5 @@ class Description(ctk.CTk):
             search_app.mainloop()
 
 if __name__ == "__main__":
-    app = Description()
+    app = Description(product_name="Alpha 7 IV", price="3000", product_description="A high-quality mirrorless camera designed for professionals.", image_path="C:\\Users\\manas\\Documents\\rental\\camera.jpg")
     app.mainloop()
