@@ -126,11 +126,12 @@ class RentalApp(ctk.CTk):
         price = crud.get_price(product_id)
         product_description = crud.get_description(product_id)
         image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
-
+        category = crud.get_category(product_id)
+        images = crud.get_product_images(product_id)
         # Initialize and open the new page with these details
         import description
         self.destroy()
-        new_page = description.Description(product_name, price, product_description, image_path)
+        new_page = description.Description(product_id,product_name, price, product_description, image_path, category, images)
         new_page.mainloop()
                 
     def add_service_placeholder(self, parent, title, price, image_path):

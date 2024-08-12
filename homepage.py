@@ -2,7 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
 import search
-import crud 
+import crud, profile_1
 
 
 
@@ -41,7 +41,7 @@ class RentalApp(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate)
         self.profile_button.pack(side="left", padx=1)
 
 
@@ -208,6 +208,12 @@ class RentalApp(ctk.CTk):
         self.destroy()
         new_page = description.Description(product_id,product_name, price, product_description, image_path, category, images)
         new_page.mainloop()
+
+    def navigate(self):
+        self.destroy()
+        profile_app = profile_1.RentalApp()
+        profile_app.mainloop()
+
 
 if __name__ == "__main__":
     app = RentalApp()
