@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
-import crud
+import crud, homepage
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -19,8 +19,8 @@ class RentalApp(ctk.CTk):
         self.title_bar.pack(fill="x", side="top")
 
         # Create and place the title label
-        self.title_label = ctk.CTkLabel(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white")
-        self.title_label.pack(side="left", padx=10, pady=5)
+        self.title_button = ctk.CTkButton(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white", hover_color="#2F4D7D", fg_color = "#2F4D7D", command = self.navigate)
+        self.title_button.pack(side="left", padx=10, pady=5)
 
         # Create a container frame for menu items and icons
         self.menu_icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D", width=50)  # Reduce the width of this frame
@@ -194,6 +194,11 @@ class RentalApp(ctk.CTk):
         else:
             no_results_label = ctk.CTkLabel(self.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             no_results_label.pack(anchor="n", pady=(40, 20))
+
+    def navigate(self):
+        self.destroy()
+        new_app = homepage.RentalApp()
+        new_app.mainloop()
 
         
 if __name__ == "__main__":

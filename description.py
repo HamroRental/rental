@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import crud 
 import search
+import homepage
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -21,7 +22,7 @@ class Description(ctk.CTk):
         self.title_bar.pack(fill="x", side="top")
 
         # Create and place the title label
-        self.title_label = ctk.CTkLabel(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white")
+        self.title_label = ctk.CTkButton(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white", hover_color="#2F4D7D", fg_color = "#2F4D7D", command = self.navigate)
         self.title_label.pack(side="left", padx=10, pady=5)
 
         # Create a container frame for menu items and icons
@@ -142,6 +143,13 @@ class Description(ctk.CTk):
             search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             search_app.label.pack(anchor="n", pady=(40, 20))
             search_app.mainloop()
+
+    def navigate(self):
+        self.destroy()
+        new_app = homepage.RentalApp()
+        new_app.mainloop()
+
+
 
 if __name__ == "__main__":
     app = Description(product_name="Alpha 7 IV", price="3000", product_description="A high-quality mirrorless camera designed for professionals.", image_path="C:\\Users\\manas\\Documents\\rental\\camera.jpg")
