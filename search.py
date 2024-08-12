@@ -35,7 +35,7 @@ class RentalApp(ctk.CTk):
         self.search_frame.pack(pady=20, padx=10, fill ='x', expand=True)  # Allow the search frame to take up more space
 
         # Load the magnifying glass image
-        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\white-glass.png"))
+        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\white-glass.png"))
 
         # Create the search entry with the search button and magnifying glass icon
         self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#6883AE", width=250, corner_radius=0)
@@ -55,9 +55,9 @@ class RentalApp(ctk.CTk):
         
         # Load the icons with increased size
         icon_size = (30, 30)  # Adjust the size as needed
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.menu_icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
@@ -125,7 +125,7 @@ class RentalApp(ctk.CTk):
         product_name = crud.get_product_name(product_id)
         price = crud.get_price(product_id)
         product_description = crud.get_description(product_id)
-        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\no-image.png"
+        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
 
         # Initialize and open the new page with these details
         import description

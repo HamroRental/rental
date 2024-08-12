@@ -32,9 +32,9 @@ class RentalApp(ctk.CTk):
 
         # Load the icons with increased size
         icon_size = (40, 40)  # Adjust the size as needed
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
@@ -61,7 +61,7 @@ class RentalApp(ctk.CTk):
         self.search_entry_frame.pack(fill="x", expand=True, padx=10, pady=5)
 
         # Load the magnifying glass image
-        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\glass.png"))
+        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\glass.png"))
 
         # Create and place the magnifying glass label inside the search entry
         self.glass_label = ctk.CTkLabel(self.search_entry_frame, image=self.glass_image, text="", width=25, height=20, fg_color="#FFFFFF")
@@ -90,10 +90,10 @@ class RentalApp(ctk.CTk):
         self.category_images = []
 
         #add palceholders for Explore Our Categories 
-        self.create_category_placeholder(self.category_frame, "Luxury","C:\\Users\\manas\\Documents\\rental\\luxury.jpg")
-        self.create_category_placeholder(self.category_frame, "shoes", "C:\\Users\\manas\\Documents\\rental\\shoes.jpeg")
-        self.create_category_placeholder(self.category_frame, "Cars", "C:\\Users\\manas\\Documents\\rental\\car.jpg")
-        self.create_category_placeholder(self.category_frame, "Room", "C:\\Users\\manas\\Documents\\rental\\rent.png")
+        self.create_category_placeholder(self.category_frame, "Luxury","C:\\Users\\manas\\Documents\\rental\\photos\\luxury.jpg")
+        self.create_category_placeholder(self.category_frame, "shoes", "C:\\Users\\manas\\Documents\\rental\\photos\\shoes.jpeg")
+        self.create_category_placeholder(self.category_frame, "Cars", "C:\\Users\\manas\\Documents\\rental\\photos\\car.jpg")
+        self.create_category_placeholder(self.category_frame, "Room", "C:\\Users\\manas\\Documents\\rental\\photos\\rent.png")
 
         # Add trending services section
         self.trending_label = ctk.CTkLabel(self.main_frame, text="Trending Services", font=("Helvetica", 18, 'bold'), text_color="#2F4D7D")
@@ -103,10 +103,10 @@ class RentalApp(ctk.CTk):
         self.trending_frame.pack(pady=10, padx=20, fill="x")
 
         #add placeholders for Trending services 
-        self.add_service_placeholder(self.trending_frame, "Kurtha Set", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\kurtha.png")
-        self.add_service_placeholder(self.trending_frame, "2BHK Flat", "Rs.400 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat.png")
-        self.add_service_placeholder(self.trending_frame, "Sony a6400 ","Rs.1000 Per Day", "C:\\Users\\manas\\Documents\\rental\\camera.jpg")
-        self.add_service_placeholder(self.trending_frame, "3BHK Apartment","Rs.500 Per Day", "C:\\Users\\manas\\Documents\\rental\\flat1.jpg")
+        self.add_service_placeholder(self.trending_frame, "Kurtha Set", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\kurtha.png")
+        self.add_service_placeholder(self.trending_frame, "2BHK Flat", "Rs.400 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\flat.png")
+        self.add_service_placeholder(self.trending_frame, "Sony a6400 ","Rs.1000 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\camera.jpg")
+        self.add_service_placeholder(self.trending_frame, "3BHK Apartment","Rs.500 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\flat1.jpg")
 
 
         # Add recommended for you section
@@ -117,10 +117,10 @@ class RentalApp(ctk.CTk):
         self.recommended_frame.pack(pady=10, padx=20, fill="x")
 
         # Add placeholders for recommended services
-        self.add_service_placeholder(self.recommended_frame, "It Ends with us", "Rs.10 Per Day", "C:\\Users\\manas\\Documents\\rental\\book.jpg")
-        self.add_service_placeholder(self.recommended_frame, "Daura Suruwal On Rent", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\daura.jpg")
-        self.add_service_placeholder(self.recommended_frame, "Nike Dunk High", "Rs.100 Per Day", "C:\\Users\\manas\\Documents\\rental\\nike.jpg")
-        self.add_service_placeholder(self.recommended_frame, "Red Comodo On Rent", "Rs.10,000 Per Day", "C:\\Users\\manas\\Documents\\rental\\bigcamera.jpg")
+        self.add_service_placeholder(self.recommended_frame, "It Ends with us", "Rs.10 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\book.jpg")
+        self.add_service_placeholder(self.recommended_frame, "Daura Suruwal On Rent", "Rs.200 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\daura.jpg")
+        self.add_service_placeholder(self.recommended_frame, "Nike Dunk High", "Rs.100 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\nike.jpg")
+        self.add_service_placeholder(self.recommended_frame, "Red Comodo On Rent", "Rs.10,000 Per Day", "C:\\Users\\manas\\Documents\\rental\\photos\\bigcamera.jpg")
 
     
     def create_category_placeholder(self, parent, text, image_path):
@@ -200,12 +200,13 @@ class RentalApp(ctk.CTk):
         product_name = crud.get_product_name(product_id)
         price = crud.get_price(product_id)
         product_description = crud.get_description(product_id)
-        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\no-image.png"
-
+        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
+        category = crud.get_category(product_id)
+        images = crud.get_product_images(product_id)
         # Initialize and open the new page with these details
         import description
         self.destroy()
-        new_page = description.Description(product_name, price, product_description, image_path)
+        new_page = description.Description(product_id,product_name, price, product_description, image_path, category, images)
         new_page.mainloop()
 
 if __name__ == "__main__":
