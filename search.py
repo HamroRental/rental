@@ -152,7 +152,7 @@ class RentalApp(ctk.CTk):
         image_label.pack(pady=0.5)
 
         # Create and place the text button
-        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="#D9D9D9", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="white", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
         title_button.pack(side="top", pady=5)
 
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
