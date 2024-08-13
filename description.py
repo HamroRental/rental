@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw, ImageOps
 import crud 
 import search
-import homepage
+import homepage, profile_1
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -68,7 +68,7 @@ class Description(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_profile)
         self.profile_button.pack(side="left", padx=1)
 
         # Create and place the main content
@@ -256,6 +256,11 @@ class Description(ctk.CTk):
         self.destroy()
         new_app = homepage.RentalApp()
         new_app.mainloop()
+    
+    def navigate_to_profile(self):
+        self.destroy()
+        profile_app = profile_1.RentalApp()
+        profile_app.mainloop()
 
 
 

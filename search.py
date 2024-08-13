@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage
+import crud, homepage, profile_1
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -64,7 +64,7 @@ class RentalApp(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_profile)
         self.profile_button.pack(side="left", padx=1)
 
         
@@ -84,6 +84,8 @@ class RentalApp(ctk.CTk):
         self.sort_by_label = ctk.CTkLabel(self.side_frame, text="Sort by:", font=("Helvetica", 14))
         self.sort_by_label.pack(anchor="w", padx=20)
 
+        self.search_results = search_results or []
+
         self.sort_var = tk.StringVar(value="Relevance")
         self.relevance_radio = ctk.CTkRadioButton(self.side_frame, text="Relevance", variable=self.sort_var, value="Relevance")
         self.relevance_radio.pack(anchor="w", padx=40, pady=5)
@@ -96,6 +98,12 @@ class RentalApp(ctk.CTk):
 
         self.best_match_radio = ctk.CTkRadioButton(self.side_frame, text="Best Match", variable=self.sort_var, value="Best Match")
         self.best_match_radio.pack(anchor="w", padx=40, pady=5)
+
+        # Bind the radio buttons to the update_sorting method
+        self.relevance_radio.configure(command=self.update_sorting)
+        self.high_low_radio.configure(command=self.update_sorting)
+        self.low_high_radio.configure(command=self.update_sorting)
+
 
         # Adding a title label for the search results
         if search_query:
@@ -159,16 +167,51 @@ class RentalApp(ctk.CTk):
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
         price_label.pack()
 
-    # Adding search functionality 
     def search(self):
         search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
-        search_results = crud.search_products_by_category(search_query)  # Query the database
+        self.search_results = crud.search_products_by_category(search_query)  # Query the database
 
+        # Initially display the search results without any sorting
+        self.display_results(search_query, self.search_results)
+
+    def update_sorting(self):
+        # Ensure search_results exists
+        if not self.search_results:
+            print("No search results to sort.")
+            return
+
+        # Determine sorting order based on the selected radio button
+        sort_option = self.sort_var.get()
+        if sort_option == "Price (Low - High)":
+            self.search_results.sort(key=lambda x: x[1])  # Sort by price (ascending)
+        elif sort_option == "Price (High - Low)":
+            self.search_results.sort(key=lambda x: x[1], reverse=True)  # Sort by price (descending)
+
+        # Clear and redisplay sorted results
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        row_frame = None
+        products_in_row = 0
+
+        for i, (product_name, price, image) in enumerate(self.search_results):
+            if products_in_row == 0:
+                row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+                row_frame.pack(fill="x", padx=20, pady=10)
+
+            self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+            products_in_row += 1
+
+            if products_in_row >= 3:
+                products_in_row = 0
+
+
+    def display_results(self, search_query, search_results):
         # Clear existing search results
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Add a title label for the search results
+        # Add a title label for the search results (if a search query was provided)
         if search_query:
             title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
             title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
@@ -191,15 +234,20 @@ class RentalApp(ctk.CTk):
                 # Reset after adding 3 products in a row
                 if products_in_row >= 3:
                     products_in_row = 0
-
         else:
-            no_results_label = ctk.CTkLabel(self.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
+            no_results_label = ctk.CTkLabel(self.main_frame, text="No results found.", font=("Helvetica", 18, 'bold'))
             no_results_label.pack(anchor="n", pady=(40, 20))
+
 
     def navigate(self):
         self.destroy()
         new_app = homepage.RentalApp()
         new_app.mainloop()
+
+    def navigate_to_profile(self):
+        self.destroy()
+        profile_app = profile_1.RentalApp()
+        profile_app.mainloop()
 
         
 if __name__ == "__main__":

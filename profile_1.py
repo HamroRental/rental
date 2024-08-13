@@ -203,11 +203,25 @@ class RentalApp(ctk.CTk):
         # that matches your second screenshot design
 
     def navigate(self):
-        print("Button clicked!")
+        self.destroy()
+        new_app = homepage.RentalApp()
+        new_app.mainloop()
 
+    # Adding search functionality 
     def search(self):
-        search_term = self.search_entry.get()
-        print(f"Searching for {search_term}...")
+        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+        search_results = crud.search_products_by_category(search_query)  # Query the database
+
+        if search_results:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+            search_app.mainloop()
+        else:
+            self.destroy()  # Close the current window
+            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
+            search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
+            search_app.label.pack(anchor="n", pady=(40, 20))
+            search_app.mainloop()
 
 # Run the application
 if __name__ == "__main__":
