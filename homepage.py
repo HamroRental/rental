@@ -91,7 +91,7 @@ class RentalApp(ctk.CTk):
 
         #add palceholders for Explore Our Categories 
         self.create_category_placeholder(self.category_frame, "Luxury","C:\\Users\\manas\\Documents\\rental\\photos\\luxury.jpg")
-        self.create_category_placeholder(self.category_frame, "shoes", "C:\\Users\\manas\\Documents\\rental\\photos\\shoes.jpeg")
+        self.create_category_placeholder(self.category_frame, "Shoes", "C:\\Users\\manas\\Documents\\rental\\photos\\shoes.jpeg")
         self.create_category_placeholder(self.category_frame, "Cars", "C:\\Users\\manas\\Documents\\rental\\photos\\car.jpg")
         self.create_category_placeholder(self.category_frame, "Room", "C:\\Users\\manas\\Documents\\rental\\photos\\rent.png")
 
@@ -144,12 +144,13 @@ class RentalApp(ctk.CTk):
         self.category_images.append(self.ctk_image)  # Keep a reference to the image
 
         # Create and place the label with the image
-        image_button = ctk.CTkButton(frame, image=self.ctk_image, text="", fg_color='transparent', hover_color='#E5E5E5')
+        image_button = ctk.CTkButton(frame, image=self.ctk_image, text="", fg_color='transparent', hover_color='#E5E5E5', command=lambda: self.search(text))
         image_button.pack(pady=10)
 
         # Place the text below the image
         label_text = ctk.CTkLabel(frame, text=text, text_color="black")
         label_text.pack(side="bottom", pady=5)
+
 
 
     def add_service_placeholder(self, parent, title, price, image_path):
@@ -177,9 +178,12 @@ class RentalApp(ctk.CTk):
         price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
         price_label.pack(side = 'left', padx = 22.5)
 
-    # Adding search functionality 
-    def search(self):
-        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+    def search(self, category=None):
+        if category:
+            search_query = category.lower()
+        else:
+            search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+
         search_results = crud.search_products_by_category(search_query)  # Query the database
 
         if search_results:
@@ -192,6 +196,7 @@ class RentalApp(ctk.CTk):
             search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             search_app.label.pack(anchor="n", pady=(40, 20))
             search_app.mainloop()
+
             
     def open_link(self, title):
         print(f"Opening details for: {title}")
