@@ -69,20 +69,20 @@ class RentalApp(ctk.CTk):
 
         
         # Create and place the main content
-        self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical')
+        self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical', fg_color='transparent')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20, side="right")
 
         # Create the side filter frame
-        self.side_frame = ctk.CTkFrame(self, width=300, corner_radius=10, bg_color="#e0e0e0")
-        self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=20)
+        self.side_frame = ctk.CTkFrame(self, width=300, corner_radius=10, bg_color="white", fg_color='white')
+        self.side_frame.pack(fill='y', side='left', padx=(0, 0), pady=5)
 
 
         # Add filter options to the side frame
         self.filter_label = ctk.CTkLabel(self.side_frame, text="Filters Options", font=("Helvetica", 16, 'bold'))
-        self.filter_label.pack(anchor="w", padx=10, pady=(10, 20))
+        self.filter_label.pack(anchor="w", padx=30, pady=(10, 20))
 
         self.sort_by_label = ctk.CTkLabel(self.side_frame, text="Sort by:", font=("Helvetica", 14))
-        self.sort_by_label.pack(anchor="w", padx=20)
+        self.sort_by_label.pack(anchor="w", padx=42, pady=10)
 
         self.search_results = search_results or []
 
@@ -96,8 +96,6 @@ class RentalApp(ctk.CTk):
         self.low_high_radio = ctk.CTkRadioButton(self.side_frame, text="Price (Low - High)", variable=self.sort_var, value="Price (Low - High)")
         self.low_high_radio.pack(anchor="w", padx=40, pady=5)
 
-        self.best_match_radio = ctk.CTkRadioButton(self.side_frame, text="Best Match", variable=self.sort_var, value="Best Match")
-        self.best_match_radio.pack(anchor="w", padx=40, pady=5)
 
         # Bind the radio buttons to the update_sorting method
         self.relevance_radio.configure(command=self.update_sorting)
@@ -112,7 +110,7 @@ class RentalApp(ctk.CTk):
                 self.title_label_main.pack(anchor = 'w', padx = 30, pady=(20, 30))
             else:
                 self.title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
-                self.title_label_main.pack(anchor = 'w', padx = 20, pady=(20, 30))
+                self.title_label_main.pack(anchor = 'w', padx = 40, pady=(20, 30))
 
         # Displaying the search results
         if search_results:
@@ -251,7 +249,10 @@ class RentalApp(ctk.CTk):
     def navigate_to_profile(self):
         self.destroy()
         profile_app = profile_1.RentalApp()
+        profile_app.create_dashboard()
+        profile_app.on_click(profile_app.dashboard_button, profile_app.home_hover_image, profile_app.create_dashboard)
         profile_app.mainloop()
+
 
         
 if __name__ == "__main__":

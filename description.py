@@ -276,8 +276,9 @@ class Description(ctk.CTk):
     def navigate_to_profile(self):
         self.destroy()
         profile_app = profile_1.RentalApp()
+        profile_app.create_dashboard()
+        profile_app.on_click(profile_app.dashboard_button, profile_app.home_hover_image, profile_app.create_dashboard)
         profile_app.mainloop()
-
 
 
 if __name__ == "__main__":

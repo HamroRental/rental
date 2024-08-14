@@ -39,9 +39,9 @@ class RentalApp(ctk.CTk):
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.bell_button.pack(side="left", padx=1)
-        self.heart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
-        self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate)
+        self.cart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_cart)
+        self.cart_button.pack(side="left", padx=1)
+        self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_profile)
         self.profile_button.pack(side="left", padx=1)
 
 
@@ -76,14 +76,14 @@ class RentalApp(ctk.CTk):
         self.search_button.pack(side="right", padx=10)
 
         # Create and place the main content
-        self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical')
+        self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical', fg_color='transparent')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Create and place the category frame
         self.category_label = ctk.CTkLabel(self.main_frame, text="Explore Our Categories", font=("Helvetica", 18, 'bold'), text_color="#2F4D7D")
         self.category_label.pack(anchor="w", pady=(30,5), padx= 40)  # anchor="w" aligns it to the left
 
-        self.category_frame = ctk.CTkFrame(self.main_frame, corner_radius=10)
+        self.category_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, fg_color='transparent')
         self.category_frame.pack(pady=10, padx=20, fill="x")
 
         # Initialize the category_images list
@@ -99,7 +99,7 @@ class RentalApp(ctk.CTk):
         self.trending_label = ctk.CTkLabel(self.main_frame, text="Trending Services", font=("Helvetica", 18, 'bold'), text_color="#2F4D7D")
         self.trending_label.pack(anchor="w", pady=(70,5), padx=40)
 
-        self.trending_frame = ctk.CTkFrame(self.main_frame, corner_radius=10)
+        self.trending_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, fg_color='transparent')
         self.trending_frame.pack(pady=10, padx=20, fill="x")
 
         #add placeholders for Trending services 
@@ -113,7 +113,7 @@ class RentalApp(ctk.CTk):
         self.recommended_label = ctk.CTkLabel(self.main_frame, text="Recommended for you", font=("Helvetica", 18, 'bold'), text_color="#2F4D7D")
         self.recommended_label.pack(anchor="w", pady=(70,5), padx= 40)
 
-        self.recommended_frame = ctk.CTkFrame(self.main_frame, corner_radius=10)
+        self.recommended_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, fg_color='transparent')
         self.recommended_frame.pack(pady=10, padx=20, fill="x")
 
         # Add placeholders for recommended services
@@ -144,7 +144,7 @@ class RentalApp(ctk.CTk):
         self.category_images.append(self.ctk_image)  # Keep a reference to the image
 
         # Create and place the label with the image
-        image_button = ctk.CTkButton(frame, image=self.ctk_image, text="", fg_color='transparent', hover_color='#E5E5E5', command=lambda: self.search(text))
+        image_button = ctk.CTkButton(frame, image=self.ctk_image, text="", fg_color='transparent', hover_color='#F2F2F2', command=lambda: self.search(text))
         image_button.pack(pady=10)
 
         # Place the text below the image
@@ -220,9 +220,18 @@ class RentalApp(ctk.CTk):
         new_page = description.Description(product_id,product_name, price, product_description, image_path, category, images)
         new_page.mainloop()
 
-    def navigate(self):
+    def navigate_to_profile(self):
         self.destroy()
         profile_app = profile_1.RentalApp()
+        profile_app.create_dashboard()
+        profile_app.on_click(profile_app.dashboard_button, profile_app.home_hover_image, profile_app.create_dashboard)
+        profile_app.mainloop()
+
+    def navigate_to_cart(self):
+        self.destroy()
+        profile_app = profile_1.RentalApp()
+        profile_app.create_dashboard()
+        profile_app.on_click(profile_app.cart_button, profile_app.cart_hover_image, profile_app.create_cart)
         profile_app.mainloop()
 
 
