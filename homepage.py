@@ -187,6 +187,12 @@ class RentalApp(ctk.CTk):
         search_results = crud.search_products_by_category(search_query)  # Query the database
 
         if search_results:
+            if category:
+                search_query = len(search_results)
+                self.destroy()  # Close the current window
+                search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+                search_app.mainloop()
+
             self.destroy()  # Close the current window
             search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
             search_app.mainloop()

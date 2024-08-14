@@ -129,7 +129,7 @@ class Description(ctk.CTk):
         self.rent_button = ctk.CTkButton(self.buttons_frame, text="Rent Now", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="#2F4D7D", hover_color='#2F4D7D', width = 20, height = 35)
         self.rent_button.pack(side="left", padx=(100, 0), pady=(15,0))
 
-        self.add_to_cart = ctk.CTkButton(self.buttons_frame, text="Add to cart", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="green", hover_color='green', width = 20, height =35)
+        self.add_to_cart = ctk.CTkButton(self.buttons_frame, text="Add to cart", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="green", hover_color='green', width = 20, height =35, command = self.add_to_cart)
         self.add_to_cart.pack(side="left", padx=(10, 0), pady=(15,0))
 
         # Create and place the recommended frame
@@ -251,6 +251,22 @@ class Description(ctk.CTk):
             search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             search_app.label.pack(anchor="n", pady=(40, 20))
             search_app.mainloop()
+
+    def add_to_cart(self):
+        # Load the tick image with RGBA mode for transparency
+        tick_image_pil = Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\green-tick.png").convert("RGBA")
+        tick_image = ctk.CTkImage(tick_image_pil, size=(30, 30))  # Adjust size as needed
+
+        # Update the button text to "Added" and change the color to lightest green
+        self.add_to_cart.configure(
+            text="Added",
+            image=tick_image,
+            fg_color="#C0C0C0",
+            command=lambda: None,
+            text_color="green",
+            hover_color="#C0C0C0"
+        )
+
 
     def navigate(self):
         self.destroy()

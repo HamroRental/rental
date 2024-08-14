@@ -107,8 +107,12 @@ class RentalApp(ctk.CTk):
 
         # Adding a title label for the search results
         if search_query:
-            self.title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
-            self.title_label_main.pack(anchor = 'w', padx = 20, pady=(20, 30))
+            if type(search_query) == int:
+                self.title_label_main = ctk.CTkLabel(self.main_frame, text=f"{search_query} Results Found", font=("Helvetica", 18, 'bold'))
+                self.title_label_main.pack(anchor = 'w', padx = 30, pady=(20, 30))
+            else:
+                self.title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
+                self.title_label_main.pack(anchor = 'w', padx = 20, pady=(20, 30))
 
         # Displaying the search results
         if search_results:
