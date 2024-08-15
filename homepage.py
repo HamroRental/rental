@@ -92,7 +92,7 @@ class RentalApp(ctk.CTk):
         self.category_label = ctk.CTkLabel(self.main_frame, text="Explore Our Categories", font=("Helvetica", 18, 'bold'), text_color="#2F4D7D")
         self.category_label.pack(anchor="w", pady=(50,5), padx= 40)  # anchor="w" aligns it to the left
 
-        self.category_frame = ctk.CTkFrame(self.main_frame, corner_radius=10)
+        self.category_frame = ctk.CTkFrame(self.main_frame, coadius=10)
         self.category_frame.pack(pady=10, padx=20, fill="x")
 
         # Initialize the category_images list
