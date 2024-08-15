@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw, ImageOps
 import crud 
 import search
-import homepage, profile_1
+import homepage, profile_1, payment 
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -126,7 +126,7 @@ class Description(ctk.CTk):
         self.day_label.pack(side="left")
 
         # Place buttons next to the price label in the same frame
-        self.rent_button = ctk.CTkButton(self.buttons_frame, text="Rent Now", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="#2F4D7D", hover_color='#2F4D7D', width = 20, height = 35)
+        self.rent_button = ctk.CTkButton(self.buttons_frame, text="Rent Now", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="#2F4D7D", hover_color='#2F4D7D', width = 20, height = 35, command = self.navigate_to_payment)
         self.rent_button.pack(side="left", padx=(100, 0), pady=(15,0))
 
         self.add_to_cart = ctk.CTkButton(self.buttons_frame, text="Add to cart", corner_radius=5, font=("Helvetica", 15, 'bold'), fg_color="green", hover_color='green', width = 20, height =35, command = self.add_to_cart)
@@ -261,10 +261,10 @@ class Description(ctk.CTk):
         self.add_to_cart.configure(
             text="Added",
             image=tick_image,
-            fg_color="#C0C0C0",
+            fg_color="#F2F2F2",
             command=lambda: None,
             text_color="green",
-            hover_color="#C0C0C0"
+            hover_color="#F2F2F2"
         )
 
 
@@ -279,6 +279,11 @@ class Description(ctk.CTk):
         profile_app.create_dashboard()
         profile_app.on_click(profile_app.dashboard_button, profile_app.home_hover_image, profile_app.create_dashboard)
         profile_app.mainloop()
+
+    def navigate_to_payment(self):
+        self.destroy()
+        payment_app = payment.RentalApp()
+        payment_app.mainloop()
 
 
 if __name__ == "__main__":
