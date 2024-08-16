@@ -246,64 +246,115 @@ class RentalApp(ctk.CTk):
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
+        
+        # Configure grid columns to push the button to the right
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_columnconfigure(1, weight=1)
+        self.main_frame.grid_columnconfigure(2, weight=1)
+        self.main_frame.grid_columnconfigure(3, weight=1)
+        self.main_frame.grid_columnconfigure(4, weight=1)
 
-        # Adding a customer info frame
-        self.info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=430, height=220)
-        self.info_frame.pack_propagate(False)  # Prevent the frame from resizing to fit its content
-        self.info_frame.pack(side='left', fill='both', padx=(50, 30), pady=30)
+        # Welcome Label
+        welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
+        welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
 
-        # Adding a title label inside the info frame
-        title_container = ctk.CTkFrame(self.info_frame, fg_color='#F2F2F2', bg_color='#F2F2F2')
-        title_container.pack(fill='x', pady=(20, 20), padx=20)
+        # Add Product Button
+        add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width = 25, height = 35)
+        add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
 
-        title_label = ctk.CTkLabel(title_container, text="Customer", font=("Helvetica", 20), text_color="Black")
-        title_label.pack(side='left')
+        # Revenue Card
+        revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="white")
+        revenue_card.pack_propagate(False)
+        revenue_card.grid(row=1, column=0, padx=(30, 40), pady=(5, 10), columnspan=2, sticky="nsew")
 
-        # Adding an edit button to the right of the title label
-        edit_button = ctk.CTkButton(
-            title_container,
-            text="Edit",
-            font=("Helvetica", 15),
-            text_color="#4B7BCC",
-            fg_color='transparent',
-            bg_color='transparent',
-            hover_color='#F2F2F2',
-        )
-        edit_button.pack(side='right', padx=(0, 10))
+        # Load and resize the image
+        image = Image.open(".\\photos\\revenue.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
 
-        # Adding three rows for Name, Email, and Phone below the title label
-        self.create_row(self.info_frame, "Name", "Dipesh Gautam", ".\\photos\\face.png")
-        self.create_row(self.info_frame, "Email", "usertest@gmail.com", ".\\photos\\email.png")
-        self.create_row(self.info_frame, "Phone", "+977 98345729", ".\\photos\\phone.png")
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
 
-        # Adding an address info frame
-        self.address_info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=210)
-        self.address_info_frame.pack_propagate(False)  # Prevent the frame from resizing to fit its content
-        self.address_info_frame.pack(side='right', fill='both', padx=(30, 50), pady=30)
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(revenue_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
 
-        # Adding a title label inside the address info frame
-        address_container = ctk.CTkFrame(self.address_info_frame, fg_color='#F2F2F2', bg_color='#F2F2F2')
-        address_container.pack(fill='x', pady=(5, 10), padx=5)
+        # Revenue Label
+        revenue_label = ctk.CTkLabel(revenue_card, text="Total Revenue", font=("Arial", 14))
+        revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-        # Adding address label inside address info frame
-        title_label = ctk.CTkLabel(address_container, text="Address", font=("Helvetica", 20), text_color="Black")
-        title_label.pack(pady=(20, 10), side='left', padx=30, anchor='n')
+        # Revenue Value and Change
+        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
-        # Adding an edit button inside address info frame
-        edit_button = ctk.CTkButton(
-            address_container,
-            text="Edit",
-            font=("Helvetica", 15),
-            text_color="#4B7BCC",
-            fg_color='transparent',
-            bg_color='transparent',
-            hover_color='#F2F2F2',
-        )
-        edit_button.pack(pady=(20, 10), side='right', padx=(30, 10), anchor='n')
+        # Rent Card
+        rent_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color='white')
+        rent_card.pack_propagate(False)
+        rent_card.grid(row=1, column=2, padx=(10, 50), pady=(5,10), columnspan = 3, sticky = 'nsew')
 
-        # Adding three rows for Name, Email, and Phone below the title label
-        self.create_address_row(self.address_info_frame, "Billing : ", "Mahaboudha,Kathamandu", ".\\photos\\location.png")
-        self.create_address_row(self.address_info_frame, "Shipping : ", "Sundarbasti, Bhangal Bus Stop -08 , Kathmandu", ".\\photos\\location.png")
+        # Load and resize the image
+        image = Image.open(".\\photos\\renting.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(rent_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
+
+        rent_label = ctk.CTkLabel(rent_card, text="Total Rent", font=("Arial", 14))
+        rent_label.grid(row=1, column=0, padx = 20, pady =5, sticky = "w")
+
+        rent_value = ctk.CTkLabel(rent_card, text="3,500", font=("Arial", 24, "bold"))
+        rent_value.grid(row=2, column =0, padx =20, pady=(1,5),sticky = 'nw')
+
+        # Product ID Card
+        product_id_card = ctk.CTkFrame(self.main_frame, width=170, height=150, fg_color='white')
+        product_id_card.pack_propagate(False)
+        product_id_card.grid(row=2, column=0, padx=(30,40), pady=10, columnspan = 2, sticky = 'nswe')
+        
+        # Load and resize the image
+        image = Image.open(".\\photos\\product_id.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(product_id_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
+
+        product_id_label = ctk.CTkLabel(product_id_card, text="Product Id", font=("Arial", 14))
+        product_id_label.grid(row= 1, column =0, sticky = 'w', padx =20)
+
+        product_id_value = ctk.CTkLabel(product_id_card, text="10", font=("Arial", 24, "bold"))
+        product_id_value.grid(row=2, column = 0, sticky = 'w', padx = 20)
+
+        # Balance Card
+        balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="white")
+        balance_card.pack_propagate(False)
+        balance_card.grid(row=2, column=2, padx=(10,50), pady=10, columnspan = 3, sticky = 'nswe')
+
+        # Load and resize the image
+        image = Image.open(".\\photos\\wallet.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(balance_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(10, 5), sticky="w")
+
+        balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
+        balance_label.grid(row=1, column= 0, padx =20, pady = 5, sticky = 'w')
+
+        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value.grid(row=2, column =0, padx = 20, pady = (0, 15), sticky = 'w')
         
 
     def create_row(self, parent, label_text, value_text, image_path):
@@ -434,39 +485,68 @@ class RentalApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the dashboard layout in the main frame
-        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50 )
-        list_frame.pack(side='top', fill='both', padx=50, pady=30)
+        # Configure grid columns to push the button to the right
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_columnconfigure(1, weight=1)
+        self.main_frame.grid_columnconfigure(2, weight=1)
+        self.main_frame.grid_columnconfigure(3, weight=1)
+        self.main_frame.grid_columnconfigure(4, weight=1)
 
-        # adding check box in the list frame at the left side 
-        select_box = ctk.CTkCheckBox(
-            list_frame, 
-            fg_color='#D3D3D3', 
-            bg_color='#F2F2F2', 
-            border_color='#D3D3D3', 
-            text ='', 
-            hover_color='#D3D3D3',
-            checkmark_color='black',
-            checkbox_height=17,
-            checkbox_width=16,
-            width = 10
-            )
-        select_box.pack(side='left', padx=(10,0), pady=10, anchor ='w')
+        # Welcome Label
+        welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
+        welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
 
-        select_label = ctk.CTkLabel(list_frame, text ='select all items', text_color='gray')
-        select_label.pack(side = 'left', padx = (0,30), fill = 'x')
-        
-        # Adding delete button 
-        delete_button = ctk.CTkButton(
-            list_frame,
-            text="Delete",
-            font=("Helvetica", 15),
-            text_color="red",
-            fg_color='transparent',
-            bg_color='transparent',
-            hover_color='#F2F2F2',
-        )
-        delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
+        # Add Product Button
+        add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width = 25, height = 35)
+        add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
+
+        # Revenue Card
+        revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="white")
+        revenue_card.pack_propagate(False)
+        revenue_card.grid(row=1, column=0, padx=(30, 40), pady=(5, 10), columnspan=2, sticky="nsew")
+
+        # Load and resize the image
+        image = Image.open(".\\photos\\revenue.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(revenue_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
+
+        # Revenue Label
+        revenue_label = ctk.CTkLabel(revenue_card, text="Total Revenue", font=("Arial", 14))
+        revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
+
+        # Revenue Value and Change
+        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value.grid(row=2, column=0, padx=20, sticky="w")
+
+        # Balance Card
+        balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="white")
+        balance_card.pack_propagate(False)
+        balance_card.grid(row=1, column=2, padx=(10,50), pady=(5,10), columnspan = 3, sticky = 'nswe')
+
+        # Load and resize the image
+        image = Image.open(".\\photos\\wallet.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(balance_card, image=image_tk, text = "")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(10, 5), sticky="w")
+
+        balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
+        balance_label.grid(row=1, column= 0, padx =20, pady = 5, sticky = 'w')
+
+        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value.grid(row=2, column =0, padx = 20, pady = (0, 15), sticky = 'w')
 
         
     def create_settings(self):
