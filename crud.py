@@ -323,7 +323,7 @@ if __name__ == "__main__":
     btn_update.place(x=370, y=800)
 
     delete_box = Entry(root, width=40)
-    delete_box.place(x=250, y=750, height=30)
+    delete_box.place(x=250, y=750, height=35)
 
 
 
