@@ -287,10 +287,7 @@ if __name__ == "__main__":
     label_image3 = Label(root, text='Image3', font=("Arial Bold", 20))
     label_image3.place(x=0, y=600)
 
-<<<<<<< HEAD
-delete_box = Entry(root, width=40)
-delete_box.place(x=23, y=550, height=21)
-=======
+
     product_name = Entry(root, width=30)
     product_name.place(x=200, y=100, height=30)
     category = Entry(root, width=30)
@@ -307,7 +304,7 @@ delete_box.place(x=23, y=550, height=21)
     image_path2.place(x=200, y = 550 , height = 30)
     image_path3 = Entry(root, width = 30)
     image_path3.place(x=200, y = 600 , height = 30)
->>>>>>> manash
+
 
 
     btn_browse = Button(root, text="Browse", font=("Arial Bold", 10), command=browse_image, height = 1)
