@@ -38,7 +38,7 @@ class Description(ctk.CTk):
         self.search_frame.pack(pady=20, padx=10, fill ='x', expand=True)  # Allow the search frame to take up more space
 
         # Load the magnifying glass image
-        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\white-glass.png"))
+        self.glass_image = ctk.CTkImage(light_image=Image.open(".\\photos\\white-glass.png"))
 
         # Create the search entry with the search button and magnifying glass icon
         self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#6883AE", width=250, corner_radius=5)
@@ -59,9 +59,9 @@ class Description(ctk.CTk):
         
         # Load the icons with increased size
         icon_size = (30, 30)  # Adjust the size as needed
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.menu_icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
@@ -227,7 +227,7 @@ class Description(ctk.CTk):
         product_name = crud.get_product_name(product_id)
         price = crud.get_price(product_id)
         product_description = crud.get_description(product_id)
-        image_path = crud.get_product_image(product_id) or "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
+        image_path = crud.get_product_image(product_id) or ".\\photos\\no-image.png"
         category = crud.get_category(product_id)
         images = crud.get_product_images(product_id)
         # Initialize and open the new page with these details
@@ -254,7 +254,7 @@ class Description(ctk.CTk):
 
     def add_to_cart(self):
         # Load the tick image with RGBA mode for transparency
-        tick_image_pil = Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\green-tick.png").convert("RGBA")
+        tick_image_pil = Image.open(".\\photos\\green-tick.png").convert("RGBA")
         tick_image = ctk.CTkImage(tick_image_pil, size=(30, 30))  # Adjust size as needed
 
         # Update the button text to "Added" and change the color to lightest green
@@ -287,6 +287,6 @@ class Description(ctk.CTk):
 
 
 if __name__ == "__main__":
-    no_image = "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
-    app = Description(product_id ='1d9ec61f-cc76-440c-bf35-250a9b74d779',product_name="Alpha 7 IV", price="3000", product_description="A high-quality mirrorless camera designed for professionals. aksldfjlk dasflkjalskd fl sfakjasdf flaklfsa djlkfdd alkfdasj lsdfka fsd lasdkf j lsdaf  kfsad l sdfakjasdfl sdalf lasfd jasdl; f", image_path="C:\\Users\\manas\\Documents\\rental\\photos\\camera.jpg", category = "accesories", images = [no_image, no_image, no_image])
+    no_image = ".\\photos\\no-image.png"
+    app = Description(product_id ='1d9ec61f-cc76-440c-bf35-250a9b74d779',product_name="Alpha 7 IV", price="3000", product_description="A high-quality mirrorless camera designed for professionals. aksldfjlk dasflkjalskd fl sfakjasdf flaklfsa djlkfdd alkfdasj lsdfka fsd lasdkf j lsdaf  kfsad l sdfakjasdfl sdalf lasfd jasdl; f", image_path=".\\photos\\camera.jpg", category = "accesories", images = [no_image, no_image, no_image])
     app.mainloop()

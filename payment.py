@@ -34,9 +34,9 @@ class RentalApp(ctk.CTk):
 
         # Load the icons with increased size
         icon_size = (30, 30)  # Adjust the size as needed
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
@@ -183,10 +183,10 @@ class RentalApp(ctk.CTk):
         # Radio button frames
         self.radio_var = ctk.StringVar(value="Credit Card")
 
-        self.credit_card_frame = self.create_radio_frame("Credit Card", "Credit Card", row=2, image_path="C:\\Users\\manas\\Documents\\rental\\photos\\Visa.png", size = (45,20))
-        self.esewa_frame = self.create_radio_frame("Esewa", "Esewa", row=3, image_path="C:\\Users\\manas\\Documents\\rental\\photos\\esewa.png")
-        self.khalti_frame = self.create_radio_frame("Khalti", "Khalti", row=4, image_path="C:\\Users\\manas\\Documents\\rental\\photos\\khalti.png", size = (60,30))
-        self.cod_frame = self.create_radio_frame("COD", "COD", row=5, image_path="C:\\Users\\manas\\Documents\\rental\\photos\\cod.png", size=(35,30))
+        self.credit_card_frame = self.create_radio_frame("Credit Card", "Credit Card", row=2, image_path=".\\photos\\Visa.png", size = (45,20))
+        self.esewa_frame = self.create_radio_frame("Esewa", "Esewa", row=3, image_path=".\\photos\\esewa.png")
+        self.khalti_frame = self.create_radio_frame("Khalti", "Khalti", row=4, image_path=".\\photos\\khalti.png", size = (60,30))
+        self.cod_frame = self.create_radio_frame("COD", "COD", row=5, image_path=".\\photos\\cod.png", size=(35,30))
 
         # Initially expand the Credit Card frame to show the labels and entries
         self.expand_frame()

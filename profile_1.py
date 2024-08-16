@@ -33,7 +33,7 @@ class RentalApp(ctk.CTk):
         self.search_frame = ctk.CTkFrame(self.menu_frame, width=500, fg_color="#2F4D7D")
         self.search_frame.pack(pady=20, padx=10, fill='x', expand=True)
 
-        self.glass_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\white-glass.png"))
+        self.glass_image = ctk.CTkImage(light_image=Image.open(".\\photos\\white-glass.png"))
 
         self.search_container = ctk.CTkFrame(self.search_frame, fg_color="#6883AE", width=250, corner_radius=0)
         self.search_container.pack(fill='x', expand=True, padx=10, pady=5)
@@ -48,9 +48,9 @@ class RentalApp(ctk.CTk):
         self.search_button.pack(side="right", fill="x", padx=(2.5, 0))
 
         icon_size = (30, 30)
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         self.bell_button = ctk.CTkButton(self.menu_icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.bell_button.pack(side="left", padx=1)
@@ -65,14 +65,14 @@ class RentalApp(ctk.CTk):
         self.side_frame = ctk.CTkFrame(self, width=300, corner_radius=10, bg_color="transparent", fg_color='transparent')
         self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=20)
 
-        self.home_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\home.png"), size=(20, 20))
-        self.home_hover_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\home1.png"), size=(20, 20))
-        self.cart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart2.png"), size=(20, 20))
-        self.cart_hover_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart1.png"), size=(20, 20))
-        self.settings_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\wheel.png"), size=(20, 20))
-        self.settings_hover_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\setting1.png"), size=(20, 20))
-        self.logout_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\logout.png"), size=(20, 20))
-        self.logout_hover_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\logout1.png"), size=(20, 20))
+        self.home_image = ctk.CTkImage(light_image=Image.open(".\\photos\\home.png"), size=(20, 20))
+        self.home_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\home1.png"), size=(20, 20))
+        self.cart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart2.png"), size=(20, 20))
+        self.cart_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart1.png"), size=(20, 20))
+        self.settings_image = ctk.CTkImage(light_image=Image.open(".\\photos\\wheel.png"), size=(20, 20))
+        self.settings_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\setting1.png"), size=(20, 20))
+        self.logout_image = ctk.CTkImage(light_image=Image.open(".\\photos\\logout.png"), size=(20, 20))
+        self.logout_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\logout1.png"), size=(20, 20))
 
         self.dashboard_button = ctk.CTkButton(
             self.side_frame,
@@ -226,9 +226,9 @@ class RentalApp(ctk.CTk):
         edit_button.pack(side='right', padx=(0, 10))
 
         # Adding three rows for Name, Email, and Phone below the title label
-        self.create_row(self.info_frame, "Name", "Dipesh Gautam", "C:\\Users\\manas\\Documents\\rental\\photos\\face.png")
-        self.create_row(self.info_frame, "Email", "usertest@gmail.com", "C:\\Users\\manas\\Documents\\rental\\photos\\email.png")
-        self.create_row(self.info_frame, "Phone", "+977 98345729", "C:\\Users\\manas\\Documents\\rental\\photos\\phone.png")
+        self.create_row(self.info_frame, "Name", "Dipesh Gautam", ".\\photos\\face.png")
+        self.create_row(self.info_frame, "Email", "usertest@gmail.com", ".\\photos\\email.png")
+        self.create_row(self.info_frame, "Phone", "+977 98345729", ".\\photos\\phone.png")
 
         # Adding an address info frame
         self.address_info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=210)
@@ -256,8 +256,8 @@ class RentalApp(ctk.CTk):
         edit_button.pack(pady=(20, 10), side='right', padx=(30, 10), anchor='n')
 
         # Adding three rows for Name, Email, and Phone below the title label
-        self.create_address_row(self.address_info_frame, "Billing : ", "Mahaboudha,Kathamandu", "C:\\Users\\manas\\Documents\\rental\\photos\\location.png")
-        self.create_address_row(self.address_info_frame, "Shipping : ", "Sundarbasti, Bhangal Bus Stop -08 , Kathmandu", "C:\\Users\\manas\\Documents\\rental\\photos\\location.png")
+        self.create_address_row(self.address_info_frame, "Billing : ", "Mahaboudha,Kathamandu", ".\\photos\\location.png")
+        self.create_address_row(self.address_info_frame, "Shipping : ", "Sundarbasti, Bhangal Bus Stop -08 , Kathmandu", ".\\photos\\location.png")
         
 
     def create_row(self, parent, label_text, value_text, image_path):

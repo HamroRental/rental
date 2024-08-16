@@ -126,7 +126,7 @@ def get_product_image(product_id):
     conn.close()
     if result:
         return result[0]  # Return the image path as a string
-    return "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
+    return ".\\photos\\no-image.png"
 
 def get_product_images(product_id):
     conn = sqlite3.connect('database.db')
@@ -135,7 +135,7 @@ def get_product_images(product_id):
     result = c.fetchone()
     conn.close()
     
-    no_image_path = "C:\\Users\\manas\\Documents\\rental\\photos\\no-image.png"
+    no_image_path = ".\\photos\\no-image.png"
     
     if result:
         # Ensure that each image path is valid, otherwise use the placeholder

@@ -34,9 +34,9 @@ class RentalApp(ctk.CTk):
 
         # Load the icons with increased size
         icon_size = (30, 30)  # Adjust the size as needed
-        self.bell_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.profile_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
-        self.heart_image = ctk.CTkImage(light_image=Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
+        self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
 
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
@@ -51,7 +51,7 @@ class RentalApp(ctk.CTk):
         self.main_frame.pack(fill="both", expand=True)
 
         # Create success checkmark image
-        checkmark_image = Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\sucess.png")  # Replace with the path to your checkmark image
+        checkmark_image = Image.open(".\\photos\\sucess.png")  # Replace with the path to your checkmark image
         checkmark_image = checkmark_image.resize((150, 150))  # Resize if needed
         checkmark_photo = ImageTk.PhotoImage(checkmark_image)
 
@@ -71,11 +71,11 @@ class RentalApp(ctk.CTk):
         self.confirmation_label.pack(pady=(10, 10))
 
         # Load button images
-        dashboard_icon = Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\stack.png")  # Replace with the path to your dashboard icon image
+        dashboard_icon = Image.open(".\\photos\\stack.png")  # Replace with the path to your dashboard icon image
         dashboard_icon = dashboard_icon.resize((30, 30))  # Resize icon if needed
         dashboard_photo = ImageTk.PhotoImage(dashboard_icon)
 
-        order_icon = Image.open("C:\\Users\\manas\\Documents\\rental\\photos\\arrowright.png")  # Replace with the path to your order icon image
+        order_icon = Image.open(".\\photos\\arrowright.png")  # Replace with the path to your order icon image
         order_icon = order_icon.resize((30, 30))  # Resize icon if needed
         order_photo = ImageTk.PhotoImage(order_icon)
 
