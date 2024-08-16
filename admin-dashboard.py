@@ -265,7 +265,7 @@ class RentalApp(ctk.CTk):
         # Revenue Card
         revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="white")
         revenue_card.pack_propagate(False)
-        revenue_card.grid(row=1, column=0, padx=(30, 40), pady=(5, 10), columnspan=2, sticky="nsew")
+        revenue_card.grid(row=1, column=0, padx=(30, 10), pady=(5, 10), columnspan=2, sticky="nsew")
 
         # Load and resize the image
         image = Image.open(".\\photos\\revenue.png")
@@ -290,7 +290,7 @@ class RentalApp(ctk.CTk):
         # Rent Card
         rent_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color='white')
         rent_card.pack_propagate(False)
-        rent_card.grid(row=1, column=2, padx=(10, 50), pady=(5,10), columnspan = 3, sticky = 'nsew')
+        rent_card.grid(row=1, column=2, padx=(30, 70), pady=(5,10), columnspan = 3, sticky = 'nsew')
 
         # Load and resize the image
         image = Image.open(".\\photos\\renting.png")
@@ -313,7 +313,7 @@ class RentalApp(ctk.CTk):
         # Product ID Card
         product_id_card = ctk.CTkFrame(self.main_frame, width=170, height=150, fg_color='white')
         product_id_card.pack_propagate(False)
-        product_id_card.grid(row=2, column=0, padx=(30,40), pady=10, columnspan = 2, sticky = 'nswe')
+        product_id_card.grid(row=2, column=0, padx=(30,10), pady=10, columnspan = 2, sticky = 'nswe')
         
         # Load and resize the image
         image = Image.open(".\\photos\\product_id.png")
@@ -336,7 +336,7 @@ class RentalApp(ctk.CTk):
         # Balance Card
         balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="white")
         balance_card.pack_propagate(False)
-        balance_card.grid(row=2, column=2, padx=(10,50), pady=10, columnspan = 3, sticky = 'nswe')
+        balance_card.grid(row=2, column=2, padx=(30,70), pady=10, columnspan = 3, sticky = 'nswe')
 
         # Load and resize the image
         image = Image.open(".\\photos\\wallet.png")
