@@ -150,8 +150,8 @@ class RentalApp(ctk.CTk):
         )
         self.finance_button.pack(anchor="w", padx=(20, 30), pady=(2, 5))
 
-        self.finance_button.bind("<Enter>", lambda e: self.on_enter(self.manage_product_button, self.manage_hover_image))
-        self.finance_button.bind("<Leave>", lambda e: self.on_leave(self.manage_product_button, self.manage_image))
+        self.finance_button.bind("<Enter>", lambda e: self.on_enter(self.finance_button, self.finance_hover_image))
+        self.finance_button.bind("<Leave>", lambda e: self.on_leave(self.finance_button, self.finance_image))
 
         self.logout_button = ctk.CTkButton(
             self.side_frame,
