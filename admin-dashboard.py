@@ -71,6 +71,8 @@ class RentalApp(ctk.CTk):
         self.shopping_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\shopping1.png"), size=(20, 20))
         self.manage_image = ctk.CTkImage(light_image=Image.open(".\\photos\\manage.png"), size=(20, 20))
         self.manage_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\manage1.png"), size=(20, 20))
+        self.finance_image = ctk.CTkImage(light_image=Image.open(".\\photos\\finance.png"), size=(20, 20))
+        self.finance_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\finance1.png"), size=(20, 20))
         self.settings_image = ctk.CTkImage(light_image=Image.open(".\\photos\\wheel.png"), size=(20, 20))
         self.settings_hover_image = ctk.CTkImage(light_image=Image.open(".\\photos\\setting1.png"), size=(20, 20))
         self.logout_image = ctk.CTkImage(light_image=Image.open(".\\photos\\logout.png"), size=(20, 20))
@@ -125,12 +127,31 @@ class RentalApp(ctk.CTk):
             height=50,
             width=180,
             anchor='w',
-            command=lambda: self.on_click(self.manage_product_button, self.shopping_hover_image, self.create_add_product)
+            command=lambda: self.on_click(self.manage_product_button, self.manage_hover_image, self.create_manage_product)
         )
         self.manage_product_button.pack(anchor="w", padx=(20, 30), pady=(2, 5))
 
-        self.manage_product_button.bind("<Enter>", lambda e: self.on_enter(self.add_product_button, self.manage_hover_image))
-        self.manage_product_button.bind("<Leave>", lambda e: self.on_leave(self.add_product_button, self.manage_image))
+        self.manage_product_button.bind("<Enter>", lambda e: self.on_enter(self.manage_product_button, self.manage_hover_image))
+        self.manage_product_button.bind("<Leave>", lambda e: self.on_leave(self.manage_product_button, self.manage_image))
+
+        self.finance_button = ctk.CTkButton(
+            self.side_frame,
+            text="Finance",
+            image=self.finance_image,
+            compound="left",
+            text_color='#97A8C3',
+            font=("Helvetica", 12, 'bold'),
+            fg_color='#F2F2F2',
+            hover_color='#2F4D7D',
+            height=50,
+            width=180,
+            anchor='w',
+            command=lambda: self.on_click(self.finance_button, self.finance_hover_image, self.create_finance)
+        )
+        self.finance_button.pack(anchor="w", padx=(20, 30), pady=(2, 5))
+
+        self.finance_button.bind("<Enter>", lambda e: self.on_enter(self.manage_product_button, self.manage_hover_image))
+        self.finance_button.bind("<Leave>", lambda e: self.on_leave(self.manage_product_button, self.manage_image))
 
         self.logout_button = ctk.CTkButton(
             self.side_frame,
@@ -208,12 +229,16 @@ class RentalApp(ctk.CTk):
         # Return the default image for the button
         if button == self.dashboard_button:
             return self.home_image
-        elif button == self.cart_button:
-            return self.cart_image
+        elif button == self.add_product_button:
+            return self.shopping_image
         elif button == self.logout_button:
             return self.logout_image
         elif button == self.settings_button:
             return self.settings_image
+        elif button == self.manage_product_button:
+            return self.manage_image
+        elif button == self.finance_button:
+            return self.finance_image
         return None
     
     
@@ -325,6 +350,86 @@ class RentalApp(ctk.CTk):
             
 
     def create_add_product(self):
+        # Clear the current contents of the main frame
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # Create the dashboard layout in the main frame
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50 )
+        list_frame.pack(side='top', fill='both', padx=50, pady=30)
+
+        # adding check box in the list frame at the left side 
+        select_box = ctk.CTkCheckBox(
+            list_frame, 
+            fg_color='#D3D3D3', 
+            bg_color='#F2F2F2', 
+            border_color='#D3D3D3', 
+            text ='', 
+            hover_color='#D3D3D3',
+            checkmark_color='black',
+            checkbox_height=17,
+            checkbox_width=16,
+            width = 10
+            )
+        select_box.pack(side='left', padx=(10,0), pady=10, anchor ='w')
+
+        select_label = ctk.CTkLabel(list_frame, text ='select all items', text_color='gray')
+        select_label.pack(side = 'left', padx = (0,30), fill = 'x')
+        
+        # Adding delete button 
+        delete_button = ctk.CTkButton(
+            list_frame,
+            text="Delete",
+            font=("Helvetica", 15),
+            text_color="red",
+            fg_color='transparent',
+            bg_color='transparent',
+            hover_color='#F2F2F2',
+        )
+        delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
+
+
+    def create_manage_product(self):
+        # Clear the current contents of the main frame
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # Create the dashboard layout in the main frame
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50 )
+        list_frame.pack(side='top', fill='both', padx=50, pady=30)
+
+        # adding check box in the list frame at the left side 
+        select_box = ctk.CTkCheckBox(
+            list_frame, 
+            fg_color='#D3D3D3', 
+            bg_color='#F2F2F2', 
+            border_color='#D3D3D3', 
+            text ='', 
+            hover_color='#D3D3D3',
+            checkmark_color='black',
+            checkbox_height=17,
+            checkbox_width=16,
+            width = 10
+            )
+        select_box.pack(side='left', padx=(10,0), pady=10, anchor ='w')
+
+        select_label = ctk.CTkLabel(list_frame, text ='select all items', text_color='gray')
+        select_label.pack(side = 'left', padx = (0,30), fill = 'x')
+        
+        # Adding delete button 
+        delete_button = ctk.CTkButton(
+            list_frame,
+            text="Delete",
+            font=("Helvetica", 15),
+            text_color="red",
+            fg_color='transparent',
+            bg_color='transparent',
+            hover_color='#F2F2F2',
+        )
+        delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
+
+
+    def create_finance(self):
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
