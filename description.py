@@ -13,6 +13,12 @@ ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", 
 class Description(ctk.CTk):
     def __init__(self, product_id, product_name, price, product_description, image_path, category, images):
         super().__init__()
+        self.product_id = product_id
+        self.product_name = product_name
+        self.price = price
+        self.category = category
+        self.image_path = image_path
+
 
         self.title("Description")
         self.geometry("1280x750")  # Adjusted to fit more content
@@ -253,6 +259,7 @@ class Description(ctk.CTk):
             search_app.mainloop()
 
     def add_to_cart(self):
+        crud.add_cart(self.product_id, self.product_name, self.price, self.category, self.image_path)
         # Load the tick image with RGBA mode for transparency
         tick_image_pil = Image.open(".\\photos\\green-tick.png").convert("RGBA")
         tick_image = ctk.CTkImage(tick_image_pil, size=(30, 30))  # Adjust size as needed
@@ -281,6 +288,7 @@ class Description(ctk.CTk):
         profile_app.mainloop()
 
     def navigate_to_payment(self):
+        data = self.data
         self.destroy()
         payment_app = payment.RentalApp()
         payment_app.mainloop()

@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search
+import crud, homepage, search, payment
 import tkinter as tk
 from tkinter import ttk, font , Canvas
 
@@ -427,21 +427,27 @@ class RentalApp(ctk.CTk):
 
     def create_cart(self):
         # Example data list (each item is a tuple containing image path, title, subtitle, and price)
-        data = [
-            (".\\photos\\camera.jpg", "Canon Lens 50mm", "Not Rented", "Rs. 1000/Day"),
-            (".\\photos\\camera.jpg", "Canon Lens 50mm", "Not Rented", "Rs. 1000/Day"),
-        ]
+        data = crud.get_cart_items()
         
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
         # Create the list frame for the cart layout
-        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=150)
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=100)
         list_frame.pack(side='top', fill='both', padx=80, pady=(30,10))
 
-        # Adding check box in the list frame at the left side
-        select_box = ctk.CTkCheckBox(
+        # Create a list to store references to all checkboxes
+        checkboxes = []
+
+        # Function to toggle all checkboxes when the top checkbox is clicked
+        def toggle_all():
+            select_all = top_checkbox.get() == 1
+            for checkbox in checkboxes:
+                checkbox.select() if select_all else checkbox.deselect()
+
+        # Adding top select checkbox in the list frame at the left side
+        top_checkbox = ctk.CTkCheckBox(
             list_frame,
             fg_color='#D3D3D3',
             bg_color='#F2F2F2',
@@ -451,11 +457,12 @@ class RentalApp(ctk.CTk):
             checkmark_color='black',
             checkbox_height=17,
             checkbox_width=16,
-            width=10
+            width=10,
+            command=toggle_all
         )
-        select_box.pack(side='left', padx=(10, 0), pady=10, anchor='w')
+        top_checkbox.pack(side='left', padx=(10, 0), pady=10, anchor='w')
 
-        select_label = ctk.CTkLabel(list_frame, text='select all items', text_color='gray')
+        select_label = ctk.CTkLabel(list_frame, text=str(len(data)) + ' items', text_color='gray')
         select_label.pack(side='left', padx=(0, 30), fill='x')
 
         # Adding delete button
@@ -496,6 +503,22 @@ class RentalApp(ctk.CTk):
                 product_frame.propagate(False)
                 product_frame.pack(side='top', fill='x', padx=80, pady=10)
 
+                # Add a select checkbox to each product frame
+                checkbox = ctk.CTkCheckBox(
+                    product_frame,
+                    fg_color='#D3D3D3',
+                    bg_color='#F2F2F2',
+                    border_color='#D3D3D3',
+                    text='',
+                    hover_color='#D3D3D3',
+                    checkmark_color='black',
+                    checkbox_height=17,
+                    checkbox_width=16,
+                    width=10
+                )
+                checkbox.pack(side='left', padx=(10, 0), pady=10, anchor='w')
+                checkboxes.append(checkbox)
+
                 # Load and display the product image
                 product_img = Image.open(item[0])
                 product_img = product_img.resize((150, 150), Image.Resampling.LANCZOS)
@@ -508,11 +531,24 @@ class RentalApp(ctk.CTk):
                 title_label = ctk.CTkLabel(product_frame, text=item[1], font=("Helvetica", 20))
                 title_label.pack(side='left', padx=10, anchor='w')
 
-                # subtitle_label = ctk.CTkLabel(product_frame, text=item[2], text_color='blue', font=("Helvetica", 16))
-                # subtitle_label.pack(side='left', padx=10, anchor='w')
-
-                price_label = ctk.CTkLabel(product_frame, text=item[3], text_color='#2F4D7D', font=("Helvetica", 16, 'bold'))
+                price_label = ctk.CTkLabel(product_frame, text='Rs ' + str(item[2]) + ' / Day', text_color='#2F4D7D', font=("Helvetica", 16, 'bold'))
                 price_label.pack(side='right', padx=40, anchor='e')
+
+            # Add the "Rent Now" button at the bottom of the page
+            rent_now_button = ctk.CTkButton(
+                self.main_frame,
+                text="Rent Now",
+                font=("Helvetica", 12),
+                width=100,
+                height=30,
+                fg_color='#2F4D7D',
+                text_color='white',
+                corner_radius=5,
+                command = self.navigate_to_payment
+            )
+            rent_now_button.pack(side='bottom', pady=20, anchor='e', padx =80)
+
+
 
 
 
@@ -673,8 +709,12 @@ class RentalApp(ctk.CTk):
 
         popup.geometry(f"+{x}+{y}")
 
-        # Optional: Auto-close the popup after a certain time (e.g., 3 seconds)
-        # popup.after(5000, popup.destroy)
+    def navigate_to_payment(self):
+
+        self.destroy()
+        payment_app = payment.RentalApp(data)
+        payment_app.mainloop()
+    
 
 # Run the application
 if __name__ == "__main__":

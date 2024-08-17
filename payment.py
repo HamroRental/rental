@@ -8,7 +8,7 @@ ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
 class RentalApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, data):
         super().__init__()
 
         self.title("Rent it.")

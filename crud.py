@@ -42,6 +42,39 @@ c.execute(
 conn.commit()
 conn.close()
 
+# Cart Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Cart(
+        Order_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        price INT,
+        category TEXT, 
+        image TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
+
+# Purchase Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Purchase(
+        purchase_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        price INT,
+        category TEXT, 
+        status TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
 
 # Function definitions
 def generate_unique_id():
@@ -76,6 +109,17 @@ def add_user(role, fullname, username, email, password, phone_number):
     conn.commit()
     conn.close()
 
+def add_cart(product_id, product_name, price, category, image):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Cart (order_id, product_id, product_name, price, category, image) VALUES (?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, price, category, image)
+    )
+    conn.commit()
+    conn.close()
+
 
 def delete_user(user_id):
     conn = sqlite3.connect('database.db')
@@ -84,6 +128,15 @@ def delete_user(user_id):
     conn.commit()
     conn.close()
     print(f"User with User ID: {user_id} deleted successfully.")
+
+def delete_cart(order_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Cart WHERE Order_id=?", (order_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {order_id} deleted successfully.")
+
 
 def get_user_info(user_id):
     conn = sqlite3.connect('database.db')
@@ -105,6 +158,24 @@ def get_user_info(user_id):
     else:
         print(f"No user found with User ID: {user_id}")
         return None
+    
+def get_cart_items():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT image, product_name, price FROM Cart")
+
+    # Fetch all the rows and return as a list of tuples
+    cart_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return cart_items
+    
+
     
 def check_user_credentials(username, password):
     # Connect to your database
