@@ -2,7 +2,11 @@ import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
 import crud, homepage, search
 import tkinter as tk
+<<<<<<< HEAD
 from tkinter import ttk, font 
+=======
+from tkinter import ttk, font , Canvas
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")
@@ -356,6 +360,78 @@ class RentalApp(ctk.CTk):
 
         balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column =0, padx = 20, pady = (0, 15), sticky = 'w')
+
+        # Create Table Frame
+        table_frame = ttk.Frame(self.main_frame)
+        table_frame.grid(row=5, column=0, columnspan=6, padx=(40, 100), pady=(40, 20), sticky="nsew", rowspan=5, ipady=20)
+
+        # Configure column and row weights to fill available space
+        table_frame.grid_columnconfigure(0, weight=1)
+        table_frame.grid_columnconfigure(1, weight=1)
+        table_frame.grid_columnconfigure(2, weight=1)
+        table_frame.grid_columnconfigure(3, weight=1)
+        table_frame.grid_columnconfigure(4, weight=1)
+        table_frame.grid_columnconfigure(5, weight=1)  # Additional column for ID
+
+        # Define the column names
+        columns = ['Product', 'Id', 'Category', 'Price', 'Status', 'Added']
+
+        # Create canvas for rounded header
+        header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
+        header_canvas.grid(row=0, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+
+        # Draw the rounded rectangle on the canvas
+        self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
+
+        # Create the header row with column names
+        for col, column_name in enumerate(columns):
+            col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
+            col_label.grid(row=0, column=col, padx=15, pady=(5,20), sticky="nsew")
+
+        # Example data for demonstration
+        data = [
+            ['Camera Stand', '87', 'Equipment', 'Rs.1000', 'Unsettled', '29 Dec 2022', './photos/sherwani.jpg'],
+            ['Tripod', '98', 'Equipment', 'Rs.500', 'Settled', '24 Dec 2022', './photos/no-image.png'],
+            ['Sony a6400', '25', 'Camera', 'Rs.1000', 'Settled', '12 Dec 2022', './photos/no-image.png'],
+            ['Puma Shoes', '56', 'Shoes', 'Rs.100', 'Settled', '21 Oct 2022', './photos/no-image.png'],
+            ['Kurtha Set', '87', 'Clothes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Nike Shoes', '90', 'Shoes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Kurthi', '3002', 'Clothes', 'Rs.300', 'Settled', '10 Aug 2022', './photos/no-image.png'],
+        ]
+
+        # Insert data into the table
+        for row, record in enumerate(data, start=1):
+            for col, value in enumerate(record[:6]):
+                if col == 0:  # Product column with image
+                    cell_frame = ttk.Frame(table_frame)
+                    cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+                    
+                    # Load and resize the image
+                    img_path = record[6]  # Assuming the image path is at index 6
+                    img = Image.open(img_path)
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img_tk = ImageTk.PhotoImage(img)
+
+                    img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
+                    img_label.image = img_tk  # Keep a reference to prevent garbage collection
+                    img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
+                    
+                    cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=0, column=1, sticky="w")
+                
+                elif col == 4:  # Status column with colored badge
+                    status_color = 'red' if value == 'Unsettled' else 'green'
+                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+                    
+                    status_label = tk.Label(table_frame, text=value, font=('Arial', 12), fg=status_color, anchor='w',
+                                            bg=status_bg, padx=15, pady=5)
+                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
+                
+                else:
+                    cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
         
 
     def create_row(self, parent, label_text, value_text, image_path):
@@ -397,6 +473,11 @@ class RentalApp(ctk.CTk):
         value_label.grid(row=0, column=2, padx=(10, 20), sticky='w', columnspan=2)
         
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
     def create_add_product(self):
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
@@ -442,9 +523,15 @@ class RentalApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
+<<<<<<< HEAD
         # Create the header frame (e.g., for "Product", search, filters, and add button)
         header_frame = ctk.CTkFrame(self.main_frame, fg_color='#FFFFFF', height=50, corner_radius=10)
         header_frame.pack(fill='x', padx=20, pady=10)
+=======
+        # Create the dashboard layout in the main frame
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50, corner_radius=40)
+        list_frame.pack(side='top', fill='both', padx=50, pady=30)
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
         # "Product" label
         product_label = ctk.CTkLabel(header_frame, text="Product", font=("Helvetica", 18, "bold"))
@@ -475,9 +562,163 @@ class RentalApp(ctk.CTk):
         # You can add more widgets and frames here for the rest of the dashboard content.
 
 
+<<<<<<< HEAD
         
+=======
+        # Add Product Button
+        add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35)
+        add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
+
+        # Revenue Card
+        revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="#F2F2F2", bg_color="#F2F2F2")
+        revenue_card.pack_propagate(False)
+        revenue_card.grid(row=1, column=0, padx=(30, 5), pady=(5, 10), columnspan=2, sticky="nsew")
+
+        # Load and resize the image
+        image = Image.open(".\\photos\\revenue.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(revenue_card, image=image_tk, text="")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
+
+        # Revenue Label
+        revenue_label = ctk.CTkLabel(revenue_card, text="Total Revenue", font=("Arial", 14))
+        revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
+
+        # Revenue Value and Change
+        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value.grid(row=2, column=0, padx=20, sticky="w")
+
+        # Balance Card
+        balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="#F2F2F2", bg_color="#F2F2F2")
+        balance_card.pack_propagate(False)
+        balance_card.grid(row=1, column=2, padx=(40,100), pady=(5,10), columnspan=3, sticky="nswe")
+
+        # Load and resize the image
+        image = Image.open(".\\photos\\wallet.png")
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)
+
+        # Convert to Tkinter Image
+        image_tk = ImageTk.PhotoImage(image)
+
+        # Place the image inside a label using Tkinter's Label widget
+        image_label = ctk.CTkLabel(balance_card, image=image_tk, text="")
+        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.grid(row=0, column=0, padx=20, pady=(10, 5), sticky="w")
+
+        balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
+        balance_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
+
+        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value.grid(row=2, column=0, padx=20, pady=(0, 15), sticky="w")
+
+        # Create Table Frame
+        table_frame = ttk.Frame(self.main_frame)
+        table_frame.grid(row=2, column=0, columnspan=5, padx=(40, 150), pady=(40, 20), sticky="nsew", rowspan=5, ipady=50)
+
+        # Configure column and row weights to fill available space
+        table_frame.grid_columnconfigure(0, weight=1)
+        table_frame.grid_columnconfigure(1, weight=1)
+        table_frame.grid_columnconfigure(2, weight=1)
+        table_frame.grid_columnconfigure(3, weight=1)
+        table_frame.grid_columnconfigure(4, weight=1)
+        table_frame.grid_columnconfigure(5, weight=1)  # Additional column for ID
+
+        # Define the column names
+        columns = ['Product', 'Id', 'Category', 'Price', 'Status', 'Added']
+
+        # Create canvas for rounded header
+        header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
+        header_canvas.grid(row=0, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+
+        # Draw the rounded rectangle on the canvas
+        self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
+
+        # Create the header row with column names
+        for col, column_name in enumerate(columns):
+            col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
+            col_label.grid(row=0, column=col, padx=15, pady=10, sticky="nsew")
+
+        # Example data for demonstration
+        data = [
+            ['Camera Stand', '87', 'Equipment', 'Rs.1000', 'Unsettled', '29 Dec 2022', './photos/sherwani.jpg'],
+            ['Tripod', '98', 'Equipment', 'Rs.500', 'Settled', '24 Dec 2022', './photos/no-image.png'],
+            ['Sony a6400', '25', 'Camera', 'Rs.1000', 'Settled', '12 Dec 2022', './photos/no-image.png'],
+            ['Puma Shoes', '56', 'Shoes', 'Rs.100', 'Settled', '21 Oct 2022', './photos/no-image.png'],
+            ['Kurtha Set', '87', 'Clothes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Nike Shoes', '90', 'Shoes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Kurthi', '3002', 'Clothes', 'Rs.300', 'Settled', '10 Aug 2022', './photos/no-image.png'],
+        ]
+
+        # Insert data into the table
+        for row, record in enumerate(data, start=1):
+            for col, value in enumerate(record[:6]):
+                if col == 0:  # Product column with image
+                    cell_frame = ttk.Frame(table_frame)
+                    cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+                    
+                    # Load and resize the image
+                    img_path = record[6]  # Assuming the image path is at index 6
+                    img = Image.open(img_path)
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img_tk = ImageTk.PhotoImage(img)
+
+                    img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
+                    img_label.image = img_tk  # Keep a reference to prevent garbage collection
+                    img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
+                    
+                    cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=0, column=1, sticky="w")
+                
+                elif col == 4:  # Status column with colored badge
+                    status_color = 'red' if value == 'Unsettled' else 'green'
+                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+                    
+                    status_label = tk.Label(table_frame, text=value, font=('Arial', 12), fg=status_color, anchor='w',
+                                            bg=status_bg, padx=15, pady=5)
+                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
+                
+                else:
+                    cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
+    # Function to create rounded rectangle
+    def create_rounded_rectangle(self, canvas, x1, y1, x2, y2, radius=30, **kwargs):
+        """Draws a rounded rectangle on the canvas."""
+        points = [x1 + radius, y1,
+                x1 + radius, y1,
+                x2 - radius, y1,
+                x2 - radius, y1,
+                x2, y1,
+                x2, y1 + radius,
+                x2, y1 + radius,
+                x2, y2 - radius,
+                x2, y2 - radius,
+                x2, y2,
+                x2 - radius, y2,
+                x2 - radius, y2,
+                x1 + radius, y2,
+                x1 + radius, y2,
+                x1, y2,
+                x1, y2 - radius,
+                x1, y2 - radius,
+                x1, y1 + radius,
+                x1, y1 + radius,
+                x1, y1]
+
+        return canvas.create_polygon(points, **kwargs, smooth=True)
+
+
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
         
+    
     def create_settings(self):
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
@@ -495,13 +736,13 @@ class RentalApp(ctk.CTk):
         update_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 20, "bold"))
         update_label.pack(pady=(20,10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#F2F2F2", border_color='gray')
+        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#D3D3D3", border_color='#D3D3D3')
         current_password_entry.pack(pady=5, padx=20, fill='x')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password")
+        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         new_password_entry.pack(pady=5, padx=20, fill='x')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password")
+        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         confirm_password_entry.pack(pady=5, padx=20, fill='x')
 
         button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')

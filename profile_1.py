@@ -1,7 +1,8 @@
 import customtkinter as ctk
-import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
 import crud, homepage, search
+import tkinter as tk
+from tkinter import ttk, font , Canvas
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")
@@ -201,10 +202,14 @@ class RentalApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
+        # Configure main frame grid layout
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_columnconfigure(1, weight=1)
+        self.main_frame.grid_rowconfigure(0, weight=1)
+
         # Adding a customer info frame
         self.info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=430, height=220)
-        self.info_frame.pack_propagate(False)  # Prevent the frame from resizing to fit its content
-        self.info_frame.pack(side='left', fill='both', padx=(50, 30), pady=30)
+        self.info_frame.grid(row=0, column=0, padx=(50, 15), pady=30, sticky="nsew")
 
         # Adding a title label inside the info frame
         title_container = ctk.CTkFrame(self.info_frame, fg_color='#F2F2F2', bg_color='#F2F2F2')
@@ -232,14 +237,12 @@ class RentalApp(ctk.CTk):
 
         # Adding an address info frame
         self.address_info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=210)
-        self.address_info_frame.pack_propagate(False)  # Prevent the frame from resizing to fit its content
-        self.address_info_frame.pack(side='right', fill='both', padx=(30, 50), pady=30)
+        self.address_info_frame.grid(row=0, column=1, padx=(15, 50), pady=30, sticky="nsew")
 
         # Adding a title label inside the address info frame
         address_container = ctk.CTkFrame(self.address_info_frame, fg_color='#F2F2F2', bg_color='#F2F2F2')
         address_container.pack(fill='x', pady=(5, 10), padx=5)
 
-        # Adding address label inside address info frame
         title_label = ctk.CTkLabel(address_container, text="Address", font=("Helvetica", 20), text_color="Black")
         title_label.pack(pady=(20, 10), side='left', padx=30, anchor='n')
 
@@ -258,6 +261,125 @@ class RentalApp(ctk.CTk):
         # Adding three rows for Name, Email, and Phone below the title label
         self.create_address_row(self.address_info_frame, "Billing : ", "Mahaboudha,Kathamandu", ".\\photos\\location.png")
         self.create_address_row(self.address_info_frame, "Shipping : ", "Sundarbasti, Bhangal Bus Stop -08 , Kathmandu", ".\\photos\\location.png")
+
+        # Create Table Frame
+        table_frame = ttk.Frame(self.main_frame)
+        table_frame.grid(row=1, column=0, columnspan=2, padx=(70, 80), pady=(40, 20), sticky="nsew")
+
+        # Configure column and row weights to fill available space
+        table_frame.grid_columnconfigure(0, weight=1)
+        table_frame.grid_columnconfigure(1, weight=1)
+        table_frame.grid_columnconfigure(2, weight=1)
+        table_frame.grid_columnconfigure(3, weight=1)
+
+        # Define the column names
+        columns = ['Product', 'Category', 'Price', 'Total']
+
+        # Configure column and row weights to fill available space
+        for i in range(len(columns)):  # Ensure to match the number of columns
+            table_frame.grid_columnconfigure(i, weight=1)
+
+        # Configure row weights (if needed)
+        table_frame.grid_rowconfigure(0, weight=1)  # Header row
+        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
+
+        # Example data for demonstration
+        # Example data for demonstration
+        data = [
+            ['Camera Stand', 'Equipment', 'Rs.1000', 'Unsettled', '29 Dec 2022', './photos/sherwani.jpg'],
+            ['Tripod', 'Equipment', 'Rs.500', 'Settled', '24 Dec 2022', './photos/no-image.png'],
+            ['Sony a6400','Camera', 'Rs.1000', 'Settled', '12 Dec 2022', './photos/no-image.png'],
+            ['Puma Shoes','Shoes', 'Rs.100', 'Settled', '21 Oct 2022', './photos/no-image.png'],
+            ['Kurtha Set','Clothes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Nike Shoes','Shoes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
+            ['Kurthi', 'Clothes', 'Rs.300', 'Settled', '10 Aug 2022', './photos/no-image.png'],
+        ]
+
+        # Determine the number of items in data
+        item_count = len(data)
+
+        # Set the item_count text color and background color based on the item count
+        if item_count > 0:
+            item_count_text = f"{item_count} Products"
+            item_count_fg_color = 'green'
+            item_count_bg_color = '#D1FAE5'  # Light green background
+        else:
+            item_count_text = "0 Products"
+            item_count_fg_color = 'darkgrey'
+            item_count_bg_color = '#F0F1F3'  # Light grey background
+
+        # Create a frame to hold the label and the button
+        recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
+        recent_frame.grid(row=0, column=0, columnspan=len(columns), padx=15, pady=10, sticky="w")
+
+        # Create a label for "Recent Rentals"
+        recent_label = tk.Label(recent_frame, text="Recent Rentals", bg='#F2F2F2', font=('Arial', 16, 'bold'))
+        recent_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        # Create a button for the item count
+        recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
+                                    fg_color=item_count_bg_color, 
+                                    hover_color='#C3F9D8',  # Optional: color when hovered
+                                    text_color=item_count_fg_color,
+                                    font=('Arial', 12, 'bold'), 
+                                    width=80, 
+                                    height=30,
+                                    border_width=0)
+
+        # Place the button in the frame next to the label
+        recent_button.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+        # Create canvas for rounded header
+        header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
+        header_canvas.grid(row=1, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+
+        # Draw the rounded rectangle on the canvas
+        self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
+
+        # Create the header row with column names
+        for col, column_name in enumerate(columns):
+            col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
+            col_label.grid(row=1, column=col, padx=15, pady=(5, 20), sticky="nsew")
+
+
+        # Insert data into the table
+        for row, record in enumerate(data, start=2):  # Start from row 2 due to the label and header row
+            for col, value in enumerate(record[:4]):
+                if col == 0:  # Product column with image
+                    cell_frame = ttk.Frame(table_frame)
+                    cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
+                    # Load and resize the image
+                    img_path = record[5]  # Assuming the image path is at index 6
+                    img = Image.open(img_path)
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img_tk = ImageTk.PhotoImage(img)
+
+                    img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
+                    img_label.image = img_tk  # Keep a reference to prevent garbage collection
+                    img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
+
+                    cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=0, column=1, sticky="w")
+
+                elif col == 4:  # Status column with colored badge
+                    status_color = 'red' if value == 'Unsettled' else 'green'
+                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+
+                    status_label = tk.Label(table_frame, text=value, font=('Arial', 12, 'bold'), foreground=status_color, background=status_bg, anchor='w')
+                    status_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
+
+                else:  # Other columns
+                    cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
+
+        # Add padding below the table
+        table_frame.grid_rowconfigure(len(data) + 2, weight=1)
+
+        # Adjust the spacing between the table and the last element
+        self.main_frame.grid_rowconfigure(2, weight=1)
+
+        
         
 
     def create_row(self, parent, label_text, value_text, image_path):
@@ -359,17 +481,23 @@ class RentalApp(ctk.CTk):
         update_frame.pack_propagate(False)
         update_frame.pack(pady=(10, 5), padx=60, side='top', anchor='w')
 
-        update_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 20, "bold"))
-        update_label.pack(pady=(20,10), padx=20, anchor='w')
+        username_label = ctk.CTkLabel(update_frame, text="Edit Username", font=("Helvetica", 20, "bold"))
+        username_label.pack(pady=(20,10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#F2F2F2", border_color='gray')
-        current_password_entry.pack(pady=5, padx=20, fill='x')
+        new_username_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new username", fg_color="#D3D3D3", border_color='#D3D3D3')
+        new_username_entry.pack(pady=5, padx=20, fill='x')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password")
-        new_password_entry.pack(pady=5, padx=20, fill='x')
+        email_label = ctk.CTkLabel(update_frame, text="Edit Email", font=("Helvetica", 20, "bold"))
+        email_label.pack(pady=(40,10), padx=20, anchor='w')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password")
-        confirm_password_entry.pack(pady=5, padx=20, fill='x')
+        new_email_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new email", fg_color='#D3D3D3', border_color='#D3D3D3')
+        new_email_entry.pack(pady=5, padx=20, fill='x')
+
+        phone_label = ctk.CTkLabel(update_frame, text="Edit phone number", font=("Helvetica", 20, "bold"))
+        phone_label.pack(pady=(40,10), padx=20, anchor='w')
+
+        new_phone_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new phone number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        new_phone_entry.pack(pady=5, padx=20, fill='x')
 
         button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
         button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
@@ -394,6 +522,32 @@ class RentalApp(ctk.CTk):
         delete_button = ctk.CTkButton(delete_account_frame, text="Delete Account", fg_color="#B91C1C")
         delete_button.pack(pady=10, padx=20, anchor='w')
 
+
+    # Function to create rounded rectangle
+    def create_rounded_rectangle(self, canvas, x1, y1, x2, y2, radius=30, **kwargs):
+        """Draws a rounded rectangle on the canvas."""
+        points = [x1 + radius, y1,
+                x1 + radius, y1,
+                x2 - radius, y1,
+                x2 - radius, y1,
+                x2, y1,
+                x2, y1 + radius,
+                x2, y1 + radius,
+                x2, y2 - radius,
+                x2, y2 - radius,
+                x2, y2,
+                x2 - radius, y2,
+                x2 - radius, y2,
+                x1 + radius, y2,
+                x1 + radius, y2,
+                x1, y2,
+                x1, y2 - radius,
+                x1, y2 - radius,
+                x1, y1 + radius,
+                x1, y1 + radius,
+                x1, y1]
+
+        return canvas.create_polygon(points, **kwargs, smooth=True)
 
 
 
