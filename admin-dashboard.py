@@ -2,7 +2,11 @@ import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
 import crud, homepage, search
 import tkinter as tk
+<<<<<<< HEAD
+from tkinter import ttk, font 
+=======
 from tkinter import ttk, font , Canvas
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")
@@ -469,8 +473,11 @@ class RentalApp(ctk.CTk):
         value_label.grid(row=0, column=2, padx=(10, 20), sticky='w', columnspan=2)
         
 
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
     def create_add_product(self):
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
@@ -516,57 +523,48 @@ class RentalApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
+<<<<<<< HEAD
+        # Create the header frame (e.g., for "Product", search, filters, and add button)
+        header_frame = ctk.CTkFrame(self.main_frame, fg_color='#FFFFFF', height=50, corner_radius=10)
+        header_frame.pack(fill='x', padx=20, pady=10)
+=======
         # Create the dashboard layout in the main frame
         list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50, corner_radius=40)
         list_frame.pack(side='top', fill='both', padx=50, pady=30)
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
-        # adding check box in the list frame at the left side 
-        select_box = ctk.CTkCheckBox(
-            list_frame, 
-            fg_color='#D3D3D3', 
-            bg_color='#F2F2F2', 
-            border_color='#D3D3D3', 
-            text ='', 
-            hover_color='#D3D3D3',
-            checkmark_color='black',
-            checkbox_height=17,
-            checkbox_width=16,
-            width = 10
-            )
-        select_box.pack(side='left', padx=(10,0), pady=10, anchor ='w')
+        # "Product" label
+        product_label = ctk.CTkLabel(header_frame, text="Product", font=("Helvetica", 18, "bold"))
+        product_label.pack(side='left', padx=(20, 10))
 
-        select_label = ctk.CTkLabel(list_frame, text ='select all items', text_color='gray')
-        select_label.pack(side = 'left', padx = (0,30), fill = 'x')
+        # Search bar with icon
+        search_frame = ctk.CTkFrame(header_frame, fg_color='#F2F2F2', corner_radius=8)
+        search_frame.pack(side='left', padx=(20, 10), pady=5)
         
-        # Adding delete button 
-        delete_button = ctk.CTkButton(
-            list_frame,
-            text="Delete",
-            font=("Helvetica", 15),
-            text_color="red",
-            fg_color='transparent',
-            bg_color='transparent',
-            hover_color='#F2F2F2',
-        )
-        delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
+        search_icon = ctk.CTkLabel(search_frame, text="🔍", text_color="gray", width=10)
+        search_icon.pack(side='left', padx=(10, 5))
+
+        search_entry = ctk.CTkEntry(search_frame, placeholder_text="Search product...", width=200, border_width=0)
+        search_entry.pack(side='left', padx=(5, 10), pady=5)
+
+        # Add product button
+        add_product_button = ctk.CTkButton(header_frame, text="+ Add Product", text_color="white", 
+                                        fg_color="#2F4D7D", hover_color="#2F4D7D", 
+                                        font=("Helvetica", 15))
+        add_product_button.pack(side='right', padx=(10, 20), pady=5)
 
 
-    def create_finance(self):
-        # Clear the current contents of the main frame
-        for widget in self.main_frame.winfo_children():
-            widget.destroy()
+        filters_button = ctk.CTkButton(filter_frame, text="Filters", text_color="#2C5FDC", 
+                                    fg_color="#F2F2F2", hover_color="#D3D3D3", 
+                                    font=("Helvetica", 13), border_width=1)
+        filters_button.pack(side='right', padx=(5, 10), pady=5)
 
-        # Configure grid columns to push the button to the right
-        self.main_frame.grid_columnconfigure(0, weight=1)
-        self.main_frame.grid_columnconfigure(1, weight=1)
-        self.main_frame.grid_columnconfigure(2, weight=1)
-        self.main_frame.grid_columnconfigure(3, weight=1)
-        self.main_frame.grid_columnconfigure(4, weight=1)
+        # You can add more widgets and frames here for the rest of the dashboard content.
 
-        # Welcome Label
-        welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
-        welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
 
+<<<<<<< HEAD
+        
+=======
         # Add Product Button
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35)
         add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
@@ -717,6 +715,7 @@ class RentalApp(ctk.CTk):
         return canvas.create_polygon(points, **kwargs, smooth=True)
 
 
+>>>>>>> a380bdc9a9ccf85a3df9b96548e5c662e62fc1f4
 
         
     
