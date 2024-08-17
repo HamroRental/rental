@@ -2,7 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
 import search
-import crud, profile_1
+import crud, profile_1, os
 
 
 
@@ -157,7 +157,8 @@ class RentalApp(ctk.CTk):
     def add_service_placeholder(self, parent, title, price, image_path):
 
         # formatting the image_path as in the database # Replace single backslashes with double backslashes
-        formatted_path = image_path.replace("\\", "/")
+        normal_path = os.path.abspath(image_path)
+        formatted_path = normal_path.replace('\\', '/')
 
         # Load and resize the image using PIL
         image = Image.open(image_path)
@@ -209,6 +210,7 @@ class RentalApp(ctk.CTk):
         print(f"Opening details for: {title}")
 
     def button_clicked(self, product_id):
+        print(product_id)
         product_name = crud.get_product_name(product_id)
         price = crud.get_price(product_id)
         product_description = crud.get_description(product_id)
