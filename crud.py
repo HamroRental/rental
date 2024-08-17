@@ -24,6 +24,22 @@ c.execute(
 conn.commit()
 conn.close()
 
+# User Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Users(
+        User_id TEXT PRIMARY KEY,
+        Role TEXT,
+        Fullname TEXT,
+        Email TEXT,
+        Password TEXT,
+        Phone_number TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
 
 # Function definitions
 def generate_unique_id():

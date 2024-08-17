@@ -426,33 +426,39 @@ class RentalApp(ctk.CTk):
             
 
     def create_cart(self):
+        # Example data list (each item is a tuple containing image path, title, subtitle, and price)
+        data = [
+            (".\\photos\\camera.jpg", "Canon Lens 50mm", "Not Rented", "Rs. 1000/Day"),
+            (".\\photos\\camera.jpg", "Canon Lens 50mm", "Not Rented", "Rs. 1000/Day"),
+        ]
+        
         # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the dashboard layout in the main frame
-        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=50 )
-        list_frame.pack(side='top', fill='both', padx=50, pady=30)
+        # Create the list frame for the cart layout
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=150)
+        list_frame.pack(side='top', fill='both', padx=80, pady=(30,10))
 
-        # adding check box in the list frame at the left side 
+        # Adding check box in the list frame at the left side
         select_box = ctk.CTkCheckBox(
-            list_frame, 
-            fg_color='#D3D3D3', 
-            bg_color='#F2F2F2', 
-            border_color='#D3D3D3', 
-            text ='', 
+            list_frame,
+            fg_color='#D3D3D3',
+            bg_color='#F2F2F2',
+            border_color='#D3D3D3',
+            text='',
             hover_color='#D3D3D3',
             checkmark_color='black',
             checkbox_height=17,
             checkbox_width=16,
-            width = 10
-            )
-        select_box.pack(side='left', padx=(10,0), pady=10, anchor ='w')
+            width=10
+        )
+        select_box.pack(side='left', padx=(10, 0), pady=10, anchor='w')
 
-        select_label = ctk.CTkLabel(list_frame, text ='select all items', text_color='gray')
-        select_label.pack(side = 'left', padx = (0,30), fill = 'x')
-        
-        # Adding delete button 
+        select_label = ctk.CTkLabel(list_frame, text='select all items', text_color='gray')
+        select_label.pack(side='left', padx=(0, 30), fill='x')
+
+        # Adding delete button
         delete_button = ctk.CTkButton(
             list_frame,
             text="Delete",
@@ -464,8 +470,51 @@ class RentalApp(ctk.CTk):
         )
         delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
 
+        # Check if the data list is empty
+        if not data:
+            # Create a frame to hold both the image and text
+            no_product_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent')
+            no_product_frame.pack(expand=True, pady=130)
 
-        # that matches your second screenshot design
+            # Display a "no-product" image if the cart is empty
+            no_product_img = Image.open(".\\photos\\no-product.png")
+            no_product_img = no_product_img.resize((250, 250), Image.Resampling.LANCZOS)
+            no_product_photo = ImageTk.PhotoImage(no_product_img)
+            
+            no_product_label = ctk.CTkLabel(no_product_frame, image=no_product_photo, text="")
+            no_product_label.image = no_product_photo  # Keep a reference to avoid garbage collection
+            no_product_label.pack()
+
+            # Add text below the image
+            no_product_title = ctk.CTkLabel(no_product_frame, text='No Products   ', font=("Helvetica", 16))
+            no_product_title.pack(pady=10)
+
+        else:
+            # Loop through the data list and create a frame for each item
+            for item in data:
+                product_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', height=150)
+                product_frame.propagate(False)
+                product_frame.pack(side='top', fill='x', padx=80, pady=10)
+
+                # Load and display the product image
+                product_img = Image.open(item[0])
+                product_img = product_img.resize((150, 150), Image.Resampling.LANCZOS)
+                product_photo = ImageTk.PhotoImage(product_img)
+                product_label = ctk.CTkLabel(product_frame, image=product_photo, text="")
+                product_label.image = product_photo  # Keep a reference to avoid garbage collection
+                product_label.pack(side='left', padx=10)
+
+                # Display title, subtitle, and price
+                title_label = ctk.CTkLabel(product_frame, text=item[1], font=("Helvetica", 20))
+                title_label.pack(side='left', padx=10, anchor='w')
+
+                # subtitle_label = ctk.CTkLabel(product_frame, text=item[2], text_color='blue', font=("Helvetica", 16))
+                # subtitle_label.pack(side='left', padx=10, anchor='w')
+
+                price_label = ctk.CTkLabel(product_frame, text=item[3], text_color='#2F4D7D', font=("Helvetica", 16, 'bold'))
+                price_label.pack(side='right', padx=40, anchor='e')
+
+
 
     def create_settings(self):
         # Clear the current contents of the main frame
