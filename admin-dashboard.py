@@ -737,13 +737,13 @@ class RentalApp(ctk.CTk):
         update_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 20, "bold"))
         update_label.pack(pady=(20,10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#F2F2F2", border_color='gray')
+        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#D3D3D3", border_color='#D3D3D3')
         current_password_entry.pack(pady=5, padx=20, fill='x')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password")
+        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         new_password_entry.pack(pady=5, padx=20, fill='x')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password")
+        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         confirm_password_entry.pack(pady=5, padx=20, fill='x')
 
         button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
