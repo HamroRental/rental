@@ -3,6 +3,7 @@ from tkinter import filedialog
 import sqlite3
 import uuid
 import io, os 
+import register 
 
 
 # Database setup
@@ -32,6 +33,7 @@ c.execute(
         User_id TEXT PRIMARY KEY,
         Role TEXT,
         Fullname TEXT,
+        UserName TEXT,
         Email TEXT,
         Password TEXT,
         Phone_number TEXT
@@ -62,6 +64,69 @@ def add():
     price.delete(0, END)
     description.delete("1.0", END)
     image_path.delete(0, END)
+
+def add_user(role, fullname, username, email, password, phone_number):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (unique_id, role, fullname, username, email, password, phone_number)
+    )
+    conn.commit()
+    conn.close()
+
+
+def delete_user(user_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Users WHERE User_id=?", (user_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {user_id} deleted successfully.")
+
+def get_user_info(user_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM Users WHERE User_id=?", (user_id,))
+    result = c.fetchone()
+    conn.close()
+    if result:
+        user_info = {
+            "User_id": result[0],
+            "Role": result[1],
+            "Fullname": result[2],
+            "UserName": result[3],
+            "Email": result[4],
+            "Password": result[5],
+            "Phone_number": result[6]
+        }
+        return user_info
+    else:
+        print(f"No user found with User ID: {user_id}")
+        return None
+    
+def check_user_credentials(username, password):
+    # Connect to your database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to check if user exists with the provided username and password
+    cursor.execute('''
+        SELECT role FROM users
+        WHERE username = ? AND password = ?
+    ''', (username, password))
+
+    # Fetch the result
+    result = cursor.fetchone()
+    conn.close()
+
+    if result:
+        # Return the role if credentials are valid
+        return True, result[0]
+    else:
+        # Return False if credentials are invalid
+        return False, None
 
 def delete():
     conn = sqlite3.connect("database.db")

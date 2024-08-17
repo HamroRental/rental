@@ -258,8 +258,8 @@ class RentalApp(ctk.CTk):
         popup.configure(bg="white")
 
         # Frame for the Notification header
-        header_frame = ctk.CTkFrame(popup, height=40, corner_radius=0, fg_color="white")
-        header_frame.pack(padx=10, pady=(10, 0), fill="x", expand=False)
+        header_frame = ctk.CTkFrame(popup, height=40, corner_radius=0, fg_color="#F2F2F2")
+        header_frame.pack(padx=0, pady=0, fill="x", expand=False)
 
         # Label for "Notifications"
         header_label = ctk.CTkLabel(header_frame, text="Notifications", font=("Helvetica", 14), text_color="#2F4D7D")
