@@ -86,7 +86,7 @@ class RentalApp(ctk.CTk):
         self.dashboard_button.image = dashboard_photo  # Keep a reference to avoid garbage collection
         self.dashboard_button.pack(side="left", padx=(440, 10), pady = (20,10), anchor = 'n')
 
-        self.order_button = ctk.CTkButton(self.main_frame, text="VIEW ORDER ", image=order_photo, compound="right",
+        self.order_button = ctk.CTkButton(self.main_frame, text="VIEW CART ", image=order_photo, compound="right",
                                           width=200, height=40, fg_color="#1E3A8A", text_color="white", border_width=0,
                                           hover_color="#1E3A8A", corner_radius=0, command = self.navigate_to_profile)
         self.order_button.image = order_photo  # Keep a reference to avoid garbage collection

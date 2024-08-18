@@ -3,6 +3,8 @@ from tkinter import filedialog
 import sqlite3
 import uuid
 import io, os 
+import register 
+from datetime import datetime 
 
 
 # Database setup
@@ -23,6 +25,96 @@ c.execute(
 )
 conn.commit()
 conn.close()
+
+# User Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Users(
+        User_id TEXT PRIMARY KEY,
+        Role TEXT,
+        Fullname TEXT,
+        UserName TEXT,
+        Email TEXT,
+        Password TEXT,
+        Phone_number TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
+# Cart Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Cart(
+        Order_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        price INT,
+        category TEXT, 
+        image TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
+
+# Purchase Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS Purchase(
+        purchase_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        price INT,
+        category TEXT, 
+        status TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
+# Admin_Rental Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS admin_rental(
+        admin_rental_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        category TEXT,
+        price INT, 
+        status TEXT
+        )"""
+)
+conn.commit()
+conn.close()
+
+#modifying table code 
+# conn = sqlite3.connect('database.db')
+# cursor = conn.cursor()
+# alter_table_sql = """
+# ALTER TABLE admin_rental
+# ADD COLUMN created_at TIMESTAMP;
+# """
+# cursor.execute(alter_table_sql)
+# conn.commit()
+# conn.close()
+
+# deleting table code 
+def delete_all_from_table(table_name):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    
+    # Execute SQL command to delete all rows from the table
+    c.execute(f"DELETE FROM {table_name}")
+    
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
 
 
 # Function definitions
@@ -46,6 +138,187 @@ def add():
     price.delete(0, END)
     description.delete("1.0", END)
     image_path.delete(0, END)
+
+def add_user(role, fullname, username, email, password, phone_number):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (unique_id, role, fullname, username, email, password, phone_number)
+    )
+    conn.commit()
+    conn.close()
+
+def add_admin_rental(product_id, product_name, category, price, status, image):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    current_time = datetime.now().isoformat()  # Get current time in ISO format
+    c.execute(
+        "INSERT INTO admin_rental (admin_rental_id, product_id, product_name, category, price, status, image, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, category, price, status, image, current_time)
+    )
+    conn.commit()
+    conn.close()
+
+def add_cart(product_id, product_name, price, category, image):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Cart (order_id, product_id, product_name, price, category, image) VALUES (?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, price, category, image)
+    )
+    conn.commit()
+    conn.close()
+
+def add_purchase(product_id, product_name, price, category, status, image):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Purchase(purchase_id, product_id, product_name, price, category, status, image) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, price, category, status, image)
+    )
+    conn.commit()
+    conn.close()
+
+
+def delete_user(user_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Users WHERE User_id=?", (user_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {user_id} deleted successfully.")
+
+def delete_cart(order_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Cart WHERE Order_id=?", (order_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {order_id} deleted successfully.")
+
+def delete_purchase(purchase_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Purchase WHERE purchase_id=?", (purchase_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with Purchase: {purchase_id} deleted successfully.")
+
+
+def get_user_info(user_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM Users WHERE User_id=?", (user_id,))
+    result = c.fetchone()
+    conn.close()
+    if result:
+        user_info = {
+            "User_id": result[0],
+            "Role": result[1],
+            "Fullname": result[2],
+            "UserName": result[3],
+            "Email": result[4],
+            "Password": result[5],
+            "Phone_number": result[6]
+        }
+        return user_info
+    else:
+        print(f"No user found with User ID: {user_id}")
+        return None
+    
+def get_cart_items():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT image, product_name, price FROM Cart")
+
+    # Fetch all the rows and return as a list of tuples
+    cart_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return cart_items
+
+
+def get_admin_rental():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT product_name, price, category,status, image, created_at FROM admin_rental")
+
+    # Fetch all the rows and return as a list of tuples
+    admin_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return admin_items
+    
+def get_purchase_items():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT product_name, category, price, status, image FROM Purchase")
+
+    # Fetch all the rows and return as a list of tuples
+    purchase_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return purchase_items
+
+    
+def check_user_credentials(username, password):
+    # Connect to your database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to check if user exists with the provided username and password
+    cursor.execute('''
+        SELECT role FROM users
+        WHERE username = ? AND password = ?
+    ''', (username, password))
+
+    # Fetch the result
+    result = cursor.fetchone()
+    conn.close()
+
+    if result:
+        # Return the role if credentials are valid
+        return True, result[0]
+    else:
+        # Return False if credentials are invalid
+        return False, None
+    
+def check_product_in_cart(product_id):
+    # Connect to your database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to check if the product_id exists in the Cart table
+    cursor.execute('''
+        SELECT product_id FROM Cart
+        WHERE product_id = ?
+    ''', (product_id,))
+
+    # Fetch the result
+    result = cursor.fetchone()
+    conn.close()
+
+    return result is not None
 
 def delete():
     conn = sqlite3.connect("database.db")
@@ -327,6 +600,8 @@ if __name__ == "__main__":
     delete_box = Entry(root, width=40)
     delete_box.place(x=250, y=750, height=35)
 
-
+    
 
     root.mainloop()
+
+
