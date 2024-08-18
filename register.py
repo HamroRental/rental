@@ -98,12 +98,12 @@ class Login(ctk.CTk):
         radio_frame = ctk.CTkFrame(self.right_frame, fg_color='transparent', height=10)
         radio_frame.pack(side="bottom", anchor="sw", pady=(1, 10), padx=65)
 
-        self.radio_var = tk.StringVar(value="Option 1")  # Variable to hold the selected option
+        self.radio_var = tk.StringVar(value="user")  # Variable to hold the selected option
 
-        radio_button1 = ctk.CTkRadioButton(radio_frame, text="User", variable=self.radio_var, value="Option 1", text_color='white', border_color='gray')
+        radio_button1 = ctk.CTkRadioButton(radio_frame, text="User", variable=self.radio_var, value="user", text_color='white', border_color='gray')
         radio_button1.pack(side="left", padx=5)
 
-        radio_button2 = ctk.CTkRadioButton(radio_frame, text="Provider", variable=self.radio_var, value="Option 2", text_color='white', border_color='gray')
+        radio_button2 = ctk.CTkRadioButton(radio_frame, text="Provider", variable=self.radio_var, value="provider", text_color='white', border_color='gray')
         radio_button2.pack(side="left", padx=5)
 
         # Configure grid for responsiveness
@@ -136,7 +136,7 @@ class Login(ctk.CTk):
             messagebox.showerror("Input Error", "Please fill in all fields.")
             return
 
-        if user_type not in ["Option 1", "Option 2"]:
+        if user_type not in ["user", "provider"]:
             messagebox.showerror("Input Error", "Please select a user type.")
             return
 

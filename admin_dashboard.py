@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search
+import crud, homepage, search, login
 import tkinter as tk
 from tkinter import ttk, font , Canvas, filedialog, messagebox
 from random import randint
@@ -167,7 +167,7 @@ class RentalApp(ctk.CTk):
             height=50,
             width=180,
             anchor='w',
-            command=lambda: self.on_click(self.logout_button, self.logout_image)
+            command=lambda: self.on_click(self.logout_button, self.logout_image, self.logout)
         )
         self.logout_button.pack(anchor="w", padx=(20, 30), pady=(5, 0), side = 'bottom')
 
@@ -924,8 +924,8 @@ class RentalApp(ctk.CTk):
                     cell_label.grid(row=0, column=1, sticky="w")
                 
                 elif col == 4:  # Status column with colored badge
-                    status_color = 'red' if value == 'Unsettled' else 'green'
-                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+                    status_color = 'red' if value == 'unsettled' else 'green'
+                    status_bg = '#FFEDD5' if value == 'unsettled' else '#D1FAE5'
                     
                     status_label = tk.Label(table_frame, text=value, font=('Arial', 12), fg=status_color, anchor='w',
                                             bg=status_bg, padx=15, pady=5)
@@ -1156,6 +1156,11 @@ class RentalApp(ctk.CTk):
         else:
             crud.update_user_password(logged_in, self.confirm_password_entry1)
             messagebox.showinfo('sucess', 'Password Sucessfully Changed')
+
+    def logout(self):
+        self.destroy()
+        app = login.Login()
+        app.mainloop()
             
 
 # Run the application

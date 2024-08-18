@@ -72,7 +72,7 @@ class Description(ctk.CTk):
         # Create and place the icon buttons with adjusted width and height
         self.bell_button = ctk.CTkButton(self.menu_icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.bell_button.pack(side="left", padx=1)
-        self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command=self.navigate_to_cart)
         self.heart_button.pack(side="left", padx=1)
         self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_profile)
         self.profile_button.pack(side="left", padx=1)
@@ -348,6 +348,13 @@ class Description(ctk.CTk):
 
         # Optional: Auto-close the popup after a certain time (e.g., 3 seconds)
         # popup.after(5000, popup.destroy)
+
+    def navigate_to_cart(self):
+        self.destroy()
+        profile_app = profile_1.RentalApp()
+        profile_app.create_dashboard()
+        profile_app.on_click(profile_app.cart_button, profile_app.cart_hover_image, profile_app.create_cart)
+        profile_app.mainloop()
 
 
 if __name__ == "__main__":
