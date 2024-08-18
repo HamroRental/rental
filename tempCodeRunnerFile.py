@@ -1,2 +1,0 @@
-
-            font=("Helvetica", 15),

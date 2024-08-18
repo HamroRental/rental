@@ -2,7 +2,7 @@ import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
 import crud, homepage, search, payment, login
 import tkinter as tk
-from tkinter import ttk, font , Canvas
+from tkinter import ttk, font , Canvas, messagebox
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")
@@ -583,22 +583,22 @@ class RentalApp(ctk.CTk):
         customer_label = ctk.CTkLabel(customer_frame, text="Customer", font=("Helvetica", 16, "bold"))
         customer_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        name_entry = ctk.CTkEntry(customer_frame, placeholder_text="Name", fg_color="#D3D3D3", border_color='#D3D3D3')
-        name_entry.pack(pady=5, padx=20, fill='x')
+        self.name_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Username", fg_color="#D3D3D3", border_color='#D3D3D3')
+        self.name_entry1.pack(pady=5, padx=20, fill='x')
 
-        email_entry = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        email_entry.pack(pady=5, padx=20, fill='x')
+        self.email_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.email_entry1.pack(pady=5, padx=20, fill='x')
 
-        phone_entry = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
-        phone_entry.pack(pady=5, padx=20, fill='x')
+        self.phone_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.phone_entry1.pack(pady=5, padx=20, fill='x')
 
         customer_button_frame = ctk.CTkFrame(customer_frame, fg_color='#F2F2F2')
         customer_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(customer_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings1)
         save_button.pack(side='left', padx=5)
 
         # Create the 'Address' frame
@@ -609,19 +609,19 @@ class RentalApp(ctk.CTk):
         address_label = ctk.CTkLabel(address_frame, text="Address", font=("Helvetica", 16, "bold"))
         address_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        shipping_entry = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        shipping_entry.pack(pady=5, padx=20, fill='x')
+        self.shipping_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.shipping_entry1.pack(pady=5, padx=20, fill='x')
 
-        billing_entry = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        billing_entry.pack(pady=5, padx=20, fill='x')
+        self.billing_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.billing_entry1.pack(pady=5, padx=20, fill='x')
 
         address_button_frame = ctk.CTkFrame(address_frame, fg_color='#F2F2F2')
         address_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(address_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings2)
         save_button.pack(side='left', padx=5)
 
         # Create the 'Update Password' frame
@@ -632,23 +632,30 @@ class RentalApp(ctk.CTk):
         password_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 16, "bold"))
         password_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        current_password_entry.pack(pady=5, padx=20, fill='x')
+        self.current_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = "*")
+        self.current_password_entry1.pack(pady=5, padx=20, fill='x')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        new_password_entry.pack(pady=5, padx=20, fill='x')
+        self.new_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3', show='*')
+        self.new_password_entry1.pack(pady=5, padx=20, fill='x')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        confirm_password_entry.pack(pady=5, padx=20, fill='x')
+        self.confirm_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = '*')
+        self.confirm_password_entry1.pack(pady=5, padx=20, fill='x')
 
         password_button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
         password_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(update_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings3)
         save_button.pack(side='left', padx=5)
+
+    def clear_entries(self, frame):
+        # Clear all entries in the specified frame
+        for widget in frame.winfo_children():
+            if isinstance(widget, ctk.CTkEntry):
+                widget.delete(0, 'end')
+
 
 
     # Function to create rounded rectangle
@@ -762,6 +769,23 @@ class RentalApp(ctk.CTk):
         self.destroy()
         login_app = login.Login()
         login_app.mainloop()
+
+    def update_settings1(self):
+        logged_in = crud.get_last_accessed_username()
+        crud.update_user_info(logged_in, self.name_entry1.get(), self.email_entry1.get(), self.phone_entry1.get())
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings2(self):
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings3(self):
+        logged_in = crud.get_last_accessed_username()
+        if self.new_password_entry1.get() != self.confirm_password_entry1.get():
+            messagebox.showinfo('error', 'your new password and confirm password does not match')
+        else:
+            crud.update_user_password(logged_in, self.confirm_password_entry1)
+            messagebox.showinfo('sucess', 'Password Sucessfully Changed')
+
 
     
 

@@ -2,7 +2,7 @@ import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
 import crud, homepage, search
 import tkinter as tk
-from tkinter import ttk, font , Canvas, filedialog
+from tkinter import ttk, font , Canvas, filedialog, messagebox
 from random import randint
 
 # Set the appearance mode of the app
@@ -193,6 +193,22 @@ class RentalApp(ctk.CTk):
         self.settings_button.bind("<Enter>", lambda e: self.on_enter(self.settings_button, self.settings_hover_image))
         self.settings_button.bind("<Leave>", lambda e: self.on_leave(self.settings_button, self.settings_image))
 
+    # extracting data from table admin_rental 
+        data = crud.get_admin_rental1()
+
+        # the tuple that get_admin_rental provides is (product_name,product_id, category, price,status, created_at, image) so write down their index
+        price_index = 3
+        status_index = 4
+
+        # Convert price to numeric type if necessary
+        def to_numeric(value):
+            return float(value)  
+
+        # Calculate necessary values
+        self.total_revenue = sum(to_numeric(item[price_index]) for item in data)
+        self.total_rent = len(data)
+        self.product_count = self.total_rent
+        self.total_balance = sum(to_numeric(item[price_index]) for item in data if item[status_index] == 'settled')
 
     def on_enter(self, button, hover_image):
         if self.active_button != button:
@@ -286,7 +302,7 @@ class RentalApp(ctk.CTk):
         revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
         # Revenue Value and Change
-        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value = ctk.CTkLabel(revenue_card, text=f"Rs.{self.total_revenue}", font=("Arial", 24, "bold"))
         revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
         # Rent Card
@@ -309,8 +325,8 @@ class RentalApp(ctk.CTk):
         rent_label = ctk.CTkLabel(rent_card, text="Total Rent", font=("Arial", 14))
         rent_label.grid(row=1, column=0, padx = 20, pady =5, sticky = "w")
 
-        rent_value = ctk.CTkLabel(rent_card, text="3,500", font=("Arial", 24, "bold"))
-        rent_value.grid(row=2, column =0, padx =20, pady=(1,5),sticky = 'nw')
+        rent_value = ctk.CTkLabel(rent_card, text=self.total_rent, font=("Arial", 24, "bold"))
+        rent_value.grid(row=2, column =0, padx =(30,20), pady=(1,5),sticky = 'nw')
 
         # Product ID Card
         product_id_card = ctk.CTkFrame(self.main_frame, width=170, height=150, fg_color='#F2F2F2')
@@ -332,8 +348,8 @@ class RentalApp(ctk.CTk):
         product_id_label = ctk.CTkLabel(product_id_card, text="Product Id", font=("Arial", 14))
         product_id_label.grid(row= 1, column =0, sticky = 'w', padx =20)
 
-        product_id_value = ctk.CTkLabel(product_id_card, text="10", font=("Arial", 24, "bold"))
-        product_id_value.grid(row=2, column = 0, sticky = 'w', padx = 20)
+        product_id_value = ctk.CTkLabel(product_id_card, text=self.product_count, font=("Arial", 24, "bold"))
+        product_id_value.grid(row=2, column = 0, sticky = 'w', padx = (30,10))
 
         # Balance Card
         balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="#F2F2F2")
@@ -355,7 +371,7 @@ class RentalApp(ctk.CTk):
         balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
         balance_label.grid(row=1, column= 0, padx =20, pady = 5, sticky = 'w')
 
-        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value = ctk.CTkLabel(balance_card, text=f"Rs. {self.total_balance}", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column =0, padx = 20, pady = (0, 15), sticky = 'w')
 
         # Create Table Frame
@@ -369,7 +385,7 @@ class RentalApp(ctk.CTk):
         table_frame.grid_columnconfigure(3, weight=1)
 
         # Define the column names
-        columns = ['Product', 'Category', 'Price', 'status']
+        columns = ['Product', 'Price', 'Category', 'status']
 
         # Configure column and row weights to fill available space
         for i in range(len(columns)):  # Ensure to match the number of columns
@@ -831,7 +847,7 @@ class RentalApp(ctk.CTk):
         revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
         # Revenue Value and Change
-        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value = ctk.CTkLabel(revenue_card, text=f"Rs. {self.total_revenue}", font=("Arial", 24, "bold"))
         revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
         # Balance Card
@@ -854,7 +870,7 @@ class RentalApp(ctk.CTk):
         balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
         balance_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value = ctk.CTkLabel(balance_card, text=f"Rs. {self.total_balance}", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column=0, padx=20, pady=(0, 15), sticky="w")
 
         # Create Table Frame
@@ -885,7 +901,7 @@ class RentalApp(ctk.CTk):
             col_label.grid(row=0, column=col, padx=15, pady=10, sticky="nsew")
 
         # Example data for demonstration
-        data = crud.get_admin_rental()
+        data = crud.get_admin_rental1()
 
         # Insert data into the table
         for row, record in enumerate(data, start=1):
@@ -895,7 +911,7 @@ class RentalApp(ctk.CTk):
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
                     
                     # Load and resize the image
-                    img_path = record[4]  # Assuming the image path is at index 6
+                    img_path = record[6]  # Assuming the image path is at index 5
                     img = Image.open(img_path)
                     img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
                     img_tk = ImageTk.PhotoImage(img)
@@ -972,22 +988,22 @@ class RentalApp(ctk.CTk):
         customer_label = ctk.CTkLabel(customer_frame, text="Customer", font=("Helvetica", 16, "bold"))
         customer_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        name_entry = ctk.CTkEntry(customer_frame, placeholder_text="Name", fg_color="#D3D3D3", border_color='#D3D3D3')
-        name_entry.pack(pady=5, padx=20, fill='x')
+        self.name_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Username", fg_color="#D3D3D3", border_color='#D3D3D3')
+        self.name_entry1.pack(pady=5, padx=20, fill='x')
 
-        email_entry = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        email_entry.pack(pady=5, padx=20, fill='x')
+        self.email_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.email_entry1.pack(pady=5, padx=20, fill='x')
 
-        phone_entry = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
-        phone_entry.pack(pady=5, padx=20, fill='x')
+        self.phone_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.phone_entry1.pack(pady=5, padx=20, fill='x')
 
         customer_button_frame = ctk.CTkFrame(customer_frame, fg_color='#F2F2F2')
         customer_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(customer_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings1)
         save_button.pack(side='left', padx=5)
 
         # Create the 'Address' frame
@@ -998,19 +1014,19 @@ class RentalApp(ctk.CTk):
         address_label = ctk.CTkLabel(address_frame, text="Address", font=("Helvetica", 16, "bold"))
         address_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        shipping_entry = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        shipping_entry.pack(pady=5, padx=20, fill='x')
+        self.shipping_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.shipping_entry1.pack(pady=5, padx=20, fill='x')
 
-        billing_entry = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
-        billing_entry.pack(pady=5, padx=20, fill='x')
+        self.billing_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.billing_entry1.pack(pady=5, padx=20, fill='x')
 
         address_button_frame = ctk.CTkFrame(address_frame, fg_color='#F2F2F2')
         address_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(address_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings2)
         save_button.pack(side='left', padx=5)
 
         # Create the 'Update Password' frame
@@ -1021,23 +1037,30 @@ class RentalApp(ctk.CTk):
         password_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 16, "bold"))
         password_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        current_password_entry.pack(pady=5, padx=20, fill='x')
+        self.current_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = "*")
+        self.current_password_entry1.pack(pady=5, padx=20, fill='x')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        new_password_entry.pack(pady=5, padx=20, fill='x')
+        self.new_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3', show='*')
+        self.new_password_entry1.pack(pady=5, padx=20, fill='x')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        confirm_password_entry.pack(pady=5, padx=20, fill='x')
+        self.confirm_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = '*')
+        self.confirm_password_entry1.pack(pady=5, padx=20, fill='x')
 
         password_button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
         password_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(update_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings3)
         save_button.pack(side='left', padx=5)
+
+    def clear_entries(self, frame):
+        # Clear all entries in the specified frame
+        for widget in frame.winfo_children():
+            if isinstance(widget, ctk.CTkEntry):
+                widget.delete(0, 'end')
+
 
     def show_products(self):
         search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
@@ -1117,6 +1140,22 @@ class RentalApp(ctk.CTk):
         
         # Call the crud.add_admin_rental function
         crud.add_admin_rental(product_id, product_name,category, base_price,'unsettled', image_path)
+
+    def update_settings1(self):
+        logged_in = crud.get_last_accessed_username()
+        crud.update_user_info(logged_in, self.name_entry1.get(), self.email_entry1.get(), self.phone_entry1.get())
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings2(self):
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings3(self):
+        logged_in = crud.get_last_accessed_username()
+        if self.new_password_entry1.get() != self.confirm_password_entry1.get():
+            messagebox.showinfo('error', 'your new password and confirm password does not match')
+        else:
+            crud.update_user_password(logged_in, self.confirm_password_entry1)
+            messagebox.showinfo('sucess', 'Password Sucessfully Changed')
             
 
 # Run the application

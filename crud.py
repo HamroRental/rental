@@ -37,7 +37,8 @@ c.execute(
         UserName TEXT,
         Email TEXT,
         Password TEXT,
-        Phone_number TEXT
+        Phone_number TEXT, 
+        last_acessed TIMESTAP
         )"""
 )
 conn.commit()
@@ -92,12 +93,12 @@ c.execute(
 conn.commit()
 conn.close()
 
-#modifying table code 
+# modifying table code 
 # conn = sqlite3.connect('database.db')
 # cursor = conn.cursor()
 # alter_table_sql = """
-# ALTER TABLE admin_rental
-# ADD COLUMN created_at TIMESTAMP;
+# ALTER TABLE Users
+# ADD COLUMN last_acessed TIMESTAMP;
 # """
 # cursor.execute(alter_table_sql)
 # conn.commit()
@@ -143,10 +144,16 @@ def add_user(role, fullname, username, email, password, phone_number):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     unique_id = generate_unique_id()
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     c.execute(
-        "INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        (unique_id, role, fullname, username, email, password, phone_number)
+        """
+        INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number, last_acessed) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (unique_id, role, fullname, username, email, password, phone_number, current_time)
     )
+    
     conn.commit()
     conn.close()
 
@@ -224,7 +231,8 @@ def get_user_info(user_id):
             "UserName": result[3],
             "Email": result[4],
             "Password": result[5],
-            "Phone_number": result[6]
+            "Phone_number": result[6],
+            "last_acessed" : result[7]
         }
         return user_info
     else:
@@ -255,6 +263,22 @@ def get_admin_rental():
 
     # Query to select the required columns from the Cart table
     cursor.execute("SELECT product_name, price, category,status, image, created_at FROM admin_rental")
+
+    # Fetch all the rows and return as a list of tuples
+    admin_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return admin_items
+
+def get_admin_rental1():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT product_name,product_id, category, price,status, created_at, image FROM admin_rental")
 
     # Fetch all the rows and return as a list of tuples
     admin_items = cursor.fetchall()
@@ -590,6 +614,96 @@ def update_user_password(username, new_password):
     finally:
         conn.close()
 
+def update_user_info(current_username, new_username, new_email, new_phone):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Check if the username exists
+        cursor.execute("SELECT * FROM Users WHERE username = ?", (current_username,))
+        result = cursor.fetchone()
+        
+        if result:
+            # Update the user info
+            cursor.execute("""
+                UPDATE users
+                SET Username = ?, Email = ?, Phone_number = ?
+                WHERE Username = ?
+            """, (new_username, new_email, new_phone, current_username))
+            
+            conn.commit()
+            print("User info updated successfully.")
+        else:
+            print("Username not found in the database.")
+    
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+
+
+def get_last_accessed_username():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Retrieve the username with the most recent last_login timestamp
+        cursor.execute("""
+            SELECT Username
+            FROM Users
+            ORDER BY last_acessed DESC
+            LIMIT 1
+        """)
+        result = cursor.fetchone()
+
+        if result:
+            last_accessed_username = result[0]
+            return last_accessed_username
+        else:
+            return None  # No users found in the table
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+def get_last_accessed_userid():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Retrieve the username with the most recent last_login timestamp
+        cursor.execute("""
+            SELECT User_id
+            FROM Users
+            ORDER BY last_acessed DESC
+            LIMIT 1
+        """)
+        result = cursor.fetchone()
+
+        if result:
+            last_accessed_username = result[0]
+            return last_accessed_username
+        else:
+            return None  # No users found in the table
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+
+
 # Main loop
 if __name__ == "__main__":
     root = Tk()
@@ -649,8 +763,8 @@ if __name__ == "__main__":
     delete_box = Entry(root, width=40)
     delete_box.place(x=250, y=750, height=35)
 
-    
 
     root.mainloop()
+
 
 

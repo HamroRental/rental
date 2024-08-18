@@ -68,9 +68,9 @@ class RentalApp(ctk.CTk):
         self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=10)
 
         # Sample data list
+        image_path = '.\\photos\\no-profile.png'
         data = [
             {
-                'image_path': '.\\photos\\profile.png',
                 'name': 'Kantoor Nepal',
                 'email': 'kantoornepal@gmail.com',
                 'location': 'Kathmandu',
@@ -82,12 +82,12 @@ class RentalApp(ctk.CTk):
         # Add content from data to the side frame
         for item in data:
             # Profile image
-            profile_img = Image.open(item['image_path'])
+            profile_img = Image.open(image_path)
             profile_img = profile_img.resize((100, 100), Image.Resampling.LANCZOS)
             profile_img = ImageTk.PhotoImage(profile_img)
 
             # Profile image canvas
-            canvas = Canvas(self.side_frame, width=120, height=120, bg="white", highlightthickness=0)
+            canvas = Canvas(self.side_frame, width=120, height=120, bg="#f2f2f2", highlightthickness=0)
             canvas.pack(pady=20)
             canvas.create_oval(10, 10, 110, 110, outline="#2F4D7D", width=4)
             canvas.create_image(60, 60, image=profile_img)
