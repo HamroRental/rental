@@ -959,15 +959,69 @@ class RentalApp(ctk.CTk):
         title_label = ctk.CTkLabel(self.main_frame, text="Settings", font=("Helvetica", 20, "bold"))
         title_label.pack(pady=20, side='top', padx=60, anchor='w')
 
+        # Create the top frame to hold Customer and Address sections
+        top_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, corner_radius=0)
+        top_frame.pack_propagate(False)
+        top_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
+
+        # Create the 'Customer' frame
+        customer_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        customer_frame.pack_propagate(False)
+        customer_frame.pack(padx=(0, 10), side='left', anchor='w')
+
+        customer_label = ctk.CTkLabel(customer_frame, text="Customer", font=("Helvetica", 16, "bold"))
+        customer_label.pack(pady=(20, 10), padx=20, anchor='w')
+
+        name_entry = ctk.CTkEntry(customer_frame, placeholder_text="Name", fg_color="#D3D3D3", border_color='#D3D3D3')
+        name_entry.pack(pady=5, padx=20, fill='x')
+
+        email_entry = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        email_entry.pack(pady=5, padx=20, fill='x')
+
+        phone_entry = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        phone_entry.pack(pady=5, padx=20, fill='x')
+
+        customer_button_frame = ctk.CTkFrame(customer_frame, fg_color='#F2F2F2')
+        customer_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button.pack(side='left', padx=5)
+
+        # Create the 'Address' frame
+        address_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        address_frame.pack_propagate(False)
+        address_frame.pack(padx=(10, 0), side='left', anchor='w')
+
+        address_label = ctk.CTkLabel(address_frame, text="Address", font=("Helvetica", 16, "bold"))
+        address_label.pack(pady=(20, 10), padx=20, anchor='w')
+
+        shipping_entry = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        shipping_entry.pack(pady=5, padx=20, fill='x')
+
+        billing_entry = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        billing_entry.pack(pady=5, padx=20, fill='x')
+
+        address_button_frame = ctk.CTkFrame(address_frame, fg_color='#F2F2F2')
+        address_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button.pack(side='left', padx=5)
+
         # Create the 'Update Password' frame
-        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=800, width=800, corner_radius=0)
+        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, width=800, corner_radius=0)
         update_frame.pack_propagate(False)
-        update_frame.pack(pady=(10, 5), padx=60, side='top', anchor='w')
+        update_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
 
-        update_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 20, "bold"))
-        update_label.pack(pady=(20,10), padx=20, anchor='w')
+        password_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 16, "bold"))
+        password_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#D3D3D3", border_color='#D3D3D3')
+        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         current_password_entry.pack(pady=5, padx=20, fill='x')
 
         new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
@@ -976,28 +1030,55 @@ class RentalApp(ctk.CTk):
         confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
         confirm_password_entry.pack(pady=5, padx=20, fill='x')
 
-        button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
-        button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+        password_button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
+        password_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        cancel_button = ctk.CTkButton(button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A")
         save_button.pack(side='left', padx=5)
 
-        # Create the 'Delete Account' frame
-        delete_account_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=150, width=800, corner_radius=0)
-        delete_account_frame.pack_propagate(False)
-        delete_account_frame.pack(pady=10, padx=60, side='top', anchor='w')
+    def show_products(self):
+        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+        self.search_results = crud.search_products_by_category(search_query)  # Query the database
 
-        delete_label = ctk.CTkLabel(delete_account_frame, text="Delete Account", font=("Helvetica", 20, "bold"))
-        delete_label.pack(pady=(20,10), padx=20, anchor='w')
+        # Initially display the search results without any sorting
+        self.display_results(search_query, self.search_results)
 
-        warning_label = ctk.CTkLabel(delete_account_frame, text="Deleting your account is permanent and cannot be reversed.", font=("Helvetica", 14))
-        warning_label.pack(pady=5, padx=20, anchor='w')
+    def display_results(self, search_query, search_results):
+        # Clear existing search results
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
 
-        delete_button = ctk.CTkButton(delete_account_frame, text="Delete Account", fg_color="#B91C1C")
-        delete_button.pack(pady=10, padx=20, anchor='w')
+        # Add a title label for the search results (if a search query was provided)
+        if search_query:
+            title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
+            title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
+
+        # Display the search results
+        if search_results:
+            row_frame = None
+            products_in_row = 0
+
+            for i, (product_name, price, image) in enumerate(search_results):
+                if products_in_row == 0:
+                    # Create a new row frame when starting a new row
+                    row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+                    row_frame.pack(fill="x", padx=20, pady=10)
+
+                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+
+                products_in_row += 1
+
+                # Reset after adding 3 products in a row
+                if products_in_row >= 3:
+                    products_in_row = 0
+        else:
+            no_results_label = ctk.CTkLabel(self.main_frame, text="No results found.", font=("Helvetica", 18, 'bold'))
+            no_results_label.pack(anchor="n", pady=(40, 20))
+
+
 
 
 

@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw, ImageOps
 import crud 
 from tkinter import messagebox
-import register, homepage, admin_dashboard
+import register, homepage, admin_dashboard, forgot_pass
 
 # Set the appearance mode of the app
 ctk.set_appearance_mode("light")  # Modes: "System" (standard), "light", "dark"
@@ -78,9 +78,9 @@ class Login(ctk.CTk):
         self.password_entry = ctk.CTkEntry(right_frame, placeholder_text="Password", show="*", corner_radius=20, height =35, width = 40)
         self.password_entry.pack(pady=10, fill="x", padx = (50,100))
 
-        # Forgot Password Label
-        forgot_password_label = ctk.CTkLabel(right_frame, text="forget password?", font=("Arial", 12), fg_color=None, text_color='white')
-        forgot_password_label.pack(pady=(5,10), padx = (90,5))
+        # Back to Sign in Label/Button
+        forgetpass_label = ctk.CTkButton(right_frame, text="Forgot password?", fg_color='transparent', text_color='white', hover_color='#2F4D7D', command=self.navigate_to_forgetpass)
+        forgetpass_label.pack(pady=(5,10), padx=(120,30))
 
         # Login Button
         login_button = ctk.CTkButton(right_frame, text="Login", fg_color='white', text_color='#2F4D7D', width =10, hover_color='white', command=self.check)
@@ -98,21 +98,46 @@ class Login(ctk.CTk):
     def check(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-        valid, role = crud.check_user_credentials(username, password)
         
-        if valid:
-            if role =='provider':
-                self.destroy()
-                app= admin_dashboard.RentalApp()
-                app.mainloop()
-            else:
-                self.destroy()
-                app = homepage.RentalApp()
-                app.mainloop()
+        # First, check if the username exists in the database
+        if not crud.check_username_exists(username):
+            messagebox.showerror("Login Error", "Invalid username. Please try again.")
+            return
 
+        # Then, check if the password is correct for the given username
+        valid, role = crud.check_user_credentials(username, password)
+        if not valid:
+            messagebox.showerror("Login Error", "Invalid password. Please reset your password.")
+            return
+        
+        # If both are valid, proceed based on the role
+        if role == 'provider':
+            self.destroy()
+            app = admin_dashboard.RentalApp()
+            app.mainloop()
         else:
-            # Show error message
-            messagebox.showerror("Login Error", "Invalid username or password. Please try again.")
+            self.destroy()
+            app = homepage.RentalApp()
+            app.mainloop()
+            
+            if valid:
+                if role =='provider':
+                    self.destroy()
+                    app= admin_dashboard.RentalApp()
+                    app.mainloop()
+                else:
+                    self.destroy()
+                    app = homepage.RentalApp()
+                    app.mainloop()
+
+            else:
+                # Show error message
+                messagebox.showerror("Login Error", "Invalid username or password. Please try again.")
+
+    def navigate_to_forgetpass(self):
+        self.destroy()
+        forget = forgot_pass.ForgotPassword()
+        forget.mainloop()
 
 if __name__ == "__main__":
     app = Login()

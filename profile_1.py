@@ -570,51 +570,85 @@ class RentalApp(ctk.CTk):
         title_label = ctk.CTkLabel(self.main_frame, text="Settings", font=("Helvetica", 20, "bold"))
         title_label.pack(pady=20, side='top', padx=60, anchor='w')
 
-        # Create the 'Update Password' frame
-        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=800, width=800, corner_radius=0)
-        update_frame.pack_propagate(False)
-        update_frame.pack(pady=(10, 5), padx=60, side='top', anchor='w')
+        # Create the top frame to hold Customer and Address sections
+        top_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, corner_radius=0)
+        top_frame.pack_propagate(False)
+        top_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
 
-        username_label = ctk.CTkLabel(update_frame, text="Edit Username", font=("Helvetica", 20, "bold"))
-        username_label.pack(pady=(20,10), padx=20, anchor='w')
+        # Create the 'Customer' frame
+        customer_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        customer_frame.pack_propagate(False)
+        customer_frame.pack(padx=(0, 10), side='left', anchor='w')
 
-        new_username_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new username", fg_color="#D3D3D3", border_color='#D3D3D3')
-        new_username_entry.pack(pady=5, padx=20, fill='x')
+        customer_label = ctk.CTkLabel(customer_frame, text="Customer", font=("Helvetica", 16, "bold"))
+        customer_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        email_label = ctk.CTkLabel(update_frame, text="Edit Email", font=("Helvetica", 20, "bold"))
-        email_label.pack(pady=(40,10), padx=20, anchor='w')
+        name_entry = ctk.CTkEntry(customer_frame, placeholder_text="Name", fg_color="#D3D3D3", border_color='#D3D3D3')
+        name_entry.pack(pady=5, padx=20, fill='x')
 
-        new_email_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new email", fg_color='#D3D3D3', border_color='#D3D3D3')
-        new_email_entry.pack(pady=5, padx=20, fill='x')
+        email_entry = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        email_entry.pack(pady=5, padx=20, fill='x')
 
-        phone_label = ctk.CTkLabel(update_frame, text="Edit phone number", font=("Helvetica", 20, "bold"))
-        phone_label.pack(pady=(40,10), padx=20, anchor='w')
+        phone_entry = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        phone_entry.pack(pady=5, padx=20, fill='x')
 
-        new_phone_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter your new phone number", fg_color='#D3D3D3', border_color='#D3D3D3')
-        new_phone_entry.pack(pady=5, padx=20, fill='x')
+        customer_button_frame = ctk.CTkFrame(customer_frame, fg_color='#F2F2F2')
+        customer_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
 
-        button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
-        button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
-
-        cancel_button = ctk.CTkButton(button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A")
         save_button.pack(side='left', padx=5)
 
-        # Create the 'Delete Account' frame
-        delete_account_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=150, width=800, corner_radius=0)
-        delete_account_frame.pack_propagate(False)
-        delete_account_frame.pack(pady=10, padx=60, side='top', anchor='w')
+        # Create the 'Address' frame
+        address_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        address_frame.pack_propagate(False)
+        address_frame.pack(padx=(10, 0), side='left', anchor='w')
 
-        delete_label = ctk.CTkLabel(delete_account_frame, text="Delete Account", font=("Helvetica", 20, "bold"))
-        delete_label.pack(pady=(20,10), padx=20, anchor='w')
+        address_label = ctk.CTkLabel(address_frame, text="Address", font=("Helvetica", 16, "bold"))
+        address_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        warning_label = ctk.CTkLabel(delete_account_frame, text="Deleting your account is permanent and cannot be reversed.", font=("Helvetica", 14))
-        warning_label.pack(pady=5, padx=20, anchor='w')
+        shipping_entry = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        shipping_entry.pack(pady=5, padx=20, fill='x')
 
-        delete_button = ctk.CTkButton(delete_account_frame, text="Delete Account", fg_color="#B91C1C")
-        delete_button.pack(pady=10, padx=20, anchor='w')
+        billing_entry = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        billing_entry.pack(pady=5, padx=20, fill='x')
+
+        address_button_frame = ctk.CTkFrame(address_frame, fg_color='#F2F2F2')
+        address_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button.pack(side='left', padx=5)
+
+        # Create the 'Update Password' frame
+        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, width=800, corner_radius=0)
+        update_frame.pack_propagate(False)
+        update_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
+
+        password_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 16, "bold"))
+        password_label.pack(pady=(20, 10), padx=20, anchor='w')
+
+        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3')
+        current_password_entry.pack(pady=5, padx=20, fill='x')
+
+        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
+        new_password_entry.pack(pady=5, padx=20, fill='x')
+
+        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
+        confirm_password_entry.pack(pady=5, padx=20, fill='x')
+
+        password_button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
+        password_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button.pack(side='left', padx=5)
 
 
     # Function to create rounded rectangle

@@ -264,6 +264,27 @@ def get_admin_rental():
 
     return admin_items
     
+
+def check_username_exists(username):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Query to check if the username exists
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
+    finally:
+        # Close the database connection
+        conn.close()
+
+    # Return True if a user was found, False otherwise
+    return user is not None
+
+
 def get_purchase_items():
     # Connect to the database
     conn = sqlite3.connect('database.db')
@@ -540,6 +561,34 @@ def search_products_by_category(category):
     results = c.fetchall()
     conn.close()
     return results
+
+def update_user_password(username, new_password):
+    try:
+        # Connect to the database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # Update the user's password
+        cursor.execute("""
+            UPDATE users
+            SET password = ?
+            WHERE username = ?
+        """, (new_password, username))
+
+        # Commit the changes
+        conn.commit()
+
+        # Check if the password was updated
+        if cursor.rowcount == 0:
+            print("Username not found. No password updated.")
+        else:
+            print("Password updated successfully for user:", username)
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+
+    finally:
+        conn.close()
 
 # Main loop
 if __name__ == "__main__":
