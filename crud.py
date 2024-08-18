@@ -120,6 +120,17 @@ def add_cart(product_id, product_name, price, category, image):
     conn.commit()
     conn.close()
 
+def add_purchase(product_id, product_name, price, category, status):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    c.execute(
+        "INSERT INTO Purchase(purchase_id, product_id, product_name, price, category, status) VALUES (?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, price, category, status)
+    )
+    conn.commit()
+    conn.close()
+
 
 def delete_user(user_id):
     conn = sqlite3.connect('database.db')
@@ -136,6 +147,14 @@ def delete_cart(order_id):
     conn.commit()
     conn.close()
     print(f"User with User ID: {order_id} deleted successfully.")
+
+def delete_purchase(purchase_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM Purchase WHERE purchase_id=?", (purchase_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with Purchase: {purchase_id} deleted successfully.")
 
 
 def get_user_info(user_id):
@@ -482,3 +501,4 @@ if __name__ == "__main__":
 
 
     root.mainloop()
+
