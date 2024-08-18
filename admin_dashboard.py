@@ -359,22 +359,67 @@ class RentalApp(ctk.CTk):
 
         # Create Table Frame
         table_frame = ttk.Frame(self.main_frame)
-        table_frame.grid(row=5, column=0, columnspan=6, padx=(40, 100), pady=(40, 20), sticky="nsew", rowspan=5, ipady=20)
+        table_frame.grid(row=4, column=0, columnspan=5, padx=(50, 100), pady=(40, 20), sticky="nsew")
 
         # Configure column and row weights to fill available space
         table_frame.grid_columnconfigure(0, weight=1)
         table_frame.grid_columnconfigure(1, weight=1)
         table_frame.grid_columnconfigure(2, weight=1)
         table_frame.grid_columnconfigure(3, weight=1)
-        table_frame.grid_columnconfigure(4, weight=1)
-        table_frame.grid_columnconfigure(5, weight=1)  # Additional column for ID
 
         # Define the column names
-        columns = ['Product', 'Id', 'Category', 'Price', 'Status', 'Added']
+        columns = ['Product', 'Category', 'Price', 'status']
+
+        # Configure column and row weights to fill available space
+        for i in range(len(columns)):  # Ensure to match the number of columns
+            table_frame.grid_columnconfigure(i, weight=1)
+
+        # Configure row weights (if needed)
+        table_frame.grid_rowconfigure(0, weight=1)  # Header row
+        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
+
+        # Example data for demonstration
+        # Example data for demonstration
+        data = crud.get_purchase_items()
+        print(data)
+
+        # Determine the number of items in data
+        item_count = len(data)
+
+        # Set the item_count text color and background color based on the item count
+        if item_count > 0:
+            item_count_text = f"{item_count} Products"
+            item_count_fg_color = 'green'
+            item_count_bg_color = '#D1FAE5'  # Light green background
+        else:
+            item_count_text = "0 Products"
+            item_count_fg_color = 'darkgrey'
+            item_count_bg_color = '#F0F1F3'  # Light grey background
+
+        # Create a frame to hold the label and the button
+        recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
+        recent_frame.grid(row=0, column=0, columnspan=len(columns), padx=15, pady=10, sticky="w")
+
+        # Create a label for "Recent Rentals"
+        recent_label = tk.Label(recent_frame, text="Recent Rentals", bg='#F2F2F2', font=('Arial', 16, 'bold'))
+        recent_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        # Create a button for the item count
+        recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
+                                    fg_color=item_count_bg_color, 
+                                    hover_color='#C3F9D8',  # Optional: color when hovered
+                                    text_color=item_count_fg_color,
+                                    font=('Arial', 12, 'bold'), 
+                                    width=80, 
+                                    height=30,
+                                    border_width=0)
+
+        # Place the button in the frame next to the label
+        recent_button.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
         # Create canvas for rounded header
         header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
-        header_canvas.grid(row=0, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+        header_canvas.grid(row=1, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
 
         # Draw the rounded rectangle on the canvas
         self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
@@ -382,28 +427,18 @@ class RentalApp(ctk.CTk):
         # Create the header row with column names
         for col, column_name in enumerate(columns):
             col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
-            col_label.grid(row=0, column=col, padx=15, pady=(5,20), sticky="nsew")
+            col_label.grid(row=1, column=col, padx=15, pady=(5, 20), sticky="nsew")
 
-        # Example data for demonstration
-        data = [
-            ['Camera Stand', '87', 'Equipment', 'Rs.1000', 'Unsettled', '29 Dec 2022', './photos/sherwani.jpg'],
-            ['Tripod', '98', 'Equipment', 'Rs.500', 'Settled', '24 Dec 2022', './photos/no-image.png'],
-            ['Sony a6400', '25', 'Camera', 'Rs.1000', 'Settled', '12 Dec 2022', './photos/no-image.png'],
-            ['Puma Shoes', '56', 'Shoes', 'Rs.100', 'Settled', '21 Oct 2022', './photos/no-image.png'],
-            ['Kurtha Set', '87', 'Clothes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
-            ['Nike Shoes', '90', 'Shoes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
-            ['Kurthi', '3002', 'Clothes', 'Rs.300', 'Settled', '10 Aug 2022', './photos/no-image.png'],
-        ]
 
         # Insert data into the table
-        for row, record in enumerate(data, start=1):
-            for col, value in enumerate(record[:6]):
+        for row, record in enumerate(data, start=2):  # Start from row 2 due to the label and header row
+            for col, value in enumerate(record[:4]):
                 if col == 0:  # Product column with image
                     cell_frame = ttk.Frame(table_frame)
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
-                    
+
                     # Load and resize the image
-                    img_path = record[6]  # Assuming the image path is at index 6
+                    img_path = record[4]  # Assuming the image path is at index 4
                     img = Image.open(img_path)
                     img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
                     img_tk = ImageTk.PhotoImage(img)
@@ -411,22 +446,43 @@ class RentalApp(ctk.CTk):
                     img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
                     img_label.image = img_tk  # Keep a reference to prevent garbage collection
                     img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
-                    
+
                     cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=0, column=1, sticky="w")
-                
-                elif col == 4:  # Status column with colored badge
-                    status_color = 'red' if value == 'Unsettled' else 'green'
-                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
-                    
-                    status_label = tk.Label(table_frame, text=value, font=('Arial', 12), fg=status_color, anchor='w',
-                                            bg=status_bg, padx=15, pady=5)
-                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
 
-                
-                else:
+                elif col == 3:  # Status column with colored badge
+                    if 'settled' in value.lower():
+                        status_color = 'green'
+                        status_bg = '#D1FAE5'  # Light green background
+                    else:
+                        status_color = 'red'
+                        status_bg = '#FFEDD5'  # Light red background
+
+                    # Create the label with centered text
+                    status_label = tk.Label(
+                        table_frame,
+                        text=value,
+                        font=('Arial', 12, 'bold'),
+                        foreground=status_color,
+                        background=status_bg,
+                        anchor='center',  # Center the text horizontally
+                        justify='center'  # Center the text horizontally
+                    )
+                    
+                    # Grid placement
+                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="nw")
+
+
+                else:  # Other columns
                     cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
-                    cell_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+                    cell_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
+
+        # Add padding below the table
+        table_frame.grid_rowconfigure(len(data) + 2, weight=1)
+
+        # Adjust the spacing between the table and the last element
+        self.main_frame.grid_rowconfigure(2, weight=1)
+
 
         
 
@@ -517,31 +573,148 @@ class RentalApp(ctk.CTk):
             widget.destroy()
 
         # Create the header frame (for "Product" label and Add Product button)
-        header_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=50, corner_radius=10)
-        header_frame.pack(fill='x', padx=20, pady=10)
+        header_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent', height=50, corner_radius=10, width = 400)
+        header_frame.propagate(False)
+        header_frame.grid(row=0, column=0, columnspan=5, padx=20, pady=10, sticky="nsew")
 
         # "Product" label
         product_label = ctk.CTkLabel(header_frame, text="Product", font=("Helvetica", 18, "bold"))
-        product_label.pack(side='left', padx=(20, 10))
+        product_label.grid(row=0, column=0, padx=(20, 10), sticky="w")
 
         # Add product button
         add_product_button = ctk.CTkButton(header_frame, text="+ Add Product", text_color="white", 
                                         fg_color="#2F4D7D", hover_color="#2F4D7D", 
                                         font=("Helvetica", 15))
-        add_product_button.pack(side='right', padx=(10, 20), pady=5)
+        add_product_button.grid(row=0, column=1, padx=(50, 2), pady=5, sticky="e")
 
         # Create a new frame for the search bar below the Product label
-        search_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', corner_radius=8)
-        search_frame.pack(fill='x', padx=20, pady=(5, 10))  # Padding to position it below the header
+        search_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent', corner_radius=8)
+        search_frame.grid(row=1, column=0, columnspan=5, padx=20, pady=(5, 10), sticky="ew")
 
         # Search bar with icon
         search_icon = ctk.CTkLabel(search_frame, text="🔍", text_color="gray", width=10)
-        search_icon.pack(side='left', padx=(10, 5))
+        search_icon.grid(row=0, column=0, padx=(10, 5), pady=5, sticky="w")
 
         search_entry = ctk.CTkEntry(search_frame, placeholder_text="Search product...", width=200, border_width=0)
-        search_entry.pack(side='left', padx=(5, 10), pady=5)
+        search_entry.grid(row=0, column=1, padx=(5, 10), pady=5, sticky="w")
 
-        # You can add more widgets and frames here for the rest of the dashboard content.
+        # Create Table Frame
+        table_frame = ttk.Frame(self.main_frame)
+        table_frame.grid(row=2, column=0, columnspan=5, padx=(60, 90), pady=(40, 20), sticky="nsew")
+
+        # Configure column and row weights to fill available space
+        for i in range(4):  # Assuming 4 columns
+            table_frame.grid_columnconfigure(i, weight=1)
+
+        # Define the column names
+        columns = ['Product', 'Category', 'Price', 'Status']
+
+        # Configure row weights (if needed)
+        table_frame.grid_rowconfigure(0, weight=1)  # Header row
+        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
+
+        # Example data for demonstration
+        data = crud.get_purchase_items()
+        print(data)
+
+        # Determine the number of items in data
+        item_count = len(data)
+
+        # Set the item_count text color and background color based on the item count
+        if item_count > 0:
+            item_count_text = f"{item_count} Products"
+            item_count_fg_color = 'green'
+            item_count_bg_color = '#D1FAE5'  # Light green background
+        else:
+            item_count_text = "0 Products"
+            item_count_fg_color = 'darkgrey'
+            item_count_bg_color = '#F0F1F3'  # Light grey background
+
+        # Create a frame to hold the label and the button
+        recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
+        recent_frame.grid(row=0, column=0, columnspan=len(columns), padx=15, pady=10, sticky="w")
+
+        # Create a label for "Recent Rentals"
+        recent_label = tk.Label(recent_frame, text="Recent Rentals", bg='#F2F2F2', font=('Arial', 16, 'bold'))
+        recent_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        # Create a button for the item count
+        recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
+                                    fg_color=item_count_bg_color, 
+                                    hover_color='#C3F9D8',  # Optional: color when hovered
+                                    text_color=item_count_fg_color,
+                                    font=('Arial', 12, 'bold'), 
+                                    width=80, 
+                                    height=30,
+                                    border_width=0)
+
+        # Place the button in the frame next to the label
+        recent_button.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+        # Create canvas for rounded header
+        header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
+        header_canvas.grid(row=1, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+
+        # Draw the rounded rectangle on the canvas
+        self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
+
+        # Create the header row with column names
+        for col, column_name in enumerate(columns):
+            col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
+            col_label.grid(row=1, column=col, padx=15, pady=(5, 20), sticky="nsew")
+
+        # Insert data into the table
+        for row, record in enumerate(data, start=2):  # Start from row 2 due to the label and header row
+            for col, value in enumerate(record[:4]):
+                if col == 0:  # Product column with image
+                    cell_frame = ttk.Frame(table_frame)
+                    cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+
+                    # Load and resize the image
+                    img_path = record[4]  # Assuming the image path is at index 4
+                    img = Image.open(img_path)
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img_tk = ImageTk.PhotoImage(img)
+
+                    img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
+                    img_label.image = img_tk  # Keep a reference to prevent garbage collection
+                    img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
+
+                    cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=0, column=1, sticky="w")
+
+                elif col == 3:  # Status column with colored badge
+                    if 'settled' == value.lower():
+                        status_color = 'green'
+                        status_bg = '#D1FAE5'  # Light green background
+                    else:
+                        status_color = 'red'
+                        status_bg = '#FFEDD5'  # Light red background
+
+                    # Create the label with centered text
+                    status_label = tk.Label(
+                        table_frame,
+                        text=value,
+                        font=('Arial', 12, 'bold'),
+                        foreground=status_color,
+                        background=status_bg,
+                        anchor='center',  # Center the text horizontally
+                        justify='center'  # Center the text horizontally
+                    )
+                    
+                    # Grid placement
+                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="nw")
+
+                else:  # Other columns
+                    cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
+                    cell_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
+
+        # Add padding below the table
+        table_frame.grid_rowconfigure(len(data) + 2, weight=1)
+
+        # Adjust the spacing between the table and the last element
+        self.main_frame.grid_rowconfigure(2, weight=1)
+
 
 
     def create_finance(self):

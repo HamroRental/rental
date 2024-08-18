@@ -288,7 +288,9 @@ class Description(ctk.CTk):
         profile_app.mainloop()
 
     def navigate_to_payment(self):
-        data = self.data
+        crud.add_purchase(self.product_id, self.product_name, self.price, self.category, 'unchecked', self.image_path)
+        if crud.check_product_in_cart(self.product_id) == True:
+            crud.delete_cart(self.product_id)
         self.destroy()
         payment_app = payment.RentalApp()
         payment_app.mainloop()

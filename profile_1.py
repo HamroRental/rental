@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search, payment
+import crud, homepage, search, payment, login
 import tkinter as tk
 from tkinter import ttk, font , Canvas
 
@@ -124,7 +124,7 @@ class RentalApp(ctk.CTk):
             height=50,
             width=180,
             anchor='w',
-            command=lambda: self.on_click(self.logout_button, self.logout_image)
+            command=lambda: self.on_click(self.logout_button, self.logout_image, self.navigate_to_login)
         )
         self.logout_button.pack(anchor="w", padx=(20, 30), pady=(5, 0), side = 'bottom')
 
@@ -273,7 +273,7 @@ class RentalApp(ctk.CTk):
         table_frame.grid_columnconfigure(3, weight=1)
 
         # Define the column names
-        columns = ['Product', 'Category', 'Price', 'Total']
+        columns = ['Product', 'Category', 'Price', 'status']
 
         # Configure column and row weights to fill available space
         for i in range(len(columns)):  # Ensure to match the number of columns
@@ -285,15 +285,8 @@ class RentalApp(ctk.CTk):
 
         # Example data for demonstration
         # Example data for demonstration
-        data = [
-            ['Camera Stand', 'Equipment', 'Rs.1000', 'Unsettled', '29 Dec 2022', './photos/sherwani.jpg'],
-            ['Tripod', 'Equipment', 'Rs.500', 'Settled', '24 Dec 2022', './photos/no-image.png'],
-            ['Sony a6400','Camera', 'Rs.1000', 'Settled', '12 Dec 2022', './photos/no-image.png'],
-            ['Puma Shoes','Shoes', 'Rs.100', 'Settled', '21 Oct 2022', './photos/no-image.png'],
-            ['Kurtha Set','Clothes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
-            ['Nike Shoes','Shoes', 'Rs.200', 'Settled', '19 Sep 2022', './photos/no-image.png'],
-            ['Kurthi', 'Clothes', 'Rs.300', 'Settled', '10 Aug 2022', './photos/no-image.png'],
-        ]
+        data = crud.get_purchase_items()
+        print(data)
 
         # Determine the number of items in data
         item_count = len(data)
@@ -350,7 +343,7 @@ class RentalApp(ctk.CTk):
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
 
                     # Load and resize the image
-                    img_path = record[5]  # Assuming the image path is at index 6
+                    img_path = record[4]  # Assuming the image path is at index 4
                     img = Image.open(img_path)
                     img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
                     img_tk = ImageTk.PhotoImage(img)
@@ -362,12 +355,28 @@ class RentalApp(ctk.CTk):
                     cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=0, column=1, sticky="w")
 
-                elif col == 4:  # Status column with colored badge
-                    status_color = 'red' if value == 'Unsettled' else 'green'
-                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+                elif col == 3:  # Status column with colored badge
+                    if 'settled' == value.lower():
+                        status_color = 'green'
+                        status_bg = '#D1FAE5'  # Light green background
+                    else:
+                        status_color = 'red'
+                        status_bg = '#FFEDD5'  # Light red background
 
-                    status_label = tk.Label(table_frame, text=value, font=('Arial', 12, 'bold'), foreground=status_color, background=status_bg, anchor='w')
-                    status_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
+                    # Create the label with centered text
+                    status_label = tk.Label(
+                        table_frame,
+                        text=value,
+                        font=('Arial', 12, 'bold'),
+                        foreground=status_color,
+                        background=status_bg,
+                        anchor='center',  # Center the text horizontally
+                        justify='center'  # Center the text horizontally
+                    )
+                    
+                    # Grid placement
+                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="nw")
+
 
                 else:  # Other columns
                     cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
@@ -712,8 +721,14 @@ class RentalApp(ctk.CTk):
     def navigate_to_payment(self):
 
         self.destroy()
-        payment_app = payment.RentalApp(data)
+        payment_app = payment.RentalApp()
         payment_app.mainloop()
+
+    def navigate_to_login(self):
+        self.destroy()
+        login_app = login.Login()
+        login_app.mainloop()
+
     
 
 # Run the application
