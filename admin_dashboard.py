@@ -542,8 +542,6 @@ class RentalApp(ctk.CTk):
         value_label.grid(row=0, column=2, padx=(10, 20), sticky='w', columnspan=2)
         
 
-
-
     def create_add_product(self):
         global product_name_entry
         # Clear the current contents of the main frame

@@ -586,6 +586,14 @@ def search_products_by_category(category):
     conn.close()
     return results
 
+def get_all_rentals():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT product_name, price, image FROM admin_rental")
+    results = c.fetchall()
+    conn.close()
+    return results
+
 def update_user_password(username, new_password):
     try:
         # Connect to the database

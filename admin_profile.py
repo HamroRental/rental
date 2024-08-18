@@ -5,7 +5,6 @@ import tkinter as tk
 from tkinter import ttk, font , Canvas, filedialog
 from random import randint
 
-# Set the appearance mode of the app
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
@@ -16,10 +15,8 @@ class RentalApp(ctk.CTk):
         self.title("Rent it.")
         self.geometry("1280x750")
 
-        # Track the active button
         self.active_button = None
 
-        # Create the title bar frame
         self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D", corner_radius=0)
         self.title_bar.pack(fill="x", side="top")
 
@@ -67,7 +64,6 @@ class RentalApp(ctk.CTk):
         self.side_frame = ctk.CTkFrame(self, width=300, corner_radius=10, bg_color="transparent", fg_color='transparent')
         self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=10)
 
-        # Sample data list
         image_path = '.\\photos\\no-profile.png'
         data = [
             {
@@ -79,65 +75,113 @@ class RentalApp(ctk.CTk):
             }
         ]
 
-        # Add content from data to the side frame
         for item in data:
-            # Profile image
             profile_img = Image.open(image_path)
             profile_img = profile_img.resize((100, 100), Image.Resampling.LANCZOS)
             profile_img = ImageTk.PhotoImage(profile_img)
 
-            # Profile image canvas
             canvas = Canvas(self.side_frame, width=120, height=120, bg="#f2f2f2", highlightthickness=0)
             canvas.pack(pady=20)
             canvas.create_oval(10, 10, 110, 110, outline="#2F4D7D", width=4)
             canvas.create_image(60, 60, image=profile_img)
             canvas.image = profile_img
 
-            # Name
             name_label = ctk.CTkLabel(self.side_frame, text=item['name'], font=("Helvetica", 20, 'bold'))
             name_label.pack(pady=(10, 0))
 
-            # Member since
             member_label = ctk.CTkLabel(self.side_frame, text=f"Member Since {item['member_since']}", font=("Helvetica", 12))
             member_label.pack(pady=(5, 15))
 
-            # Email
             email_image = ctk.CTkImage(light_image=Image.open(".\\photos\\email.png").resize((15, 15), Image.Resampling.LANCZOS))
             email_label = ctk.CTkLabel(self.side_frame, text=item['email'], image=email_image, compound="left")
             email_label.pack(anchor="w", padx=20)
 
-            # Location
             location_image = ctk.CTkImage(light_image=Image.open(".\\photos\\location.png").resize((15, 15), Image.Resampling.LANCZOS))
             location_label = ctk.CTkLabel(self.side_frame, text=item['location'], image=location_image, compound="left")
             location_label.pack(anchor="w", padx=20, pady=(5, 0))
 
-            # Phone
             phone_image = ctk.CTkImage(light_image=Image.open(".\\photos\\phone.png").resize((15, 15), Image.Resampling.LANCZOS))
             phone_label = ctk.CTkLabel(self.side_frame, text=item['phone'], image=phone_image, compound="left")
             phone_label.pack(anchor="w", padx=20, pady=(5, 0))
-        
+
+        self.load_and_display_rentals()
+
+    def load_and_display_rentals(self):
+        rentals = crud.get_all_rentals()
+        self.display_results(rentals)
+
     def navigate(self):
         self.destroy()
         new_app = homepage.RentalApp()
         new_app.mainloop()
 
-    # Adding search functionality 
     def search(self):
-        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
-        search_results = crud.search_products_by_category(search_query)  # Query the database
+        search_query = self.search_entry.get().lower()
+        search_results = crud.search_products_by_category(search_query)
 
         if search_results:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+            self.destroy()
+            search_app = search.RentalApp(search_query, search_results)
             search_app.mainloop()
         else:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
+            self.destroy()
+            search_app = search.RentalApp(search_query, [])
             search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             search_app.label.pack(anchor="n", pady=(40, 20))
             search_app.mainloop()
 
-# Run the application
+    def display_results(self, search_results):
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        title_label_main = ctk.CTkLabel(self.main_frame, text="Listed Items", font=("Helvetica", 18, 'bold'))
+        title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
+
+        if search_results:
+            row_frame = None
+            products_in_row = 0
+
+            for i, (product_name, price, image) in enumerate(search_results):
+                if products_in_row == 0:
+                    row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+                    row_frame.pack(fill="x", padx=20, pady=10)
+
+                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+
+                products_in_row += 1
+
+                if products_in_row >= 3:
+                    products_in_row = 0
+        else:
+            no_results_label = ctk.CTkLabel(self.main_frame, text="No results found.", font=("Helvetica", 18, 'bold'))
+            no_results_label.pack(anchor="n", pady=(40, 20))
+    
+    def add_service_placeholder(self, parent, title, price, image_path):
+
+        # formatting the image as in the database # Replace single backslashes with double backslashes
+        formatted_path = image_path.replace("\\", "/")
+
+        # Load and resize the image using PIL
+        image = Image.open(image_path)
+        image.resize((180, 120),Image.Resampling.LANCZOS)  # Resize to desired dimensions
+        self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
+
+        # Create the frame for the image and text
+        service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10, fg_color="white")
+        service_frame.pack(padx=20, pady=10, side="left")
+
+        # Create and place the image label
+        image_label = ctk.CTkLabel(service_frame, image=self.ctk_image, text="")
+        image_label.pack(pady=0.5)
+
+        # Create and place the text button
+        title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="white", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
+        title_button.pack(side="top", pady=5)
+
+        price_label = ctk.CTkLabel(service_frame, text=price, font=("Helvetica", 12, 'bold'), text_color='#2F4D7D')
+        price_label.pack()
+
+
 if __name__ == "__main__":
     app = RentalApp()
     app.mainloop()
