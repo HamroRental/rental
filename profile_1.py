@@ -614,7 +614,7 @@ class RentalApp(ctk.CTk):
         warning_label.pack(pady=5, padx=20, anchor='w')
 
         delete_button = ctk.CTkButton(delete_account_frame, text="Delete Account", fg_color="#B91C1C")
-        delete_button.pack(pady=10, padx=20, anchor='w')
+        delete_button.pack(pady=10, padx=30, anchor='w')
 
 
     # Function to create rounded rectangle

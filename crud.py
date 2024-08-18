@@ -4,6 +4,7 @@ import sqlite3
 import uuid
 import io, os 
 import register 
+from datetime import datetime 
 
 
 # Database setup
@@ -75,16 +76,45 @@ c.execute(
 conn.commit()
 conn.close()
 
+# Admin_Rental Databse 
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute(
+    """CREATE TABLE IF NOT EXISTS admin_rental(
+        admin_rental_id TEXT PRIMARY KEY,
+        product_id TEXT,
+        product_name TEXT,
+        category TEXT,
+        price INT, 
+        status TEXT
+        )"""
+)
+conn.commit()
+conn.close()
 
+#modifying table code 
 # conn = sqlite3.connect('database.db')
 # cursor = conn.cursor()
 # alter_table_sql = """
-# ALTER TABLE Purchase
-# ADD COLUMN image TEXT;
+# ALTER TABLE admin_rental
+# ADD COLUMN created_at TIMESTAMP;
 # """
 # cursor.execute(alter_table_sql)
 # conn.commit()
 # conn.close()
+
+# deleting table code 
+def delete_all_from_table(table_name):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    
+    # Execute SQL command to delete all rows from the table
+    c.execute(f"DELETE FROM {table_name}")
+    
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
 
 
 # Function definitions
@@ -116,6 +146,18 @@ def add_user(role, fullname, username, email, password, phone_number):
     c.execute(
         "INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
         (unique_id, role, fullname, username, email, password, phone_number)
+    )
+    conn.commit()
+    conn.close()
+
+def add_admin_rental(product_id, product_name, category, price, status, image):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    unique_id = generate_unique_id()
+    current_time = datetime.now().isoformat()  # Get current time in ISO format
+    c.execute(
+        "INSERT INTO admin_rental (admin_rental_id, product_id, product_name, category, price, status, image, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (unique_id, product_id, product_name, category, price, status, image, current_time)
     )
     conn.commit()
     conn.close()
@@ -204,6 +246,23 @@ def get_cart_items():
     conn.close()
 
     return cart_items
+
+
+def get_admin_rental():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT product_name, price, category,status, image, created_at FROM admin_rental")
+
+    # Fetch all the rows and return as a list of tuples
+    admin_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return admin_items
     
 def get_purchase_items():
     # Connect to the database
@@ -544,4 +603,5 @@ if __name__ == "__main__":
     
 
     root.mainloop()
+
 
