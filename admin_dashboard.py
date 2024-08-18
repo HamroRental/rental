@@ -803,7 +803,7 @@ class RentalApp(ctk.CTk):
 
         # Welcome Label
         welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
-        welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
+        welcome_label.grid(row=0, column=0, padx=40, pady=(40, 10), sticky="w")
 
         # Add Product Button
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35)
