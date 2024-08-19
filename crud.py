@@ -93,16 +93,34 @@ c.execute(
 conn.commit()
 conn.close()
 
-# modifying table code 
+# # modifying table code 
 # conn = sqlite3.connect('database.db')
 # cursor = conn.cursor()
 # alter_table_sql = """
 # ALTER TABLE Users
-# ADD COLUMN last_acessed TIMESTAMP;
+# ADD COLUMN regdate DATE;
 # """
 # cursor.execute(alter_table_sql)
 # conn.commit()
 # conn.close()
+
+
+# function to update 
+# def update_existing_records():
+#     conn = sqlite3.connect('database.db')
+#     cursor = conn.cursor()
+
+#     try:
+#         # Update existing records with the current date for the new column
+#         cursor.execute("UPDATE Users SET regdate = DATE('now') WHERE regdate IS NULL")
+        
+#         conn.commit()
+#         print("Existing records updated successfully.")
+#     except sqlite3.Error as e:
+#         print(f"An error occurred: {e}")
+#     finally:
+#         conn.close()
+
 
 # deleting table code 
 def delete_all_from_table(table_name):
@@ -145,15 +163,15 @@ def add_user(role, fullname, username, email, password, phone_number):
     c = conn.cursor()
     unique_id = generate_unique_id()
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
+
     c.execute(
         """
-        INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number, last_acessed) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number, last_acessed, regdate) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, DATE('now'))
         """,
         (unique_id, role, fullname, username, email, password, phone_number, current_time)
     )
-    
+
     conn.commit()
     conn.close()
 
@@ -208,6 +226,14 @@ def delete_cart(order_id):
     conn.close()
     print(f"User with User ID: {order_id} deleted successfully.")
 
+def delete_admin_cart(admin_rental_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM admin_rental WHERE admin_rental_id=?", (admin_rental_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {admin_rental_id} deleted successfully.")
+
 def delete_purchase(purchase_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -232,7 +258,8 @@ def get_user_info(user_id):
             "Email": result[4],
             "Password": result[5],
             "Phone_number": result[6],
-            "last_acessed" : result[7]
+            "last_acessed" : result[7],
+            "regdate" : result[8]
         }
         return user_info
     else:
@@ -262,7 +289,7 @@ def get_admin_rental():
     cursor = conn.cursor()
 
     # Query to select the required columns from the Cart table
-    cursor.execute("SELECT product_name, price, category,status, image, created_at FROM admin_rental")
+    cursor.execute("SELECT product_name, price, category,status, image, created_at, admin_rental_id FROM admin_rental")
 
     # Fetch all the rows and return as a list of tuples
     admin_items = cursor.fetchall()
@@ -278,7 +305,7 @@ def get_admin_rental1():
     cursor = conn.cursor()
 
     # Query to select the required columns from the Cart table
-    cursor.execute("SELECT product_name,product_id, category, price,status, created_at, image FROM admin_rental")
+    cursor.execute("SELECT product_name,product_id, category, price,status, created_at, image, admin_rental_id FROM admin_rental")
 
     # Fetch all the rows and return as a list of tuples
     admin_items = cursor.fetchall()

@@ -65,13 +65,16 @@ class RentalApp(ctk.CTk):
         self.side_frame.pack(fill='y', side='left', padx=(20, 0), pady=10)
 
         image_path = '.\\photos\\no-profile.png'
+        user_id = crud.get_last_accessed_userid()
+        user_info = crud.get_user_info(user_id)
+        print(user_info)
         data = [
             {
-                'name': 'Kantoor Nepal',
-                'email': 'kantoornepal@gmail.com',
+                'name': user_info['Fullname'],
+                'email': user_info['Email'],
                 'location': 'Kathmandu',
-                'phone': '98073939012',
-                'member_since': '2024-01-09'
+                'phone': user_info['Phone_number'],
+                'member_since': user_info['regdate']
             }
         ]
 
