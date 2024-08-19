@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search, login
+import crud, homepage, search, login, admin_profile
 import tkinter as tk
 from tkinter import ttk, font , Canvas, filedialog, messagebox
 from random import randint
@@ -58,7 +58,7 @@ class RentalApp(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_admin_profile)
         self.profile_button.pack(side="left", padx=1)
 
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical', bg_color='transparent')
@@ -1163,6 +1163,12 @@ class RentalApp(ctk.CTk):
         self.destroy()
         app = login.Login()
         app.mainloop()
+
+    def navigate_to_admin_profile(self):
+        self.destroy()
+        app = admin_profile.RentalApp()
+        app.mainloop()
+        
             
 
 # Run the application

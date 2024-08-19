@@ -272,7 +272,7 @@ def get_cart_items():
     cursor = conn.cursor()
 
     # Query to select the required columns from the Cart table
-    cursor.execute("SELECT image, product_name, price FROM Cart")
+    cursor.execute("SELECT image, product_name, price,category, Order_id FROM Cart")
 
     # Fetch all the rows and return as a list of tuples
     cart_items = cursor.fetchall()
@@ -694,6 +694,7 @@ def get_last_accessed_username():
             LIMIT 1
         """)
         result = cursor.fetchone()
+        print(result)
 
         if result:
             last_accessed_username = result[0]

@@ -230,10 +230,15 @@ class RentalApp(ctk.CTk):
         )
         edit_button.pack(side='right', padx=(0, 10))
 
+        userid = crud.get_last_accessed_userid()
+        username = crud.get_last_accessed_username()
+        record = crud.get_user_info(userid)
+        print(record)
+
         # Adding three rows for Name, Email, and Phone below the title label
-        self.create_row(self.info_frame, "Name", "Dipesh Gautam", ".\\photos\\face.png")
-        self.create_row(self.info_frame, "Email", "usertest@gmail.com", ".\\photos\\email.png")
-        self.create_row(self.info_frame, "Phone", "+977 98345729", ".\\photos\\phone.png")
+        self.create_row(self.info_frame, "Name", username, ".\\photos\\face.png")
+        self.create_row(self.info_frame, "Email", record['Email'], ".\\photos\\email.png")
+        self.create_row(self.info_frame, "Phone", record['Phone_number'], ".\\photos\\phone.png")
 
         # Adding an address info frame
         self.address_info_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=210)
@@ -435,27 +440,21 @@ class RentalApp(ctk.CTk):
             
 
     def create_cart(self):
-        # Example data list (each item is a tuple containing image path, title, subtitle, and price)
         data = crud.get_cart_items()
-        
-        # Clear the current contents of the main frame
+
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the list frame for the cart layout
         list_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', width=400, height=100)
         list_frame.pack(side='top', fill='both', padx=80, pady=(30,10))
 
-        # Create a list to store references to all checkboxes
         checkboxes = []
 
-        # Function to toggle all checkboxes when the top checkbox is clicked
         def toggle_all():
             select_all = top_checkbox.get() == 1
             for checkbox in checkboxes:
                 checkbox.select() if select_all else checkbox.deselect()
 
-        # Adding top select checkbox in the list frame at the left side
         top_checkbox = ctk.CTkCheckBox(
             list_frame,
             fg_color='#D3D3D3',
@@ -474,7 +473,13 @@ class RentalApp(ctk.CTk):
         select_label = ctk.CTkLabel(list_frame, text=str(len(data)) + ' items', text_color='gray')
         select_label.pack(side='left', padx=(0, 30), fill='x')
 
-        # Adding delete button
+        def delete_selected():
+            selected_items = [checkbox for checkbox in checkboxes if checkbox.get() == 1]
+            for checkbox in selected_items:
+                index = checkboxes.index(checkbox)
+                crud.delete_cart(data[index][-1])  # Assume item[3] is the identifier for the item
+            self.create_cart()  # Refresh the cart display
+
         delete_button = ctk.CTkButton(
             list_frame,
             text="Delete",
@@ -483,36 +488,31 @@ class RentalApp(ctk.CTk):
             fg_color='transparent',
             bg_color='transparent',
             hover_color='#F2F2F2',
+            command=delete_selected
         )
         delete_button.pack(pady=10, side='right', padx=(30, 10), anchor='e')
 
-        # Check if the data list is empty
         if not data:
-            # Create a frame to hold both the image and text
             no_product_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent')
             no_product_frame.pack(expand=True, pady=130)
 
-            # Display a "no-product" image if the cart is empty
             no_product_img = Image.open(".\\photos\\no-product.png")
             no_product_img = no_product_img.resize((250, 250), Image.Resampling.LANCZOS)
             no_product_photo = ImageTk.PhotoImage(no_product_img)
-            
+
             no_product_label = ctk.CTkLabel(no_product_frame, image=no_product_photo, text="")
-            no_product_label.image = no_product_photo  # Keep a reference to avoid garbage collection
+            no_product_label.image = no_product_photo
             no_product_label.pack()
 
-            # Add text below the image
             no_product_title = ctk.CTkLabel(no_product_frame, text='No Products   ', font=("Helvetica", 16))
             no_product_title.pack(pady=10)
 
         else:
-            # Loop through the data list and create a frame for each item
             for item in data:
                 product_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', bg_color='#F2F2F2', height=150)
                 product_frame.propagate(False)
                 product_frame.pack(side='top', fill='x', padx=80, pady=10)
 
-                # Add a select checkbox to each product frame
                 checkbox = ctk.CTkCheckBox(
                     product_frame,
                     fg_color='#D3D3D3',
@@ -528,22 +528,34 @@ class RentalApp(ctk.CTk):
                 checkbox.pack(side='left', padx=(10, 0), pady=10, anchor='w')
                 checkboxes.append(checkbox)
 
-                # Load and display the product image
                 product_img = Image.open(item[0])
                 product_img = product_img.resize((150, 150), Image.Resampling.LANCZOS)
                 product_photo = ImageTk.PhotoImage(product_img)
                 product_label = ctk.CTkLabel(product_frame, image=product_photo, text="")
-                product_label.image = product_photo  # Keep a reference to avoid garbage collection
+                product_label.image = product_photo
                 product_label.pack(side='left', padx=10)
 
-                # Display title, subtitle, and price
                 title_label = ctk.CTkLabel(product_frame, text=item[1], font=("Helvetica", 20))
                 title_label.pack(side='left', padx=10, anchor='w')
 
                 price_label = ctk.CTkLabel(product_frame, text='Rs ' + str(item[2]) + ' / Day', text_color='#2F4D7D', font=("Helvetica", 16, 'bold'))
                 price_label.pack(side='right', padx=40, anchor='e')
 
-            # Add the "Rent Now" button at the bottom of the page
+            def rent_now():
+                selected_items = [checkbox for checkbox in checkboxes if checkbox.get() == 1]
+                for checkbox in selected_items:
+                    index = checkboxes.index(checkbox)
+                    item = data[index]
+                    crud.add_purchase(
+                        product_id=item[-1],  # Assuming the last element is the product_id
+                        product_name=item[1],
+                        price=item[2],
+                        category=item[3],  # Assuming the category is in item[4]
+                        status='Pending',
+                        image=item[0]
+                    )
+                self.navigate_to_payment()
+
             rent_now_button = ctk.CTkButton(
                 self.main_frame,
                 text="Rent Now",
@@ -553,11 +565,9 @@ class RentalApp(ctk.CTk):
                 fg_color='#2F4D7D',
                 text_color='white',
                 corner_radius=5,
-                command = self.navigate_to_payment
+                command=rent_now
             )
             rent_now_button.pack(side='bottom', pady=20, anchor='e', padx =80)
-
-
 
 
 
@@ -760,7 +770,6 @@ class RentalApp(ctk.CTk):
         popup.geometry(f"+{x}+{y}")
 
     def navigate_to_payment(self):
-
         self.destroy()
         payment_app = payment.RentalApp()
         payment_app.mainloop()
@@ -786,6 +795,7 @@ class RentalApp(ctk.CTk):
             crud.update_user_password(logged_in, self.confirm_password_entry1)
             messagebox.showinfo('sucess', 'Password Sucessfully Changed')
 
+    
 
     
 

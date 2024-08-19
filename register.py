@@ -67,10 +67,10 @@ class Login(ctk.CTk):
         subtitle_label.pack(pady=(5, 10))
 
         # Full Name Entry
-        self.fullname_entry = ctk.CTkEntry(self.right_frame, placeholder_text="Full Name", corner_radius=20, height=35, width=40)
-        fullname_label = ctk.CTkLabel(self.right_frame, text="Full Name", font=("Arial", 14), text_color='white')
-        fullname_label.pack(pady=(5, 0), fill='x', padx=(10, 240))
-        self.fullname_entry.pack(pady=(1, 5), fill="x", padx=(60, 90))
+        self.username_entry = ctk.CTkEntry(self.right_frame, placeholder_text="Full Name", corner_radius=20, height=35, width=40)
+        username_label = ctk.CTkLabel(self.right_frame, text="Full Name", font=("Arial", 14), text_color='white')
+        username_label.pack(pady=(5, 0), fill='x', padx=(10, 240))
+        self.username_entry.pack(pady=(1, 5), fill="x", padx=(60, 90))
 
         # Email Entry
         self.email_entry = ctk.CTkEntry(self.right_frame, placeholder_text="Email", corner_radius=20, height=35, width=40)
@@ -123,7 +123,7 @@ class Login(ctk.CTk):
 
     def on_register_click(self):
         # Extract text from entry widgets
-        fullname = self.fullname_entry.get()
+        username = self.username_entry.get()
         email = self.email_entry.get()
         phone = self.phone_entry.get()
         password = self.password_entry.get()
@@ -132,16 +132,20 @@ class Login(ctk.CTk):
         user_type = self.radio_var.get()
 
         # Validate fields and radio button
-        if not fullname or not email or not phone or not password:
+        if not username or not email or not phone or not password:
             messagebox.showerror("Input Error", "Please fill in all fields.")
             return
 
         if user_type not in ["user", "provider"]:
             messagebox.showerror("Input Error", "Please select a user type.")
             return
+        
+        if crud.check_username_exists(username):
+            messagebox.showerror('Already have  an account', 'Username already exists')
+            return 
 
         # Call the add_profile function with the collected data
-        self.add_profile(fullname, email, phone, password, user_type)
+        self.add_profile(username, email, phone, password, user_type)
 
     def add_profile(self, fullname, email, phone, password, user_type):
         # Add your logic here to handle the profile information
