@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
-from PIL import Image, ImageTk, ImageDraw, ImageOps
+from PIL import Image, ImageTk
 import crud 
 from tkinter import messagebox
 import register, homepage, admin_dashboard, forgot_pass
