@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import crud
 from tkinter import messagebox
-import register, homepage, admin_dashboard, login
+import register, login
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
