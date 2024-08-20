@@ -22,6 +22,7 @@ class ForgotPassword(ctk.CTk):
         self.title_label = ctk.CTkButton(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white", hover_color="#2F4D7D", fg_color="#2F4D7D")
         self.title_label.pack(side="left", padx=10, pady=5)
 
+        # Menu Frame 
         self.menu_icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D", width=50)
         self.menu_icon_frame.pack(side="right", padx=20)
 
@@ -31,6 +32,7 @@ class ForgotPassword(ctk.CTk):
         self.menu_frame = ctk.CTkFrame(self.title_bar, width=100, fg_color="#2F4D7D", corner_radius=30)
         self.menu_frame.pack(side="left", fill="x", expand=True, pady=5, padx=(230, 150))
 
+        # Forget Password Frame 
         forgot_password_frame = ctk.CTkFrame(self, fg_color='transparent', corner_radius=40, height=300)
         forgot_password_frame.pack(fill="both", padx=150, pady=50)
 
