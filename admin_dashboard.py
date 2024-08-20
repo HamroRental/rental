@@ -193,8 +193,9 @@ class RentalApp(ctk.CTk):
         self.settings_button.bind("<Enter>", lambda e: self.on_enter(self.settings_button, self.settings_hover_image))
         self.settings_button.bind("<Leave>", lambda e: self.on_leave(self.settings_button, self.settings_image))
 
-    # extracting data from table admin_rental 
+        # extracting data from table admin_rental 
         data = crud.get_admin_rental1()
+        print(data)
 
         # the tuple that get_admin_rental provides is (product_name,product_id, category, price,status, created_at, image) so write down their index
         price_index = 3
@@ -275,6 +276,12 @@ class RentalApp(ctk.CTk):
         # Welcome Label
         welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
         welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
+
+        # Refresh the total revenue, rent, product count, and balance from the database
+        self.total_revenue = crud.total_revenue()
+        self.total_rent = crud.count_products()
+        self.product_count = crud.count_products()
+        self.total_balance = crud.total()
 
         # Add Product Button
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width = 25, height = 35)
@@ -499,6 +506,8 @@ class RentalApp(ctk.CTk):
 
         # Adjust the spacing between the table and the last element
         self.main_frame.grid_rowconfigure(2, weight=1)
+
+       
 
 
         
@@ -826,6 +835,10 @@ class RentalApp(ctk.CTk):
         # Add Product Button
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35, command = self.create_add_product)
         add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
+
+        # Refresh value everytime 
+        self.total_revenue = crud.total_revenue()
+        self.total_balance = crud.total()
 
         # Revenue Card
         revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="#F2F2F2", bg_color="#F2F2F2")

@@ -254,10 +254,10 @@ def get_user_info(user_id):
             "User_id": result[0],
             "Role": result[1],
             "Fullname": result[2],
-            "UserName": result[3],
-            "Email": result[4],
-            "Password": result[5],
-            "Phone_number": result[6],
+            "UserName": result[6],
+            "Email": result[3],
+            "Password": result[4],
+            "Phone_number": result[5],
             "last_acessed" : result[7],
             "regdate" : result[8]
         }
@@ -488,6 +488,87 @@ def get_product_images(product_id):
     
     # If no images are found, return placeholders
     return [no_image_path, no_image_path, no_image_path]
+
+# total revenue of table admin_rental 
+def total_revenue():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to select all prices from the 'purchase' table
+        query = "SELECT price FROM admin_rental"
+        cursor.execute(query)
+
+        # Fetch all the prices
+        prices = cursor.fetchall()
+
+        # Calculate the total revenue
+        total = sum(float(price[0]) for price in prices)
+
+        return total
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0.0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
+def total():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to sum the prices of products with status 'settled'
+        query = """
+        SELECT SUM(price)
+        FROM admin_rental
+        WHERE status = 'settled'
+        """
+        cursor.execute(query)
+
+        # Fetch the result
+        total_sum = cursor.fetchone()[0]
+
+        # Return 0 if total_sum is None
+        return total_sum if total_sum is not None else 0.0
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0.0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
+def count_products():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to count the number of rows in the 'admin_rental' table
+        query = "SELECT COUNT(*) FROM admin_rental"
+        cursor.execute(query)
+
+        # Fetch the result
+        count = cursor.fetchone()[0]
+
+        return count
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
 
 
 
@@ -801,6 +882,5 @@ if __name__ == "__main__":
 
 
     root.mainloop()
-
 
 

@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search
+import crud, homepage, search, admin_dashboard
 import tkinter as tk
 from tkinter import ttk, font , Canvas, filedialog
 from random import randint
@@ -20,7 +20,7 @@ class RentalApp(ctk.CTk):
         self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D", corner_radius=0)
         self.title_bar.pack(fill="x", side="top")
 
-        self.title_button = ctk.CTkButton(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white", hover_color="#2F4D7D", fg_color="#2F4D7D", command=self.navigate)
+        self.title_button = ctk.CTkButton(self.title_bar, text="Rent it.", font=("Helvetica", 30, 'bold'), text_color="white", hover_color="#2F4D7D", fg_color="#2F4D7D", command=self.navigate_to_admin_dashboard)
         self.title_button.pack(side="left", padx=10, pady=5)
 
         self.menu_icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D", width=50)
@@ -55,7 +55,7 @@ class RentalApp(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D',command = self.navigate_to_admin_dashboard)
         self.profile_button.pack(side="left", padx=1)
 
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical', bg_color='transparent')
@@ -113,9 +113,9 @@ class RentalApp(ctk.CTk):
         rentals = crud.get_all_rentals()
         self.display_results(rentals)
 
-    def navigate(self):
+    def navigate_to_admin_dashboard(self):
         self.destroy()
-        new_app = homepage.RentalApp()
+        new_app = admin_dashboard.RentalApp()
         new_app.mainloop()
 
     def search(self):

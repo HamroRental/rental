@@ -233,7 +233,7 @@ class RentalApp(ctk.CTk):
         userid = crud.get_last_accessed_userid()
         username = crud.get_last_accessed_username()
         record = crud.get_user_info(userid)
-        print(record)
+
 
         # Adding three rows for Name, Email, and Phone below the title label
         self.create_row(self.info_frame, "Name", username, ".\\photos\\face.png")
@@ -477,7 +477,7 @@ class RentalApp(ctk.CTk):
             selected_items = [checkbox for checkbox in checkboxes if checkbox.get() == 1]
             for checkbox in selected_items:
                 index = checkboxes.index(checkbox)
-                crud.delete_cart(data[index][-1])  # Assume item[3] is the identifier for the item
+                crud.delete_cart(data[index][-1])  # Assume item[-1] is the identifier for the item
             self.create_cart()  # Refresh the cart display
 
         delete_button = ctk.CTkButton(
@@ -543,6 +543,9 @@ class RentalApp(ctk.CTk):
 
             def rent_now():
                 selected_items = [checkbox for checkbox in checkboxes if checkbox.get() == 1]
+                print(f"Selected checkboxes: {selected_items}")  # Debugging line
+                if not selected_items:
+                    print("No items selected.")  # Debugging line
                 for checkbox in selected_items:
                     index = checkboxes.index(checkbox)
                     item = data[index]
