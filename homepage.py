@@ -31,7 +31,7 @@ class RentalApp(ctk.CTk):
         # profile, cart and notification 
         self.bell_button = ctk.CTkButton(self.icon_frame, image=self.bell_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.notification)
         self.bell_button.pack(side="left", padx=1)
-        self.cart_button = ctk.CTkButton(self.icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_cart)
+        self.cart_button = ctk.CTkButton(self.icon_frame, image=self.cart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_cart)
         self.cart_button.pack(side="left", padx=1)
         self.profile_button = ctk.CTkButton(self.icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_profile)
         self.profile_button.pack(side="left", padx=1)

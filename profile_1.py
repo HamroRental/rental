@@ -232,7 +232,9 @@ class RentalApp(ctk.CTk):
 
         userid = crud.get_last_accessed_userid()
         username = crud.get_last_accessed_username()
+        print(username)
         record = crud.get_user_info(userid)
+        print(record)
 
 
         # Adding three rows for Name, Email, and Phone below the title label
