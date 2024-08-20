@@ -41,8 +41,8 @@ class Login(ctk.CTk):
         left_frame.grid(row=0, column=0, sticky="nsew", pady = 10)
 
         # Loading image 
-        image = Image.open(".\\photos\\login.png")  # Replace with your image path
-        image = image.resize((400, 600), Image.Resampling.LANCZOS)  # Adjust size as needed
+        image = Image.open(".\\photos\\login.png")  
+        image = image.resize((400, 600), Image.Resampling.LANCZOS)  
         image_tk = ImageTk.PhotoImage(image)
 
         image_label = ctk.CTkLabel(left_frame, image=image_tk, text="")
