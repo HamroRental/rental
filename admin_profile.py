@@ -160,24 +160,18 @@ class RentalApp(ctk.CTk):
             no_results_label.pack(anchor="n", pady=(40, 20))
     
     def add_service_placeholder(self, parent, title, price, image_path):
-
-        # formatting the image as in the database # Replace single backslashes with double backslashes
         formatted_path = image_path.replace("\\", "/")
 
-        # Load and resize the image using PIL
         image = Image.open(image_path)
-        image.resize((180, 120),Image.Resampling.LANCZOS)  # Resize to desired dimensions
-        self.ctk_image = ctk.CTkImage(image, size=(250, 230))  # Create CTkImage with the resized image
+        image.resize((180, 120),Image.Resampling.LANCZOS)  
+        self.ctk_image = ctk.CTkImage(image, size=(250, 230)) 
 
-        # Create the frame for the image and text
         service_frame = ctk.CTkFrame(parent, width=200, height=200, corner_radius=10, fg_color="white")
         service_frame.pack(padx=20, pady=10, side="left")
 
-        # Create and place the image label
         image_label = ctk.CTkLabel(service_frame, image=self.ctk_image, text="")
         image_label.pack(pady=0.5)
 
-        # Create and place the text button
         title_button = ctk.CTkButton(service_frame, text=title, text_color="black", font=("Helvetica", 18, 'bold'), fg_color="transparent", hover_color="white", command=lambda: self.button_clicked(crud.get_product_id_by_image(formatted_path)))
         title_button.pack(side="top", pady=5)
 

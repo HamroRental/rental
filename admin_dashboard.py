@@ -752,33 +752,24 @@ class RentalApp(ctk.CTk):
 
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35, command = self.create_add_product)
         add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
-
-        # Refresh value everytime 
         self.total_revenue = crud.total_revenue()
         self.total_balance = crud.total()
         
+        # Two cards 
         # Revenue Card
         revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="#F2F2F2", bg_color="#F2F2F2")
         revenue_card.pack_propagate(False)
         revenue_card.grid(row=1, column=0, padx=(30, 5), pady=(5, 10), columnspan=2, sticky="nsew")
 
-        # Load and resize the image
         image = Image.open(".\\photos\\revenue.png")
         image = image.resize((60, 60), Image.Resampling.LANCZOS)
-
-        # Convert to Tkinter Image
         image_tk = ImageTk.PhotoImage(image)
-
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(revenue_card, image=image_tk, text="")
         image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
 
-        # Revenue Label
         revenue_label = ctk.CTkLabel(revenue_card, text="Total Revenue", font=("Arial", 14))
         revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
-
-        # Revenue Value and Change
         revenue_value = ctk.CTkLabel(revenue_card, text=f"Rs. {self.total_revenue}", font=("Arial", 24, "bold"))
         revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
@@ -787,14 +778,10 @@ class RentalApp(ctk.CTk):
         balance_card.pack_propagate(False)
         balance_card.grid(row=1, column=2, padx=(40,100), pady=(5,10), columnspan=3, sticky="nswe")
 
-        # Load and resize the image
         image = Image.open(".\\photos\\wallet.png")
         image = image.resize((60, 60), Image.Resampling.LANCZOS)
-
-        # Convert to Tkinter Image
         image_tk = ImageTk.PhotoImage(image)
 
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(balance_card, image=image_tk, text="")
         image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(10, 5), sticky="w")
@@ -805,47 +792,37 @@ class RentalApp(ctk.CTk):
         balance_value = ctk.CTkLabel(balance_card, text=f"Rs. {self.total_balance}", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column=0, padx=20, pady=(0, 15), sticky="w")
 
-        # Create Table Frame
+        # Table Frame
         table_frame = ttk.Frame(self.main_frame)
         table_frame.grid(row=2, column=0, columnspan=5, padx=(40, 150), pady=(40, 20), sticky="nsew", rowspan=5, ipady=50)
-
-        # Configure column and row weights to fill available space
         table_frame.grid_columnconfigure(0, weight=1)
         table_frame.grid_columnconfigure(1, weight=1)
         table_frame.grid_columnconfigure(2, weight=1)
         table_frame.grid_columnconfigure(3, weight=1)
         table_frame.grid_columnconfigure(4, weight=1)
-        table_frame.grid_columnconfigure(5, weight=1)  # Additional column for ID
+        table_frame.grid_columnconfigure(5, weight=1)  
 
-        # Define the column names
         columns = ['Product', 'Id', 'Category', 'Price', 'Status', 'Added']
 
-        # Create canvas for rounded header
         header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
         header_canvas.grid(row=0, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
-
-        # Draw the rounded rectangle on the canvas
         self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
 
-        # Create the header row with column names
         for col, column_name in enumerate(columns):
             col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
             col_label.grid(row=0, column=col, padx=15, pady=10, sticky="nsew")
 
-        # Example data for demonstration
         data = crud.get_admin_rental1()
 
-        # Insert data into the table
         for row, record in enumerate(data, start=1):
             for col, value in enumerate(record[:6]):
-                if col == 0:  # Product column with image
+                if col == 0:  
                     cell_frame = ttk.Frame(table_frame)
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
                     
-                    # Load and resize the image
-                    img_path = record[6]  # Assuming the image path is at index 5
+                    img_path = record[6]  
                     img = Image.open(img_path)
-                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS) 
                     img_tk = ImageTk.PhotoImage(img)
 
                     img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
@@ -855,7 +832,7 @@ class RentalApp(ctk.CTk):
                     cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=0, column=1, sticky="w")
                 
-                elif col == 4:  # Status column with colored badge
+                elif col == 4:  
                     status_color = 'red' if value == 'unsettled' else 'green'
                     status_bg = '#FFEDD5' if value == 'unsettled' else '#D1FAE5'
                     
@@ -868,7 +845,7 @@ class RentalApp(ctk.CTk):
                     cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=row, column=col, padx=15, pady=10, sticky="w")
 
-    # Function to create rounded rectangle
+    
     def create_rounded_rectangle(self, canvas, x1, y1, x2, y2, radius=30, **kwargs):
         """Draws a rounded rectangle on the canvas."""
         points = [x1 + radius, y1,
@@ -899,15 +876,13 @@ class RentalApp(ctk.CTk):
         
     
     def create_settings(self):
-        # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the title label
         title_label = ctk.CTkLabel(self.main_frame, text="Settings", font=("Helvetica", 20, "bold"))
         title_label.pack(pady=20, side='top', padx=60, anchor='w')
 
-        # Create the top frame to hold Customer and Address sections
+        # Top frame that holds Customer and Address sections
         top_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, corner_radius=0)
         top_frame.pack_propagate(False)
         top_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
@@ -988,37 +963,31 @@ class RentalApp(ctk.CTk):
         save_button.pack(side='left', padx=5)
 
     def clear_entries(self, frame):
-        # Clear all entries in the specified frame
         for widget in frame.winfo_children():
             if isinstance(widget, ctk.CTkEntry):
                 widget.delete(0, 'end')
 
 
     def show_products(self):
-        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
-        self.search_results = crud.search_products_by_category(search_query)  # Query the database
+        search_query = self.search_entry.get().lower()  
+        self.search_results = crud.search_products_by_category(search_query)  
 
-        # Initially display the search results without any sorting
         self.display_results(search_query, self.search_results)
 
     def display_results(self, search_query, search_results):
-        # Clear existing search results
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Add a title label for the search results (if a search query was provided)
         if search_query:
             title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
             title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
 
-        # Display the search results
         if search_results:
             row_frame = None
             products_in_row = 0
 
             for i, (product_name, price, image) in enumerate(search_results):
                 if products_in_row == 0:
-                    # Create a new row frame when starting a new row
                     row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
                     row_frame.pack(fill="x", padx=20, pady=10)
 
@@ -1026,17 +995,11 @@ class RentalApp(ctk.CTk):
 
                 products_in_row += 1
 
-                # Reset after adding 3 products in a row
                 if products_in_row >= 3:
                     products_in_row = 0
         else:
             no_results_label = ctk.CTkLabel(self.main_frame, text="No results found.", font=("Helvetica", 18, 'bold'))
             no_results_label.pack(anchor="n", pady=(40, 20))
-
-
-
-
-
 
         
     def navigate(self):
@@ -1044,33 +1007,28 @@ class RentalApp(ctk.CTk):
         new_app = homepage.RentalApp()
         new_app.mainloop()
 
-    # Adding search functionality 
     def search(self):
-        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
-        search_results = crud.search_products_by_category(search_query)  # Query the database
+        search_query = self.search_entry.get().lower()  
+        search_results = crud.search_products_by_category(search_query)  
 
         if search_results:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, search_results)  # Pass search query and results to the search app
+            self.destroy()  
+            search_app = search.RentalApp(search_query, search_results)  
             search_app.mainloop()
         else:
-            self.destroy()  # Close the current window
-            search_app = search.RentalApp(search_query, [])  # Create a new instance with an empty search result
+            self.destroy() 
+            search_app = search.RentalApp(search_query, [])  
             search_app.label = ctk.CTkLabel(search_app.main_frame, text=f"No results found for category: {search_query}", font=("Helvetica", 18, 'bold'))
             search_app.label.pack(anchor="n", pady=(40, 20))
             search_app.mainloop()
 
     def save_product(self):
-        # Generate a random ID using randint
         product_id = randint(1000, 9999)
-        
-        # Get values from the entries
         product_name = self.product_name_entry.get()
         base_price = self.price_entry.get()
         category = self.category_entry.get()
         image_path = self.image_path if hasattr(self, 'selected_image_path') else ""
         
-        # Call the crud.add_admin_rental function
         crud.add_admin_rental(product_id, product_name,category, base_price,'unsettled', image_path)
 
     def update_settings1(self):
@@ -1099,9 +1057,6 @@ class RentalApp(ctk.CTk):
         app = admin_profile.RentalApp()
         app.mainloop()
         
-            
-
-# Run the application
 if __name__ == "__main__":
     app = RentalApp()
     app.mainloop()
