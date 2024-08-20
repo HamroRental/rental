@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw, ImageOps
 import crud 
 from tkinter import messagebox
 import register, homepage, admin_dashboard, forgot_pass
@@ -37,7 +37,7 @@ class Login(ctk.CTk):
         login_frame.pack(fill="both", padx = 150, pady =50)
 
         # Left Frame (Image)
-        left_frame = ctk.CTkFrame(login_frame, fg_color='#FDFEFF', corner_radius=40)
+        left_frame = ctk.CTkFrame(login_frame, fg_color='#FDFEFF', corner_radius=30)
         left_frame.grid(row=0, column=0, sticky="nsew", pady = 10)
 
         # Loading image 
