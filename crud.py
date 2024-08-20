@@ -37,7 +37,8 @@ c.execute(
         UserName TEXT,
         Email TEXT,
         Password TEXT,
-        Phone_number TEXT
+        Phone_number TEXT, 
+        last_acessed TIMESTAP
         )"""
 )
 conn.commit()
@@ -92,16 +93,34 @@ c.execute(
 conn.commit()
 conn.close()
 
-#modifying table code 
+# # modifying table code 
 # conn = sqlite3.connect('database.db')
 # cursor = conn.cursor()
 # alter_table_sql = """
-# ALTER TABLE admin_rental
-# ADD COLUMN created_at TIMESTAMP;
+# ALTER TABLE Users
+# ADD COLUMN regdate DATE;
 # """
 # cursor.execute(alter_table_sql)
 # conn.commit()
 # conn.close()
+
+
+# function to update 
+# def update_existing_records():
+#     conn = sqlite3.connect('database.db')
+#     cursor = conn.cursor()
+
+#     try:
+#         # Update existing records with the current date for the new column
+#         cursor.execute("UPDATE Users SET regdate = DATE('now') WHERE regdate IS NULL")
+        
+#         conn.commit()
+#         print("Existing records updated successfully.")
+#     except sqlite3.Error as e:
+#         print(f"An error occurred: {e}")
+#     finally:
+#         conn.close()
+
 
 # deleting table code 
 def delete_all_from_table(table_name):
@@ -143,10 +162,16 @@ def add_user(role, fullname, username, email, password, phone_number):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     unique_id = generate_unique_id()
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     c.execute(
-        "INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        (unique_id, role, fullname, username, email, password, phone_number)
+        """
+        INSERT INTO Users (User_id, Role, Fullname, UserName, Email, Password, Phone_number, last_acessed, regdate) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, DATE('now'))
+        """,
+        (unique_id, role, fullname, username, email, password, phone_number, current_time)
     )
+
     conn.commit()
     conn.close()
 
@@ -201,6 +226,14 @@ def delete_cart(order_id):
     conn.close()
     print(f"User with User ID: {order_id} deleted successfully.")
 
+def delete_admin_cart(admin_rental_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM admin_rental WHERE admin_rental_id=?", (admin_rental_id,))
+    conn.commit()
+    conn.close()
+    print(f"User with User ID: {admin_rental_id} deleted successfully.")
+
 def delete_purchase(purchase_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -221,10 +254,12 @@ def get_user_info(user_id):
             "User_id": result[0],
             "Role": result[1],
             "Fullname": result[2],
-            "UserName": result[3],
-            "Email": result[4],
-            "Password": result[5],
-            "Phone_number": result[6]
+            "UserName": result[6],
+            "Email": result[3],
+            "Password": result[4],
+            "Phone_number": result[5],
+            "last_acessed" : result[7],
+            "regdate" : result[8]
         }
         return user_info
     else:
@@ -237,7 +272,7 @@ def get_cart_items():
     cursor = conn.cursor()
 
     # Query to select the required columns from the Cart table
-    cursor.execute("SELECT image, product_name, price FROM Cart")
+    cursor.execute("SELECT image, product_name, price,category, Order_id FROM Cart")
 
     # Fetch all the rows and return as a list of tuples
     cart_items = cursor.fetchall()
@@ -254,7 +289,23 @@ def get_admin_rental():
     cursor = conn.cursor()
 
     # Query to select the required columns from the Cart table
-    cursor.execute("SELECT product_name, price, category,status, image, created_at FROM admin_rental")
+    cursor.execute("SELECT product_name, price, category,status, image, created_at, admin_rental_id FROM admin_rental")
+
+    # Fetch all the rows and return as a list of tuples
+    admin_items = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return admin_items
+
+def get_admin_rental1():
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Query to select the required columns from the Cart table
+    cursor.execute("SELECT product_name,product_id, category, price,status, created_at, image, admin_rental_id FROM admin_rental")
 
     # Fetch all the rows and return as a list of tuples
     admin_items = cursor.fetchall()
@@ -264,6 +315,27 @@ def get_admin_rental():
 
     return admin_items
     
+
+def check_username_exists(username):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Query to check if the username exists
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
+    finally:
+        # Close the database connection
+        conn.close()
+
+    # Return True if a user was found, False otherwise
+    return user is not None
+
+
 def get_purchase_items():
     # Connect to the database
     conn = sqlite3.connect('database.db')
@@ -417,6 +489,87 @@ def get_product_images(product_id):
     # If no images are found, return placeholders
     return [no_image_path, no_image_path, no_image_path]
 
+# total revenue of table admin_rental 
+def total_revenue():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to select all prices from the 'purchase' table
+        query = "SELECT price FROM admin_rental"
+        cursor.execute(query)
+
+        # Fetch all the prices
+        prices = cursor.fetchall()
+
+        # Calculate the total revenue
+        total = sum(float(price[0]) for price in prices)
+
+        return total
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0.0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
+def total():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to sum the prices of products with status 'settled'
+        query = """
+        SELECT SUM(price)
+        FROM admin_rental
+        WHERE status = 'settled'
+        """
+        cursor.execute(query)
+
+        # Fetch the result
+        total_sum = cursor.fetchone()[0]
+
+        # Return 0 if total_sum is None
+        return total_sum if total_sum is not None else 0.0
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0.0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
+def count_products():
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        # Query to count the number of rows in the 'admin_rental' table
+        query = "SELECT COUNT(*) FROM admin_rental"
+        cursor.execute(query)
+
+        # Fetch the result
+        count = cursor.fetchone()[0]
+
+        return count
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return 0
+
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
 
 
 def update():
@@ -541,6 +694,133 @@ def search_products_by_category(category):
     conn.close()
     return results
 
+def get_all_rentals():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT product_name, price, image FROM admin_rental")
+    results = c.fetchall()
+    conn.close()
+    return results
+
+def update_user_password(username, new_password):
+    try:
+        # Connect to the database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # Update the user's password
+        cursor.execute("""
+            UPDATE users
+            SET password = ?
+            WHERE username = ?
+        """, (new_password, username))
+
+        # Commit the changes
+        conn.commit()
+
+        # Check if the password was updated
+        if cursor.rowcount == 0:
+            print("Username not found. No password updated.")
+        else:
+            print("Password updated successfully for user:", username)
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+
+    finally:
+        conn.close()
+
+def update_user_info(current_username, new_username, new_email, new_phone):
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Check if the username exists
+        cursor.execute("SELECT * FROM Users WHERE username = ?", (current_username,))
+        result = cursor.fetchone()
+        
+        if result:
+            # Update the user info
+            cursor.execute("""
+                UPDATE users
+                SET Username = ?, Email = ?, Phone_number = ?
+                WHERE Username = ?
+            """, (new_username, new_email, new_phone, current_username))
+            
+            conn.commit()
+            print("User info updated successfully.")
+        else:
+            print("Username not found in the database.")
+    
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+
+
+def get_last_accessed_username():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Retrieve the username with the most recent last_login timestamp
+        cursor.execute("""
+            SELECT Username
+            FROM Users
+            ORDER BY last_acessed DESC
+            LIMIT 1
+        """)
+        result = cursor.fetchone()
+        print(result)
+
+        if result:
+            last_accessed_username = result[0]
+            return last_accessed_username
+        else:
+            return None  # No users found in the table
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+def get_last_accessed_userid():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    try:
+        # Retrieve the username with the most recent last_login timestamp
+        cursor.execute("""
+            SELECT User_id
+            FROM Users
+            ORDER BY last_acessed DESC
+            LIMIT 1
+        """)
+        result = cursor.fetchone()
+
+        if result:
+            last_accessed_username = result[0]
+            return last_accessed_username
+        else:
+            return None  # No users found in the table
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+
+
 # Main loop
 if __name__ == "__main__":
     root = Tk()
@@ -600,7 +880,6 @@ if __name__ == "__main__":
     delete_box = Entry(root, width=40)
     delete_box.place(x=250, y=750, height=35)
 
-    
 
     root.mainloop()
 

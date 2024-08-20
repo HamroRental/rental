@@ -1,11 +1,10 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageDraw
-import crud, homepage, search
+import crud, homepage, search, login, admin_profile
 import tkinter as tk
-from tkinter import ttk, font , Canvas, filedialog
+from tkinter import ttk, font , Canvas, filedialog, messagebox
 from random import randint
 
-# Set the appearance mode of the app
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
@@ -16,10 +15,9 @@ class RentalApp(ctk.CTk):
         self.title("Rent it.")
         self.geometry("1280x750")
 
-        # Track the active button
         self.active_button = None
 
-        # Create the title bar frame
+        # Title Bar Frame 
         self.title_bar = ctk.CTkFrame(self, height=100, fg_color="#2F4D7D", corner_radius=0)
         self.title_bar.pack(fill="x", side="top")
 
@@ -58,7 +56,7 @@ class RentalApp(ctk.CTk):
         self.bell_button.pack(side="left", padx=1)
         self.heart_button = ctk.CTkButton(self.menu_icon_frame, image=self.heart_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
         self.heart_button.pack(side="left", padx=1)
-        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D')
+        self.profile_button = ctk.CTkButton(self.menu_icon_frame, image=self.profile_image, text="", width=40, height=40, fg_color="#2F4D7D", hover_color='#2F4D7D', command = self.navigate_to_admin_profile)
         self.profile_button.pack(side="left", padx=1)
 
         self.main_frame = ctk.CTkScrollableFrame(self, orientation='vertical', bg_color='transparent')
@@ -167,7 +165,7 @@ class RentalApp(ctk.CTk):
             height=50,
             width=180,
             anchor='w',
-            command=lambda: self.on_click(self.logout_button, self.logout_image)
+            command=lambda: self.on_click(self.logout_button, self.logout_image, self.logout)
         )
         self.logout_button.pack(anchor="w", padx=(20, 30), pady=(5, 0), side = 'bottom')
 
@@ -193,13 +191,27 @@ class RentalApp(ctk.CTk):
         self.settings_button.bind("<Enter>", lambda e: self.on_enter(self.settings_button, self.settings_hover_image))
         self.settings_button.bind("<Leave>", lambda e: self.on_leave(self.settings_button, self.settings_image))
 
+        data = crud.get_admin_rental1()
+        print(data)
+
+        # the tuple that get_admin_rental provides is (product_name,product_id, category, price,status, created_at, image) so writing down their index
+        price_index = 3
+        status_index = 4
+
+        def to_numeric(value):
+            return float(value)  
+
+        self.total_revenue = sum(to_numeric(item[price_index]) for item in data)
+        self.total_rent = len(data)
+        self.product_count = self.total_rent
+        self.total_balance = sum(to_numeric(item[price_index]) for item in data if item[status_index] == 'settled')
 
     def on_enter(self, button, hover_image):
         if self.active_button != button:
             if button == self.logout_button:
-                button.configure(image=hover_image, text_color="white", fg_color='#8B0000')  # Red hover color
+                button.configure(image=hover_image, text_color="white", fg_color='#8B0000')  
             else:
-                button.configure(image=hover_image, text_color="white", fg_color='#2F4D7D')  # Default hover color
+                button.configure(image=hover_image, text_color="white", fg_color='#2F4D7D')  
 
     def on_leave(self, button, image):
         if self.active_button != button:
@@ -207,20 +219,17 @@ class RentalApp(ctk.CTk):
 
     def on_click(self, button, hover_image, callback=None):
         if self.active_button:
-            # Reset the previously active button
             self.active_button.configure(image=self.get_default_image(self.active_button), text_color='#97A8C3', fg_color='#F2F2F2')
             self.active_button.bind("<Enter>", lambda e: self.on_enter(self.active_button, hover_image))
             self.active_button.bind("<Leave>", lambda e: self.on_leave(self.active_button, hover_image))
 
-        # Set the new active button
         self.active_button = button
 
         if button == self.logout_button:
-            self.active_button.configure(fg_color="#8B0000", text_color="white")  # Red color on click
+            self.active_button.configure(fg_color="#8B0000", text_color="white")  
         else:
             self.active_button.configure(fg_color="#2F4D7D", text_color="white")
 
-        # Unbind hover events for the active button
         self.active_button.unbind("<Enter>")
         self.active_button.unbind("<Leave>")
 
@@ -228,7 +237,6 @@ class RentalApp(ctk.CTk):
             callback()
 
     def get_default_image(self, button):
-        # Return the default image for the button
         if button == self.dashboard_button:
             return self.home_image
         elif button == self.add_product_button:
@@ -245,48 +253,46 @@ class RentalApp(ctk.CTk):
     
     
     def create_dashboard(self):
-        # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
         
-        # Configure grid columns to push the button to the right
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=1)
         self.main_frame.grid_columnconfigure(2, weight=1)
         self.main_frame.grid_columnconfigure(3, weight=1)
         self.main_frame.grid_columnconfigure(4, weight=1)
 
-        # Welcome Label
         welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
         welcome_label.grid(row=0, column=0, padx=40, pady=(30, 10), sticky="w")
+
+        # Refresh the total revenue, rent, product count, and balance from the database
+        self.total_revenue = crud.total_revenue()
+        self.total_rent = crud.count_products()
+        self.product_count = crud.count_products()
+        self.total_balance = crud.total()
 
         # Add Product Button
         add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width = 25, height = 35)
         add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
 
-        # Revenue Card
+        # The four cards 
+        # Revenue Card 
         revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="#F2F2F2", bg_color='#F2F2F2')
         revenue_card.pack_propagate(False)
         revenue_card.grid(row=1, column=0, padx=(30, 10), pady=(5, 10), columnspan=2, sticky="nsew")
 
-        # Load and resize the image
         image = Image.open(".\\photos\\revenue.png")
-        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  
 
-        # Convert to Tkinter Image
         image_tk = ImageTk.PhotoImage(image)
-
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(revenue_card, image=image_tk, text = "")
-        image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
+        image_label.image = image_tk  # Keeping a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
 
-        # Revenue Label
         revenue_label = ctk.CTkLabel(revenue_card, text="Total Revenue", font=("Arial", 14))
         revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-        # Revenue Value and Change
-        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value = ctk.CTkLabel(revenue_card, text=f"Rs.{self.total_revenue}", font=("Arial", 24, "bold"))
         revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
         # Rent Card
@@ -294,14 +300,9 @@ class RentalApp(ctk.CTk):
         rent_card.pack_propagate(False)
         rent_card.grid(row=1, column=2, padx=(30, 70), pady=(5,10), columnspan = 3, sticky = 'nsew')
 
-        # Load and resize the image
         image = Image.open(".\\photos\\renting.png")
-        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
-
-        # Convert to Tkinter Image
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  
         image_tk = ImageTk.PhotoImage(image)
-
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(rent_card, image=image_tk, text = "")
         image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky="w")
@@ -309,22 +310,17 @@ class RentalApp(ctk.CTk):
         rent_label = ctk.CTkLabel(rent_card, text="Total Rent", font=("Arial", 14))
         rent_label.grid(row=1, column=0, padx = 20, pady =5, sticky = "w")
 
-        rent_value = ctk.CTkLabel(rent_card, text="3,500", font=("Arial", 24, "bold"))
-        rent_value.grid(row=2, column =0, padx =20, pady=(1,5),sticky = 'nw')
+        rent_value = ctk.CTkLabel(rent_card, text=self.total_rent, font=("Arial", 24, "bold"))
+        rent_value.grid(row=2, column =0, padx =(30,20), pady=(1,5),sticky = 'nw')
 
         # Product ID Card
         product_id_card = ctk.CTkFrame(self.main_frame, width=170, height=150, fg_color='#F2F2F2')
         product_id_card.pack_propagate(False)
         product_id_card.grid(row=2, column=0, padx=(30,10), pady=10, columnspan = 2, sticky = 'nswe')
         
-        # Load and resize the image
         image = Image.open(".\\photos\\product_id.png")
-        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
-
-        # Convert to Tkinter Image
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  
         image_tk = ImageTk.PhotoImage(image)
-
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(product_id_card, image=image_tk, text = "")
         image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
@@ -332,22 +328,17 @@ class RentalApp(ctk.CTk):
         product_id_label = ctk.CTkLabel(product_id_card, text="Product Id", font=("Arial", 14))
         product_id_label.grid(row= 1, column =0, sticky = 'w', padx =20)
 
-        product_id_value = ctk.CTkLabel(product_id_card, text="10", font=("Arial", 24, "bold"))
-        product_id_value.grid(row=2, column = 0, sticky = 'w', padx = 20)
+        product_id_value = ctk.CTkLabel(product_id_card, text=self.product_count, font=("Arial", 24, "bold"))
+        product_id_value.grid(row=2, column = 0, sticky = 'w', padx = (30,10))
 
         # Balance Card
         balance_card = ctk.CTkFrame(self.main_frame, width=100, height=150, fg_color="#F2F2F2")
         balance_card.pack_propagate(False)
         balance_card.grid(row=2, column=2, padx=(30,70), pady=10, columnspan = 3, sticky = 'nswe')
 
-        # Load and resize the image
         image = Image.open(".\\photos\\wallet.png")
-        image = image.resize((60, 60), Image.Resampling.LANCZOS)  # Increase size to 80x80 pixels
-
-        # Convert to Tkinter Image
+        image = image.resize((60, 60), Image.Resampling.LANCZOS)  
         image_tk = ImageTk.PhotoImage(image)
-
-        # Place the image inside a label using Tkinter's Label widget
         image_label = ctk.CTkLabel(balance_card, image=image_tk, text = "")
         image_label.image = image_tk  # Keep a reference to the image to prevent garbage collection
         image_label.grid(row=0, column=0, padx=20, pady=(10, 5), sticky="w")
@@ -355,74 +346,57 @@ class RentalApp(ctk.CTk):
         balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
         balance_label.grid(row=1, column= 0, padx =20, pady = 5, sticky = 'w')
 
-        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value = ctk.CTkLabel(balance_card, text=f"Rs. {self.total_balance}", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column =0, padx = 20, pady = (0, 15), sticky = 'w')
 
-        # Create Table Frame
+        # Table Frame 
         table_frame = ttk.Frame(self.main_frame)
         table_frame.grid(row=4, column=0, columnspan=5, padx=(50, 100), pady=(40, 20), sticky="nsew")
-
-        # Configure column and row weights to fill available space
         table_frame.grid_columnconfigure(0, weight=1)
         table_frame.grid_columnconfigure(1, weight=1)
         table_frame.grid_columnconfigure(2, weight=1)
         table_frame.grid_columnconfigure(3, weight=1)
 
         # Define the column names
-        columns = ['Product', 'Category', 'Price', 'status']
+        columns = ['Product', 'Price', 'Category', 'status']
 
-        # Configure column and row weights to fill available space
-        for i in range(len(columns)):  # Ensure to match the number of columns
+        for i in range(len(columns)):  
             table_frame.grid_columnconfigure(i, weight=1)
+        table_frame.grid_rowconfigure(0, weight=1)  
+        table_frame.grid_rowconfigure(1, weight=1)  
 
-        # Configure row weights (if needed)
-        table_frame.grid_rowconfigure(0, weight=1)  # Header row
-        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
-
-        # Example data for demonstration
-        # Example data for demonstration
         data = crud.get_admin_rental()
         print(data)
-
-        # Determine the number of items in data
         item_count = len(data)
-
-        # Set the item_count text color and background color based on the item count
         if item_count > 0:
             item_count_text = f"{item_count} Products"
             item_count_fg_color = 'green'
-            item_count_bg_color = '#D1FAE5'  # Light green background
+            item_count_bg_color = '#D1FAE5'  
         else:
             item_count_text = "0 Products"
             item_count_fg_color = 'darkgrey'
-            item_count_bg_color = '#F0F1F3'  # Light grey background
+            item_count_bg_color = '#F0F1F3'  
 
-        # Create a frame to hold the label and the button
+        # Recent Frame to hold label and button 
         recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
         recent_frame.grid(row=0, column=0, columnspan=len(columns), padx=15, pady=10, sticky="w")
-
-        # Create a label for "Recent Rentals"
         recent_label = tk.Label(recent_frame, text="Recent Rentals", bg='#F2F2F2', font=('Arial', 16, 'bold'))
         recent_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        # Create a button for the item count
         recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
                                     fg_color=item_count_bg_color, 
-                                    hover_color='#C3F9D8',  # Optional: color when hovered
+                                    hover_color='#C3F9D8',  
                                     text_color=item_count_fg_color,
                                     font=('Arial', 12, 'bold'), 
                                     width=80, 
                                     height=30,
                                     border_width=0)
 
-        # Place the button in the frame next to the label
         recent_button.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
-        # Create canvas for rounded header
+        # Canvas for rounded header 
         header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
         header_canvas.grid(row=1, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
-
-        # Draw the rounded rectangle on the canvas
         self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
 
         # Create the header row with column names
@@ -430,18 +404,14 @@ class RentalApp(ctk.CTk):
             col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
             col_label.grid(row=1, column=col, padx=15, pady=(5, 20), sticky="nsew")
 
-
-        # Insert data into the table
-        for row, record in enumerate(data, start=2):  # Start from row 2 due to the label and header row
+        for row, record in enumerate(data, start=2):  
             for col, value in enumerate(record[:4]):
-                if col == 0:  # Product column with image
+                if col == 0: 
                     cell_frame = ttk.Frame(table_frame)
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
-
-                    # Load and resize the image
-                    img_path = record[4]  # Assuming the image path is at index 3
+                    img_path = record[4]  
                     img = Image.open(img_path)
-                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
+                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  
                     img_tk = ImageTk.PhotoImage(img)
 
                     img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
@@ -451,90 +421,74 @@ class RentalApp(ctk.CTk):
                     cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=0, column=1, sticky="w")
 
-                elif col == 3:  # Status column with colored badge
+                elif col == 3:  #status column
                     if 'settled' == value.lower():
                         status_color = 'green'
-                        status_bg = '#D1FAE5'  # Light green background
+                        status_bg = '#D1FAE5'  
                     else:
                         status_color = 'red'
-                        status_bg = '#FFEDD5'  # Light red background
+                        status_bg = '#FFEDD5'  
 
-                    # Create the label with centered text
                     status_label = tk.Label(
                         table_frame,
                         text=value,
                         font=('Arial', 12, 'bold'),
                         foreground=status_color,
                         background=status_bg,
-                        anchor='center',  # Center the text horizontally
-                        justify='center'  # Center the text horizontally
+                        anchor='center', 
+                        justify='center' 
                     )
                     
-                    # Grid placement
                     status_label.grid(row=row, column=col, padx=15, pady=10, sticky="nw")
 
 
-                else:  # Other columns
+                else:  
                     cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
                     cell_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
 
-        # Add padding below the table
         table_frame.grid_rowconfigure(len(data) + 2, weight=1)
 
-        # Adjust the spacing between the table and the last element
         self.main_frame.grid_rowconfigure(2, weight=1)
 
-
-        
+               
 
     def create_row(self, parent, label_text, value_text, image_path):
-        # Creating a frame for each row
         row_frame = ctk.CTkFrame(parent, fg_color='#F2F2F2')
-        row_frame.pack(fill='x', pady=(10,5), padx=10)  # Adjusted padding and placement
+        row_frame.pack(fill='x', pady=(10,5), padx=10)  
 
-        # Loading and displaying the icon
         icon_image = ctk.CTkImage(Image.open(image_path), size=(30, 30))
         icon_label = ctk.CTkLabel(row_frame, image=icon_image, text="")
         icon_label.grid(row=0, column=0, padx=(7, 5))
 
-        # Adding the label
         text_label = ctk.CTkLabel(row_frame, text=label_text, font=("Helvetica", 14))
         text_label.grid(row=0, column=1, padx=(0, 20))
 
-        # Adding the value on the right
         value_label = ctk.CTkLabel(row_frame, text=value_text, font=("Helvetica", 14))
         value_label.grid(row=0, column=2, padx=(140, 10), sticky="e")
 
 
         
     def create_address_row(self, parent, label_text, value_text, image_path):
-        # Creating a frame for each row
         row_frame = ctk.CTkFrame(parent, fg_color='#F2F2F2')
-        row_frame.pack(fill='x', pady=(10, 5), padx=10)  # Adjusted padding and placement
+        row_frame.pack(fill='x', pady=(10, 5), padx=10)  
 
-        # Loading and displaying the icon
         icon_image = ctk.CTkImage(Image.open(image_path), size=(35, 35))
         icon_label = ctk.CTkLabel(row_frame, image=icon_image, text="")
         icon_label.grid(row=0, column=0, padx=(10, 10), rowspan = 2, sticky = 'n')
 
-        # Adding the label, aligned to the center of the icon
         text_label = ctk.CTkLabel(row_frame, text=label_text, font=("Helvetica", 14, 'bold'))
         text_label.grid(row=0, column=1, padx=(0, 10), sticky='w')
 
-        # Adding the value below the label for a wrapped layout
         value_label = ctk.CTkLabel(row_frame, text=value_text, font=("Helvetica", 14), wraplength=250, anchor="w")
         value_label.grid(row=0, column=2, padx=(10, 20), sticky='w', columnspan=2)
         
 
-
-
     def create_add_product(self):
         global product_name_entry
-        # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the main layout in the main frame
+        # Main Frame 
         main_container = ctk.CTkFrame(self.main_frame, fg_color='#e5e5e5', bg_color='#F2F2F2', width=800)
         main_container.pack(side='top', fill='both', padx=50, pady=30)
 
@@ -542,12 +496,10 @@ class RentalApp(ctk.CTk):
         top_frame = ctk.CTkFrame(main_container, fg_color='#e5e5e5', bg_color='#F2F2F2', width=800)
         top_frame.pack(side='top', fill='x', padx=10, pady=(10, 0))
 
-        # Load and resize the image for Save Button
         save_image = Image.open(".\\photos\\save.png")
-        save_image_resized = save_image.resize((14, 14))  # Resize the image to 16x16 pixels
+        save_image_resized = save_image.resize((14, 14))  
         save_image_ctk = ctk.CTkImage(save_image_resized)
 
-        # Save Button with rounded corners and resized image
         save_button = ctk.CTkButton(top_frame, 
                                     text="Save Product", 
                                     font=("Helvetica", 12, 'bold'), 
@@ -566,7 +518,7 @@ class RentalApp(ctk.CTk):
         product_details_label = ctk.CTkLabel(top_frame, text="Product Details", font=("Helvetica", 20, 'bold'))
         product_details_label.pack(side='left', padx=10, pady=10)
 
-        # General Information Frame
+        # General Information Frame and Entries 
         general_info_frame = ctk.CTkFrame(main_container, fg_color='#F2F2F2', bg_color='#F2F2F2', width=800, height = 330, corner_radius=30)
         general_info_frame.propagate(False)
         general_info_frame.pack(side='top', fill='x', padx=10, pady=10)
@@ -574,14 +526,12 @@ class RentalApp(ctk.CTk):
         general_info_label = ctk.CTkLabel(general_info_frame, text="General Information", font=("Helvetica", 16, 'bold'))
         general_info_label.pack(side='top', anchor='w', padx=10, pady=(10, 0))
 
-        # Product Name Entry
         product_name_label = ctk.CTkLabel(general_info_frame, text="Product Name", font=("Helvetica", 14))
         product_name_label.pack(side='top', anchor='w', padx=20, pady=(10, 0))
 
         self.product_name_entry = ctk.CTkEntry(general_info_frame, width=750, fg_color="#D3D3D3", border_color='#D3D3D3', height = 40)
         self.product_name_entry.pack(side='top', padx=20, pady=5, anchor='w')
 
-        # Description Entry
         description_label = ctk.CTkLabel(general_info_frame, text="Description", font=("Helvetica", 14))
         description_label.pack(side='top', anchor='w', padx=20, pady=(10, 0))
 
@@ -595,7 +545,6 @@ class RentalApp(ctk.CTk):
         media_label = ctk.CTkLabel(media_frame, text="Media", font=("Helvetica", 16, 'bold'))
         media_label.pack(side='top', anchor='w', padx=20, pady=(10, 0))
 
-        # Add Image Frame
         add_image_frame = ctk.CTkFrame(media_frame, fg_color='#D3D3D3', width=750, height=100)
         add_image_frame.propagate(False)
         add_image_frame.pack(side='top', padx=20, pady=(5,10), anchor='w')
@@ -607,12 +556,9 @@ class RentalApp(ctk.CTk):
         def add_image():
             self.image_path = filedialog.askopenfilename(title="Select Image", filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
             if self.image_path:
-                # Update the label to show the selected image's name
                 add_image_label.configure(text=self.image_path)
-                # Here you can store the image path to use it later
                 self.selected_image_path = self.image_path
 
-        # Add Image Button
         add_image_button = ctk.CTkButton(add_image_frame, text="Add Image", font=("Helvetica", 14),corner_radius=10,
                                         bg_color='#2F4D7D', fg_color='#2F4D7D', command=add_image)
         add_image_button.pack(side='top', pady=10, anchor='center')
@@ -624,14 +570,12 @@ class RentalApp(ctk.CTk):
         additional_info_label = ctk.CTkLabel(additional_info_frame, text="Pricing", font=("Helvetica", 16, 'bold'))
         additional_info_label.pack(side='top', anchor='w', padx=10, pady=(10, 0))
 
-        # Pricing Entry
         price_label = ctk.CTkLabel(additional_info_frame, text="Base Price", font=("Helvetica", 14))
         price_label.pack(side='top', anchor='w', padx=20, pady=(10, 0))
 
         self.price_entry = ctk.CTkEntry(additional_info_frame, width=750, fg_color="#D3D3D3", border_color='#D3D3D3')
         self.price_entry.pack(side='top', padx=20, pady=5, anchor='w')
 
-        # Category Entry
         category_label = ctk.CTkLabel(additional_info_frame, text="Category", font=("Helvetica", 14))
         category_label.pack(side='top', anchor='w', padx=20, pady=(10, 0))
 
@@ -641,174 +585,178 @@ class RentalApp(ctk.CTk):
 
 
     def create_manage_product(self):
-        # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Create the header frame (for "Product" label and Add Product button)
-        header_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent', height=50, corner_radius=10, width = 400)
-        header_frame.propagate(False)
-        header_frame.grid(row=0, column=0, columnspan=5, padx=20, pady=10, sticky="nsew")
+        header_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent', height=50, corner_radius=10)
+        header_frame.grid(row=0, column=0, columnspan=5, padx=20, pady=10, sticky="nsew", ipadx=500)
 
-        # "Product" label
         product_label = ctk.CTkLabel(header_frame, text="Product", font=("Helvetica", 18, "bold"))
         product_label.grid(row=0, column=0, padx=(20, 10), sticky="w")
 
-        # Add product button
         add_product_button = ctk.CTkButton(header_frame, text="+ Add Product", text_color="white", 
-                                        fg_color="#2F4D7D", hover_color="#2F4D7D", 
+                                        fg_color="#2F4D7D", hover_color="#2F4D7D", command=self.create_add_product,
                                         font=("Helvetica", 15))
-        add_product_button.grid(row=0, column=1, padx=(50, 2), pady=5, sticky="e")
+        add_product_button.grid(row=0, column=4, padx=(50, 2), pady=5, sticky="e")
 
-        # Create a new frame for the search bar below the Product label
         search_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent', corner_radius=8)
-        search_frame.grid(row=1, column=0, columnspan=5, padx=20, pady=(5, 10), sticky="ew")
+        search_frame.grid(row=1, column=0, columnspan=5, padx=20, pady=(15, 10), sticky="ew", ipadx=200)
 
-        # Search bar with icon
         search_icon = ctk.CTkLabel(search_frame, text="🔍", text_color="gray", width=10)
         search_icon.grid(row=0, column=0, padx=(10, 5), pady=5, sticky="w")
 
         search_entry = ctk.CTkEntry(search_frame, placeholder_text="Search product...", width=200, border_width=0)
         search_entry.grid(row=0, column=1, padx=(5, 10), pady=5, sticky="w")
 
-        # Create Table Frame
-        table_frame = ttk.Frame(self.main_frame)
-        table_frame.grid(row=2, column=0, columnspan=5, padx=(60, 90), pady=(40, 20), sticky="nsew")
+        list_frame = ctk.CTkFrame(self.main_frame, fg_color='#e5e5e5', bg_color='#e5e5e5') 
+        list_frame.grid(row=2, column=0, columnspan=5, padx=(30,20), pady=(10, 20), sticky="nsew")
 
-        # Configure column and row weights to fill available space
-        for i in range(4):  # Assuming 4 columns
-            table_frame.grid_columnconfigure(i, weight=1)
+        select_all_var = tk.IntVar()
 
-        # Define the column names
-        columns = ['Product', 'Category', 'Price', 'Status']
+        def toggle_all():
+            select_all = select_all_var.get() == 1
+            for checkbox in checkboxes:
+                checkbox.set(1) if select_all else checkbox.set(0)
 
-        # Configure row weights (if needed)
-        table_frame.grid_rowconfigure(0, weight=1)  # Header row
-        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
+        top_checkbox = ctk.CTkCheckBox(
+            list_frame,
+            variable=select_all_var,
+            fg_color='#D3D3D3',
+            bg_color='#e5e5e5',
+            border_color='#D3D3D3',
+            text='Select All',
+            hover_color='#D3D3D3',
+            checkmark_color='black',
+            checkbox_height=17,
+            checkbox_width=16,
+            width=10,
+            command=toggle_all
+        )
+        top_checkbox.grid(row=0, column=0, padx=(10, 0), pady=10, sticky='w')
 
-        # Example data for demonstration
+        delete_button = ctk.CTkButton(
+            list_frame,
+            text="Delete",
+            font=("Helvetica", 15),
+            text_color="red",
+            fg_color='transparent',
+            bg_color='transparent',
+            hover_color='#e5e5e5',
+            command=lambda: delete_selected()
+        )
+        delete_button.grid(row=0, column=4, padx=(0, 10), pady=10, sticky='e')
+
+        checkboxes = []
+        product_frames = []
+        order_ids = []  
+
         data = crud.get_admin_rental()
 
-        # Determine the number of items in data
-        item_count = len(data)
+        if not data:
+            no_product_frame = ctk.CTkFrame(self.main_frame, fg_color='transparent')
+            no_product_frame.grid(row=2, column=0, columnspan=5, padx=(10,20), pady=30, sticky="nsew")
 
-        # Set the item_count text color and background color based on the item count
-        if item_count > 0:
-            item_count_text = f"{item_count} Products"
-            item_count_fg_color = 'green'
-            item_count_bg_color = '#D1FAE5'  # Light green background
+            no_product_img = Image.open(".\\photos\\no-product.png")
+            no_product_img = no_product_img.resize((250, 250), Image.Resampling.LANCZOS)
+            no_product_photo = ImageTk.PhotoImage(no_product_img)
+
+            no_product_label = ctk.CTkLabel(no_product_frame, image=no_product_photo, text="")
+            no_product_label.image = no_product_photo
+            no_product_label.grid(row=0, column=0, padx=10, pady=10)
+
+            no_product_title = ctk.CTkLabel(no_product_frame, text='No Products   ', font=("Helvetica", 16))
+            no_product_title.grid(row=1, column=0, padx=10, pady=10)
         else:
-            item_count_text = "0 Products"
-            item_count_fg_color = 'darkgrey'
-            item_count_bg_color = '#F0F1F3'  # Light grey background
+            for idx, record in enumerate(data):
+                product_frame = ctk.CTkFrame(list_frame, fg_color='#F2F2F3', border_width=1, border_color='#F2F2F3', corner_radius=10, width=300)
+                product_frame.propagate(False)
+                product_frame.grid(row=idx+1, column=0, columnspan=5, padx=20, pady=10, sticky='nsew', ipadx=400)
 
-        # Create a frame to hold the label and the button
-        recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
-        recent_frame.grid(row=0, column=0, columnspan=len(columns), padx=15, pady=10, sticky="w")
+                select_var = tk.IntVar()
+                checkbox = ctk.CTkCheckBox(
+                    product_frame,
+                    variable=select_var,
+                    fg_color='#D3D3D3',
+                    bg_color='#F2F2F3',
+                    border_color='#D3D3D3',
+                    text='',
+                    hover_color='#D3D3D3',
+                    checkmark_color='black',
+                    checkbox_height=17,
+                    checkbox_width=16,
+                    width=10
+                )
+                checkbox.grid(row=0, column=0, padx=10, pady=10, sticky='w')
 
-        # Create a label for "Recent Rentals"
-        recent_label = tk.Label(recent_frame, text="Recent Rentals", bg='#F2F2F2', font=('Arial', 16, 'bold'))
-        recent_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+                checkboxes.append(select_var)
+                product_frames.append(product_frame)
+                order_ids.append(record[-1])  
 
-        # Create a button for the item count
-        recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
-                                    fg_color=item_count_bg_color, 
-                                    hover_color='#C3F9D8',  # Optional: color when hovered
-                                    text_color=item_count_fg_color,
-                                    font=('Arial', 12, 'bold'), 
-                                    width=80, 
-                                    height=30,
-                                    border_width=0)
+                img_path = record[4]
+                img = Image.open(img_path)
+                img = img.resize((60, 60), Image.Resampling.LANCZOS)
+                img_tk = ImageTk.PhotoImage(img)
 
-        # Place the button in the frame next to the label
-        recent_button.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+                img_label = ctk.CTkLabel(product_frame, image=img_tk, fg_color='white', text='')
+                img_label.image = img_tk
+                img_label.grid(row=0, column=1, padx=10, pady=10)
 
-        # Create canvas for rounded header
-        header_canvas = tk.Canvas(table_frame, height=30, bg='#F7F8FA', bd=0, highlightthickness=0)
-        header_canvas.grid(row=1, column=0, columnspan=len(columns), padx=10, pady=5, sticky="nsew")
+                details_frame = ctk.CTkFrame(product_frame, fg_color='#F2F2F3')
+                details_frame.grid(row=0, column=2, padx=10, pady=10, sticky='w')
 
-        # Draw the rounded rectangle on the canvas
-        self.create_rounded_rectangle(header_canvas, 0, 0, 700, 30, radius=10, fill='#F7F8FA', outline='#F0F1F3')
+                product_name = ctk.CTkLabel(details_frame, text=record[0], font=("Helvetica", 14, "bold"))
+                product_name.grid(row=0, column=0, sticky='w')
 
-        # Create the header row with column names
-        for col, column_name in enumerate(columns):
-            col_label = ttk.Label(table_frame, text=column_name, font=('Arial', 13, 'bold'), background='#F7F8FA', foreground='#6B7280', anchor='w')
-            col_label.grid(row=1, column=col, padx=15, pady=(5, 20), sticky="nsew")
+                product_details = ctk.CTkLabel(details_frame, text=f"Rs {record[1]}", font=("Helvetica", 12))
+                product_details.grid(row=1, column=0, sticky='w')
 
-        # Insert data into the table
-        for row, record in enumerate(data, start=2):  # Start from row 2 due to the label and header row
-            for col, value in enumerate(record[:4]):
-                if col == 0:  # Product column with image
-                    cell_frame = ttk.Frame(table_frame)
-                    cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
+                status_color = 'red' if 'unsettled' == record[3].lower() else 'green'
+                status_bg = '#FFEDD5' if 'unsettled' == record[3].lower() else '#D1FAE5'
 
-                    # Load and resize the image
-                    img_path = record[4]  # Assuming the image path is at index 4
-                    img = Image.open(img_path)
-                    img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
-                    img_tk = ImageTk.PhotoImage(img)
+                status_label = ctk.CTkLabel(
+                    product_frame,
+                    text=record[3],
+                    font=("Helvetica", 12, "bold"),
+                    fg_color=status_bg,
+                    text_color=status_color,
+                    corner_radius=8,
+                    width=80
+                )
+                status_label.grid(row=0, column=4, padx=10, pady=10, sticky='e')
 
-                    img_label = tk.Label(cell_frame, image=img_tk, bg='#E5E7EB')
-                    img_label.image = img_tk  # Keep a reference to prevent garbage collection
-                    img_label.grid(row=0, column=0, padx=(0, 10), pady=0)
+        def delete_selected():
+            for frame, checkbox, order_id in zip(product_frames, checkboxes, order_ids):
+                if checkbox.get() == 1:
+                    frame.destroy()
+                    crud.delete_admin_cart(order_id)  
 
-                    cell_label = ttk.Label(cell_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
-                    cell_label.grid(row=0, column=1, sticky="w")
-
-                elif col == 3:  # Status column with colored badge
-                    if 'unsettled' == value.lower():
-                        status_color = 'red'
-                        status_bg = '#FFEDD5'  # Light red background
-                    else:
-                        status_color = 'green'
-                        status_bg = '#D1FAE5'  # Light green background
-
-                    # Create the label with centered text
-                    status_label = tk.Label(
-                        table_frame,
-                        text=value,
-                        font=('Arial', 12, 'bold'),
-                        foreground=status_color,
-                        background=status_bg,
-                        anchor='center',  # Center the text horizontally
-                        justify='center'  # Center the text horizontally
-                    )
-                    
-                    # Grid placement
-                    status_label.grid(row=row, column=col, padx=15, pady=10, sticky="nw")
-
-                else:  # Other columns
-                    cell_label = ttk.Label(table_frame, text=value, font=('Arial', 12), foreground='#111827', anchor='w')
-                    cell_label.grid(row=row, column=col, padx=15, pady=5, sticky="nsew")
-
-        # Add padding below the table
-        table_frame.grid_rowconfigure(len(data) + 2, weight=1)
-
-        # Adjust the spacing between the table and the last element
         self.main_frame.grid_rowconfigure(2, weight=1)
 
 
 
+
+
+
     def create_finance(self):
-        # Clear the current contents of the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Configure grid columns to push the button to the right
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=1)
         self.main_frame.grid_columnconfigure(2, weight=1)
         self.main_frame.grid_columnconfigure(3, weight=1)
         self.main_frame.grid_columnconfigure(4, weight=1)
 
-        # Welcome Label
         welcome_label = ctk.CTkLabel(self.main_frame, text="Welcome, User", font=("Arial", 16, 'bold'))
         welcome_label.grid(row=0, column=0, padx=40, pady=(40, 10), sticky="w")
 
-        # Add Product Button
-        add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35)
+        add_product_button = ctk.CTkButton(self.main_frame, text="+ Add Product", fg_color="#2F4D7D", font=("Arial", 12, 'bold'), width=25, height=35, command = self.create_add_product)
         add_product_button.grid(row=0, column=4, padx=30, pady=(30, 20), sticky="n")
 
+        # Refresh value everytime 
+        self.total_revenue = crud.total_revenue()
+        self.total_balance = crud.total()
+        
         # Revenue Card
         revenue_card = ctk.CTkFrame(self.main_frame, width=150, height=150, fg_color="#F2F2F2", bg_color="#F2F2F2")
         revenue_card.pack_propagate(False)
@@ -831,7 +779,7 @@ class RentalApp(ctk.CTk):
         revenue_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
         # Revenue Value and Change
-        revenue_value = ctk.CTkLabel(revenue_card, text="Rs.7,500", font=("Arial", 24, "bold"))
+        revenue_value = ctk.CTkLabel(revenue_card, text=f"Rs. {self.total_revenue}", font=("Arial", 24, "bold"))
         revenue_value.grid(row=2, column=0, padx=20, sticky="w")
 
         # Balance Card
@@ -854,7 +802,7 @@ class RentalApp(ctk.CTk):
         balance_label = ctk.CTkLabel(balance_card, text="Balance", font=("Arial", 14))
         balance_label.grid(row=1, column=0, padx=20, pady=5, sticky="w")
 
-        balance_value = ctk.CTkLabel(balance_card, text="Rs.2,500", font=("Arial", 24, "bold"))
+        balance_value = ctk.CTkLabel(balance_card, text=f"Rs. {self.total_balance}", font=("Arial", 24, "bold"))
         balance_value.grid(row=2, column=0, padx=20, pady=(0, 15), sticky="w")
 
         # Create Table Frame
@@ -885,7 +833,7 @@ class RentalApp(ctk.CTk):
             col_label.grid(row=0, column=col, padx=15, pady=10, sticky="nsew")
 
         # Example data for demonstration
-        data = crud.get_admin_rental()
+        data = crud.get_admin_rental1()
 
         # Insert data into the table
         for row, record in enumerate(data, start=1):
@@ -895,7 +843,7 @@ class RentalApp(ctk.CTk):
                     cell_frame.grid(row=row, column=col, padx=15, pady=10, sticky="w")
                     
                     # Load and resize the image
-                    img_path = record[4]  # Assuming the image path is at index 6
+                    img_path = record[6]  # Assuming the image path is at index 5
                     img = Image.open(img_path)
                     img = img.resize((60, 60), Image.Resampling.LANCZOS)  # Increased image size
                     img_tk = ImageTk.PhotoImage(img)
@@ -908,8 +856,8 @@ class RentalApp(ctk.CTk):
                     cell_label.grid(row=0, column=1, sticky="w")
                 
                 elif col == 4:  # Status column with colored badge
-                    status_color = 'red' if value == 'Unsettled' else 'green'
-                    status_bg = '#FFEDD5' if value == 'Unsettled' else '#D1FAE5'
+                    status_color = 'red' if value == 'unsettled' else 'green'
+                    status_bg = '#FFEDD5' if value == 'unsettled' else '#D1FAE5'
                     
                     status_label = tk.Label(table_frame, text=value, font=('Arial', 12), fg=status_color, anchor='w',
                                             bg=status_bg, padx=15, pady=5)
@@ -959,45 +907,133 @@ class RentalApp(ctk.CTk):
         title_label = ctk.CTkLabel(self.main_frame, text="Settings", font=("Helvetica", 20, "bold"))
         title_label.pack(pady=20, side='top', padx=60, anchor='w')
 
-        # Create the 'Update Password' frame
-        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=800, width=800, corner_radius=0)
-        update_frame.pack_propagate(False)
-        update_frame.pack(pady=(10, 5), padx=60, side='top', anchor='w')
+        # Create the top frame to hold Customer and Address sections
+        top_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, corner_radius=0)
+        top_frame.pack_propagate(False)
+        top_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
 
-        update_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 20, "bold"))
-        update_label.pack(pady=(20,10), padx=20, anchor='w')
+        # Create the 'Customer' frame
+        customer_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        customer_frame.pack_propagate(False)
+        customer_frame.pack(padx=(0, 10), side='left', anchor='w')
 
-        current_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color="#D3D3D3", border_color='#D3D3D3')
-        current_password_entry.pack(pady=5, padx=20, fill='x')
+        customer_label = ctk.CTkLabel(customer_frame, text="Customer", font=("Helvetica", 16, "bold"))
+        customer_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        new_password_entry = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        new_password_entry.pack(pady=5, padx=20, fill='x')
+        self.name_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Username", fg_color="#D3D3D3", border_color='#D3D3D3')
+        self.name_entry1.pack(pady=5, padx=20, fill='x')
 
-        confirm_password_entry = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3')
-        confirm_password_entry.pack(pady=5, padx=20, fill='x')
+        self.email_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Email Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.email_entry1.pack(pady=5, padx=20, fill='x')
 
-        button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
-        button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+        self.phone_entry1 = ctk.CTkEntry(customer_frame, placeholder_text="Phone Number", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.phone_entry1.pack(pady=5, padx=20, fill='x')
 
-        cancel_button = ctk.CTkButton(button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black")
+        customer_button_frame = ctk.CTkFrame(customer_frame, fg_color='#F2F2F2')
+        customer_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(customer_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(customer_frame))
         cancel_button.pack(side='left', padx=5)
 
-        save_button = ctk.CTkButton(button_frame, text="Save Changes", fg_color="#1E3A8A")
+        save_button = ctk.CTkButton(customer_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings1)
         save_button.pack(side='left', padx=5)
 
-        # Create the 'Delete Account' frame
-        delete_account_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=150, width=800, corner_radius=0)
-        delete_account_frame.pack_propagate(False)
-        delete_account_frame.pack(pady=10, padx=60, side='top', anchor='w')
+        # Create the 'Address' frame
+        address_frame = ctk.CTkFrame(top_frame, fg_color='#F2F2F2', height=250, width=380, corner_radius=0)
+        address_frame.pack_propagate(False)
+        address_frame.pack(padx=(10, 0), side='left', anchor='w')
 
-        delete_label = ctk.CTkLabel(delete_account_frame, text="Delete Account", font=("Helvetica", 20, "bold"))
-        delete_label.pack(pady=(20,10), padx=20, anchor='w')
+        address_label = ctk.CTkLabel(address_frame, text="Address", font=("Helvetica", 16, "bold"))
+        address_label.pack(pady=(20, 10), padx=20, anchor='w')
 
-        warning_label = ctk.CTkLabel(delete_account_frame, text="Deleting your account is permanent and cannot be reversed.", font=("Helvetica", 14))
-        warning_label.pack(pady=5, padx=20, anchor='w')
+        self.shipping_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Shipping Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.shipping_entry1.pack(pady=5, padx=20, fill='x')
 
-        delete_button = ctk.CTkButton(delete_account_frame, text="Delete Account", fg_color="#B91C1C")
-        delete_button.pack(pady=10, padx=20, anchor='w')
+        self.billing_entry1 = ctk.CTkEntry(address_frame, placeholder_text="Billing Address", fg_color='#D3D3D3', border_color='#D3D3D3')
+        self.billing_entry1.pack(pady=5, padx=20, fill='x')
+
+        address_button_frame = ctk.CTkFrame(address_frame, fg_color='#F2F2F2')
+        address_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(address_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(address_frame))
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(address_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings2)
+        save_button.pack(side='left', padx=5)
+
+        # Create the 'Update Password' frame
+        update_frame = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', height=250, width=800, corner_radius=0)
+        update_frame.pack_propagate(False)
+        update_frame.pack(pady=(10, 5), padx=60, fill='x', side='top', anchor='w')
+
+        password_label = ctk.CTkLabel(update_frame, text="Update Password", font=("Helvetica", 16, "bold"))
+        password_label.pack(pady=(20, 10), padx=20, anchor='w')
+
+        self.current_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Current Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = "*")
+        self.current_password_entry1.pack(pady=5, padx=20, fill='x')
+
+        self.new_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="New Password", fg_color='#D3D3D3', border_color='#D3D3D3', show='*')
+        self.new_password_entry1.pack(pady=5, padx=20, fill='x')
+
+        self.confirm_password_entry1 = ctk.CTkEntry(update_frame, placeholder_text="Confirm Password", fg_color='#D3D3D3', border_color='#D3D3D3', show = '*')
+        self.confirm_password_entry1.pack(pady=5, padx=20, fill='x')
+
+        password_button_frame = ctk.CTkFrame(update_frame, fg_color='#F2F2F2')
+        password_button_frame.pack(pady=10, padx=20, fill='x', side='bottom', anchor='e')
+
+        cancel_button = ctk.CTkButton(password_button_frame, text="Cancel", fg_color="#E0E0E0", hover_color='#E0E0E0', text_color="black", command=lambda: self.clear_entries(update_frame))
+        cancel_button.pack(side='left', padx=5)
+
+        save_button = ctk.CTkButton(password_button_frame, text="Save Changes", fg_color="#1E3A8A", command=self.update_settings3)
+        save_button.pack(side='left', padx=5)
+
+    def clear_entries(self, frame):
+        # Clear all entries in the specified frame
+        for widget in frame.winfo_children():
+            if isinstance(widget, ctk.CTkEntry):
+                widget.delete(0, 'end')
+
+
+    def show_products(self):
+        search_query = self.search_entry.get().lower()  # Get the search input and convert it to lowercase
+        self.search_results = crud.search_products_by_category(search_query)  # Query the database
+
+        # Initially display the search results without any sorting
+        self.display_results(search_query, self.search_results)
+
+    def display_results(self, search_query, search_results):
+        # Clear existing search results
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # Add a title label for the search results (if a search query was provided)
+        if search_query:
+            title_label_main = ctk.CTkLabel(self.main_frame, text=f"Search results for: {search_query}", font=("Helvetica", 18, 'bold'))
+            title_label_main.pack(anchor='w', padx=20, pady=(20, 30))
+
+        # Display the search results
+        if search_results:
+            row_frame = None
+            products_in_row = 0
+
+            for i, (product_name, price, image) in enumerate(search_results):
+                if products_in_row == 0:
+                    # Create a new row frame when starting a new row
+                    row_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+                    row_frame.pack(fill="x", padx=20, pady=10)
+
+                self.add_service_placeholder(row_frame, product_name, f"Rs.{price} Per Day", image)
+
+                products_in_row += 1
+
+                # Reset after adding 3 products in a row
+                if products_in_row >= 3:
+                    products_in_row = 0
+        else:
+            no_results_label = ctk.CTkLabel(self.main_frame, text="No results found.", font=("Helvetica", 18, 'bold'))
+            no_results_label.pack(anchor="n", pady=(40, 20))
+
+
 
 
 
@@ -1036,6 +1072,33 @@ class RentalApp(ctk.CTk):
         
         # Call the crud.add_admin_rental function
         crud.add_admin_rental(product_id, product_name,category, base_price,'unsettled', image_path)
+
+    def update_settings1(self):
+        logged_in = crud.get_last_accessed_username()
+        crud.update_user_info(logged_in, self.name_entry1.get(), self.email_entry1.get(), self.phone_entry1.get())
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings2(self):
+        messagebox.showinfo('sucess', 'User Info Sucessfully Saved')
+
+    def update_settings3(self):
+        logged_in = crud.get_last_accessed_username()
+        if self.new_password_entry1.get() != self.confirm_password_entry1.get():
+            messagebox.showinfo('error', 'your new password and confirm password does not match')
+        else:
+            crud.update_user_password(logged_in, self.confirm_password_entry1)
+            messagebox.showinfo('sucess', 'Password Sucessfully Changed')
+
+    def logout(self):
+        self.destroy()
+        app = login.Login()
+        app.mainloop()
+
+    def navigate_to_admin_profile(self):
+        self.destroy()
+        app = admin_profile.RentalApp()
+        app.mainloop()
+        
             
 
 # Run the application
