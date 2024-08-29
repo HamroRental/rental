@@ -26,7 +26,12 @@ class RentalApp(ctk.CTk):
         self.icon_frame = ctk.CTkFrame(self.title_bar, fg_color="#2F4D7D")
         self.icon_frame.pack(side="right", padx=10, pady=20, anchor = 'n')
 
+<<<<<<< HEAD
+        # Load the icons with increased size
+        icon_size = (31, 30)  # Adjust the size as needed
+=======
         icon_size = (30, 30)  
+>>>>>>> b7a4b1e85c9ccaba3a399c3c6222193a2851dfa0
         self.bell_image = ctk.CTkImage(light_image=Image.open(".\\photos\\Notification.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
         self.profile_image = ctk.CTkImage(light_image=Image.open(".\\photos\\profile.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
         self.heart_image = ctk.CTkImage(light_image=Image.open(".\\photos\\cart.png").resize(icon_size, Image.Resampling.LANCZOS), size=icon_size)
@@ -355,7 +360,7 @@ class RentalApp(ctk.CTk):
         y = self.bell_button.winfo_rooty() + self.bell_button.winfo_height() + 10  # Offset to place it below the button
 
         # Adjust the x position to add a gap on the right side
-        x = x - 20  # Adjust this value to increase or decrease the gap
+        x = x - 20 # Adjust this value to increase or decrease the gap
 
         popup.geometry(f"+{x}+{y}")
 
