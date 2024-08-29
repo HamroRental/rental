@@ -79,10 +79,9 @@ class RentalApp(ctk.CTk):
         step_label = ctk.CTkLabel(self.billing_frame, text="        Step 1 of 4", font=("Arial", 12, 'bold'), fg_color='#F2F2F2', text_color="#90A3BF")
         step_label.grid(row=0, column=1, sticky="e", padx=(40, 10), pady=(30, 5))
 
-        # Adding a rent-info frame
         self.rent_info = ctk.CTkFrame(self.main_frame, fg_color='#F2F2F2', width=400, height=150)
         self.rent_info.pack_propagate(False)
-        self.rent_info.pack(side='top', ipadx=150, ipady=40, padx=20, pady=30)  # Explicitly set the size in pack
+        self.rent_info.pack(side='top', ipadx=150, ipady=40, padx=20, pady=30)  
 
 
         # Label and Entries 

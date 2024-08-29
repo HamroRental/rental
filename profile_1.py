@@ -154,9 +154,9 @@ class RentalApp(ctk.CTk):
     def on_enter(self, button, hover_image):
         if self.active_button != button:
             if button == self.logout_button:
-                button.configure(image=hover_image, text_color="white", fg_color='#8B0000')  # Red hover color
+                button.configure(image=hover_image, text_color="white", fg_color='#8B0000')  
             else:
-                button.configure(image=hover_image, text_color="white", fg_color='#2F4D7D')  # Default hover color
+                button.configure(image=hover_image, text_color="white", fg_color='#2F4D7D')  
 
     def on_leave(self, button, image):
         if self.active_button != button:
@@ -164,7 +164,6 @@ class RentalApp(ctk.CTk):
 
     def on_click(self, button, hover_image, callback=None):
         if self.active_button:
-            # Reset the previously active button
             self.active_button.configure(image=self.get_default_image(self.active_button), text_color='#97A8C3', fg_color='#F2F2F2')
             self.active_button.bind("<Enter>", lambda e: self.on_enter(self.active_button, hover_image))
             self.active_button.bind("<Leave>", lambda e: self.on_leave(self.active_button, hover_image))
@@ -173,11 +172,10 @@ class RentalApp(ctk.CTk):
         self.active_button = button
 
         if button == self.logout_button:
-            self.active_button.configure(fg_color="#8B0000", text_color="white")  # Red color on click
+            self.active_button.configure(fg_color="#8B0000", text_color="white") 
         else:
             self.active_button.configure(fg_color="#2F4D7D", text_color="white")
 
-        # Unbind hover events for the active button
         self.active_button.unbind("<Enter>")
         self.active_button.unbind("<Leave>")
 
@@ -185,7 +183,6 @@ class RentalApp(ctk.CTk):
             callback()
 
     def get_default_image(self, button):
-        # Return the default image for the button
         if button == self.dashboard_button:
             return self.home_image
         elif button == self.cart_button:
@@ -282,16 +279,13 @@ class RentalApp(ctk.CTk):
         # Define the column names
         columns = ['Product', 'Category', 'Price', 'status']
 
-        # Configure column and row weights to fill available space
-        for i in range(len(columns)):  # Ensure to match the number of columns
+        for i in range(len(columns)):  
             table_frame.grid_columnconfigure(i, weight=1)
 
-        # Configure row weights (if needed)
-        table_frame.grid_rowconfigure(0, weight=1)  # Header row
-        table_frame.grid_rowconfigure(1, weight=1)  # For the data rows, adjust as needed
+        
+        table_frame.grid_rowconfigure(0, weight=1)  
+        table_frame.grid_rowconfigure(1, weight=1)  
 
-        # Example data for demonstration
-        # Example data for demonstration
         data = crud.get_purchase_items()
         print(data)
 
@@ -302,11 +296,11 @@ class RentalApp(ctk.CTk):
         if item_count > 0:
             item_count_text = f"{item_count} Products"
             item_count_fg_color = 'green'
-            item_count_bg_color = '#D1FAE5'  # Light green background
+            item_count_bg_color = '#D1FAE5' 
         else:
             item_count_text = "0 Products"
             item_count_fg_color = 'darkgrey'
-            item_count_bg_color = '#F0F1F3'  # Light grey background
+            item_count_bg_color = '#F0F1F3'  
 
         # Create a frame to hold the label and the button
         recent_frame = tk.Frame(table_frame, bg='#F2F2F2')
@@ -319,7 +313,7 @@ class RentalApp(ctk.CTk):
         # Create a button for the item count
         recent_button = ctk.CTkButton(recent_frame, text=item_count_text, 
                                     fg_color=item_count_bg_color, 
-                                    hover_color='#C3F9D8',  # Optional: color when hovered
+                                    hover_color='#C3F9D8', 
                                     text_color=item_count_fg_color,
                                     font=('Arial', 12, 'bold'), 
                                     width=80, 
@@ -552,10 +546,10 @@ class RentalApp(ctk.CTk):
                     index = checkboxes.index(checkbox)
                     item = data[index]
                     crud.add_purchase(
-                        product_id=item[-1],  # Assuming the last element is the product_id
+                        product_id=item[-1],  
                         product_name=item[1],
                         price=item[2],
-                        category=item[3],  # Assuming the category is in item[4]
+                        category=item[3],  
                         status='Pending',
                         image=item[0]
                     )
